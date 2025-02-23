@@ -23,6 +23,11 @@ import Customer from "./markup/pages/admin/customer";
 import Order from "./markup/pages/admin/order";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
+import AddCustomers from "./markup/pages/admin/AddCustomers";
+import CustomersList from "./markup/pages/admin/CustomersList";
+import CustomerProfileLists from "./markup/pages/admin/CustomerProfileLists";
+import EditCustomer from "./markup/pages/admin/EditCustomer";
+import EditVehicles from "./markup/pages/admin/EditVehicles";
 function App() {
   return (
     <>
@@ -38,18 +43,42 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/edit_vehicle/:vehicle_id"
+          element={<EditVehicles />}
+        />
+        <Route
+          path="/admin/customer_edit/:customer_id"
+          element={<EditCustomer />}
+        />
+        <Route
+          path="/admin/add_customers"
+          element={
+            <ProtectedRoute roles={[1, 2, 3]}>
+              <AddCustomers />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin/all_customers" element={<CustomersList />} />
+
+        
+
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/employee" element={<Employee />} />
 
-        <Route
+        {/* <Route
           path="/admin/customer"
           element={
             <ProtectedRoute roles={[2, 3]}>
               <Customer />
             </ProtectedRoute>
           }
+        /> */}
+        <Route
+          path="/admin/customer_profile/:customer_id"
+          element={<CustomerProfileLists />}
         />
         <Route
           path="/admin/order"
