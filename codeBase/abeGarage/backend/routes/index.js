@@ -13,4 +13,12 @@ router.use(employeeRoute);
 const loginRoute = require('./login.routes');
 // use login route
 router.use(loginRoute);
+
+
+
+// import the order router
+const orderRouter = require("./order.routes");
+// add the order router to the main router
+router.use("/",orderRouter);
+
 module.exports = router;
