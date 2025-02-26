@@ -20,9 +20,10 @@ import Footer from "./markup/components/Footer/Footer";
 // import components from './components
 import Employee from "./markup/pages/admin/Employee";
 import Customer from "./markup/pages/admin/customer";
-import Order from "./markup/pages/admin/order";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
+import Orders from "./markup/pages/admin/Order";
+import OrderList from "./markup/pages/admin/OrderList";
 function App() {
   return (
     <>
@@ -52,13 +53,22 @@ function App() {
           }
         />
         <Route
-          path="/admin/order"
+          path="/admin/new-order"
           element={
-            <ProtectedRoute roles={[1, 2, 3]}>
-              <Order />
-            </ProtectedRoute>
+            <PrivateAuthRoute roles={[1, 2, 3]}>
+              <Orders />
+            </PrivateAuthRoute>
           }
         />
+        <Route
+          path="/admin/orders"
+          element={
+            <PrivateAuthRoute roles={[1, 2, 3]}>
+              <OrderList />
+            </PrivateAuthRoute>
+          }
+        />
+
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
