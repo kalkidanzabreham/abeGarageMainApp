@@ -1,17 +1,17 @@
 import React from "react";
-import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
-import NewOrder from "../../components/NewOrder/NewOrder";
-
-function Orders() {
+import EmployeesList from "../../components/EmployeesList/EmployeesList";
+import ListAllOrder from "../../components/ListAllOrder/ListAllOrder";
+import  AdminMenu from "../../components/Admin/AdminMenu/AdminMenu"
+function OrderList() {
   return (
     <div>
       <div className="container-fluid admin-pages">
         <div className="row">
           <div className="col-md-3 admin-left-side">
-            <AdminMenu />
+            <AdminMenu/>
           </div>
           <div className="col-md-9 admin-right-side">
-            <NewOrder />
+            <ListAllOrder />
           </div>
         </div>
       </div>
@@ -19,4 +19,4 @@ function Orders() {
   );
 }
 
-export default Orders;
+export default OrderList;

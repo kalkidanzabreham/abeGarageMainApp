@@ -260,6 +260,30 @@ input:disabled {
 .change-status {
   cursor: pointer;
 }
+
+
+  /* OrderStatus.css */
+  .status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .completed {
+    background-color: #28a745; /* Green */
+  }
+  
+  .in-progress {
+    background-color: #ffc108; /* Yellow */
+    color: black; /* Text color for better contrast */
+  }
+  
+  .received {
+    background-color: #6d757d; /* Gray */
+  }
+
 .order-status {
   float: right;
 }
@@ -375,4 +399,5 @@ button:disabled{
   background-color: red!important;
   color: white !important;
 }
+
 

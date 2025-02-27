@@ -17,6 +17,16 @@ router.use(serviceRoute)
 const loginRoute = require("./login.routes");
 // use login route
 router.use(loginRoute);
+
+
+
+
+// import the order router
+const orderRouter = require("./order.routes");
+// add the order router to the main router
+router.use("/",orderRouter);
+
+
 // import customer route
 const customerRoute = require("./customer.routes");
 // use customer route
@@ -27,4 +37,5 @@ const vehicleRoute = require("./vehicle.routes");
 router.use(vehicleRoute);
 
 // export router
+
 module.exports = router;
