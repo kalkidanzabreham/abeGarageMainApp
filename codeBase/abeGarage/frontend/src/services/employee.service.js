@@ -49,5 +49,65 @@ const getAllEmployees = async (token) => {
     return responseData;
  
 };
+
+// A function to send get request to get employee
+const getEmployee = async (token, employee_id) => {
+	try {
+		const response = await fetch(
+			`${apiurl}/employee/${employee_id}`,
+			{
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"x-access-token": token,
+		},
+	}
+)
+
+		// console.log('employee: response==',response);
+		return response;
+	} catch (error) {
+		console.error("Error fetching employee:", error);
+		throw error;
+	}
+};
+
+// Afunction to send put request to update employee data
+const updateEmployee = async (employeeId, formData, loggedInEmployeeToken) => {
+	const requestOptions = {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			"x-access-token": loggedInEmployeeToken,
+		},
+		body: JSON.stringify(formData),
+	};
+
+	const response = await fetch(
+		`${apiurl}/employee/${employeeId}`,
+		requestOptions
+	);
+	return response;
+};
+
+const deleteEmployee = async (employee_id, token) => {
+  try {
+    const response = await fetch(`${apiurl}/employee/${employee_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": token,
+      },
+    });
+
+    if (!response.ok) {
+      return { success: false, message: "Failed to delete employee" };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
 // export the create employee function
-export { createEmployee, getAllEmployees };
+export { createEmployee, getAllEmployees,getEmployee,updateEmployee,deleteEmployee };

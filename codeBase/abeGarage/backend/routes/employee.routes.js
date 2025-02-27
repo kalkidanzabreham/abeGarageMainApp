@@ -12,5 +12,26 @@ router.post('/api/employee',[verifyToken,verifyAdmin],employeeController.addEmpl
 // create a get route to get all employees
 
 router.get('/api/employee', [verifyToken, verifyAdmin], employeeController.getAllEmployees);
+
+// Create a route to handle the get single employee request on get
+router.get(
+	"/api/employee/:id",
+	[verifyToken,verifyAdmin],
+	employeeController.getSingleEmployee
+);
+
+// Updateroutes for employee
+router.put(
+	"/api/employee/:id",
+	[verifyToken,verifyAdmin],
+	employeeController.updateEmployee
+);
+router.delete(
+  "/api/employee/:id",
+  [verifyToken, verifyAdmin],
+  employeeController.deleteEmployee
+);
+
+
 // export the router
 module.exports = router;
