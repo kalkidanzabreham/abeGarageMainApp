@@ -68,6 +68,16 @@ function LoginForm() {
         setTimeout(() => {
           navigate(redirect);
         }, 2000);
+
+        // Check if user is logged in after login without refresh
+         if (location.pathname === "/login") {
+           // navigate('/admin');
+           // window.location.replace('/admin');
+           // To home for now
+           window.location.replace("/");
+         } else {
+           window.location.reload();
+         }
       
       } else {
         set_server_error(response.message);

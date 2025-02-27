@@ -261,6 +261,7 @@ input:disabled {
   cursor: pointer;
 }
 
+
   /* OrderStatus.css */
   .status {
     padding: 4px 12px;
@@ -282,3 +283,121 @@ input:disabled {
   .received {
     background-color: #6d757d; /* Gray */
   }
+
+.order-status {
+  float: right;
+}
+.order-status span {
+  padding: 10px 25px;
+  font-size: 1.2em;
+  font-weight: 400;
+}
+.change-status {
+  cursor: pointer;
+}
+.delete_edit_icons{
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+}
+.edit{
+  cursor: pointer;
+}
+.arrow{
+  display: flex;
+  justify-content: end;
+}
+.edit-link-icons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.edit-delete-icons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.delete_edit_icons span{
+  color: red !important;
+}
+.disabled-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6; /* Optional: Make it look disabled */
+}
+.center_loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.status-badge {
+  min-width: 120px; /* Ensures uniform width */
+  display: inline-block;
+  text-align: center;
+}
+.btn-style-one:disabled{
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.customer_order{
+  background-color: #a2a5ad;
+}
+.sub_order{
+padding-top: 50px;
+}
+.custmoer_servcie_list {
+  background-color: red;
+}
+.text-white{
+  color: white;
+}
+.form-check-input{
+cursor: pointer;
+font-size: 24px;
+}
+.add_vehilces{
+  position: relative;
+}
+.closes{
+  position: absolute;
+  top: 50px;
+  right: 20px;
+}
+.closes button{
+  padding: 0px 10px;
+  color: white;
+  border-radius: 4px;
+}
+.vehicle_modal{
+
+  width: 100%;
+  margin: 0 auto;
+}
+
+.confirm_modal{
+
+ margin-top: 100px;
+}
+button:disabled{
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.order_card{
+
+  border: 1px solid #ced4da;
+  padding: 20px 40px;
+  margin-bottom: 20px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  list-style: 2;
+}
+.btn-close {
+  filter: invert(0);
+  background-color: red!important;
+  color: white !important;
+}
+
+
