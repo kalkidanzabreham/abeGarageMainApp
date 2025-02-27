@@ -1,9 +1,20 @@
+
+import Swal from "sweetalert2";
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { useAuth } from "../../../Context/AuthContext";
 import { format } from "date-fns";
-import { getAllEmployees } from "../../../services/employee.service";
+import { getAllEmployees,deleteEmployee } from "../../../services/employee.service";
+import {useNavigate} from 'react-router-dom'
+
+// Import the Font Awesome icons
+import { FaEdit, FaTrash } from "react-icons/fa"; // Font Awesome icons
 function EmployeeList() {
+  const navigate = useNavigate();
+
+  const handleEdit = (employee_id) => {
+    navigate(`/admin/employees/edit/${employee_id}`); // Navigate to the edit form with the ID
+  };
   const [employees, setEmployees] = useState([]);
   // a state to hold api erro
   const [apiError, setApiError] = useState(false);
@@ -11,27 +22,47 @@ function EmployeeList() {
   const [apiErrorMessage, setApiErrorMessage] = useState("");
   // fetch employees from the api
   const { token } = useAuth();
-  useEffect(() => {
-    const allEmployees = getAllEmployees(token);
-    allEmployees.then((response) => {
-    //   console.log(!response.success );
-      if (!response.success) {
-        setApiError(true);
-        if (response.status === 401) {
-          setApiErrorMessage("Unauthorized. Please login again.");
-        } else if (response.status == 403) {
-          setApiErrorMessage("Access denied. You are not an admin.");
-        } else {
-          setApiErrorMessage("something went wrong");
-        }
-      } else {
-        console.log(response.data);
+ useEffect(() => {
+   const fetchEmployees = async () => {
+     const response = await getAllEmployees(token);
+     if (!response.success) {
+       setApiError(true);
+       setApiErrorMessage(
+         response.status === 401
+           ? "Unauthorized. Please login again."
+           : "Something went wrong"
+       );
+     } else {
+       setEmployees(response.data);
+     }
+   };
+   fetchEmployees();
+ }, [token]);
 
-        setEmployees(response.data);
-      }
-    });
-  }, []);
-  console.log(employees);
+const handleDelete = async (employee_id) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "red",
+    cancelButtonColor: "#1E2331",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
+
+  if (!result.isConfirmed) return;
+
+  const response = await deleteEmployee(employee_id, token);
+  if (response.success) {
+    setEmployees(employees.filter((emp) => emp.employee_id !== employee_id));
+    Swal.fire("Deleted!", "The employee has been removed From the database.", "success");
+  } else {
+    Swal.fire("Error!", "Failed to delete employee.", "error");
+  }
+};
+
 
   return (
     <>
@@ -79,7 +110,19 @@ function EmployeeList() {
                       </td>
                       <td>{employee.company_role_name}</td>
                       <td>
-                        <div className="edit-delete-icons">edit | delete</div>
+                        <div className="edit-delete-icons">
+                          <FaEdit
+                            className="edit-icon "
+                            onClick={() => handleEdit(employee.employee_id)} // Trigger edit on click
+                            aria-label="Edit"
+                          />
+                          <span> </span>
+                          <FaTrash
+                            className="delete-icon"
+                            onClick={() => handleDelete(employee.employee_id)}
+                            aria-label="Delete"
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}

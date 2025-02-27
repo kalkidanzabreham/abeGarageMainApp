@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./markup/pages/Home";
 import About from "./markup/pages/About";
 import Login from "./markup/pages/Login";
-import AddEmploye from "./markup/pages/admin/addEmploye";
+import AddEmploye from "./markup/pages/admin/AddEmploye";
 import Services from "./markup/pages/Services";
 import Contact from "./markup/pages/Contact";
 import NotFound from "./markup/pages/NotFound";
@@ -23,11 +23,16 @@ import Customer from "./markup/pages/admin/customer";
 import Order from "./markup/pages/admin/order";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
+
 import AddCustomers from "./markup/pages/admin/AddCustomers";
 import CustomersList from "./markup/pages/admin/CustomersList";
 import CustomerProfileLists from "./markup/pages/admin/CustomerProfileLists";
 import EditCustomer from "./markup/pages/admin/EditCustomer";
 import EditVehicles from "./markup/pages/admin/EditVehicles";
+
+import AdminService from "./markup/pages/admin/AdminService";
+import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
+
 function App() {
   return (
     <>
@@ -67,6 +72,11 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/employee" element={<Employee />} />
+        <Route path="/admin/service" element={<AdminService />} />
+        <Route
+          path="/admin/employees/edit/:employee_id"
+          element={<EmployeeEdit />}
+        />
 
         {/* <Route
           path="/admin/customer"

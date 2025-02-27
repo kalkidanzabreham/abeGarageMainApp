@@ -85,8 +85,6 @@ try {
   set_server_error("An error occured");
   
 }
-
-
 }
 
   return (
