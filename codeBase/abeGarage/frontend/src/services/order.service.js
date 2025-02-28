@@ -9,7 +9,7 @@ const getAllOrders = async (loggedInEmployeeToken) => {
       "x-access-token": loggedInEmployeeToken,
     },
   };
-  const response = await fetch(`${api_url}/api/orders`, requestOptions);
+  const response = await fetch(`${api_url}/orders`, requestOptions);
   // console.log(response);
 
   return response.json();
@@ -25,7 +25,7 @@ const addOrder = async (order, loggedInEmployeeToken) => {
 
     body: JSON.stringify(order),
   };
-  const response = await fetch(`${api_url}/api/order`, requestOptions);
+  const response = await fetch(`${api_url}/order`, requestOptions);
   return response.json();
 };
 

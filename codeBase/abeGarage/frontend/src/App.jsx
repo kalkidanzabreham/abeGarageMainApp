@@ -26,7 +26,6 @@ import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
 import Orders from "./markup/pages/admin/Order";
 import OrderList from "./markup/pages/admin/OrderList";
 
-
 import AddCustomers from "./markup/pages/admin/AddCustomers";
 import CustomersList from "./markup/pages/admin/CustomersList";
 import CustomerProfileLists from "./markup/pages/admin/CustomerProfileLists";
@@ -35,7 +34,6 @@ import EditVehicles from "./markup/pages/admin/EditVehicles";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
-
 
 function App() {
   return (
@@ -70,8 +68,6 @@ function App() {
         />
         <Route path="/admin/all_customers" element={<CustomersList />} />
 
-        
-
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
@@ -97,17 +93,17 @@ function App() {
         <Route
           path="/admin/new-order"
           element={
-            <PrivateAuthRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[ 3]}>
               <Orders />
-            </PrivateAuthRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/admin/orders"
           element={
-            <PrivateAuthRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3]}>
               <OrderList />
-            </PrivateAuthRoute>
+            </ProtectedRoute>
           }
         />
 

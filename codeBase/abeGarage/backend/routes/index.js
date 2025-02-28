@@ -24,7 +24,7 @@ router.use(loginRoute);
 // import the order router
 const orderRouter = require("./order.routes");
 // add the order router to the main router
-router.use("/",orderRouter);
+router.use(orderRouter);
 
 
 // import customer route

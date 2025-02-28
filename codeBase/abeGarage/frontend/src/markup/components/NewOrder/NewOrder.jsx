@@ -4,9 +4,9 @@ import { Table, Form, Button } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa"; // Font Awesome icons
 import { MdCancelPresentation } from "react-icons/md";
 import { TbHandFinger } from "react-icons/tb";
-import { getAllCustomers } from "../../../services/customer.service";
-import { useAuth } from "../../../context/AuthContext";
-import { getVehicleByCustomerId } from "../../../services/vehicle.service";
+import Customers from "../../../services/customer.service";
+import { useAuth } from "../../../Context/AuthContext";
+import Vehicles from "../../../services/vehicle.service";
 import { getAllServices } from "../../../services/service.service";
 import { addOrder } from "../../../services/order.service";
 import { useNavigate } from "react-router-dom";
@@ -93,6 +93,8 @@ function NewOrder() {
         service_id: serviceId,
       })),
     };
+    console.log(orderData);
+    
     addOrder(orderData, token).then((response) => {
       // console.log("Order added successfully:", response);
       if (response.status === "success") {
@@ -105,19 +107,23 @@ function NewOrder() {
   // send the data to addOrder function
 
   useEffect(() => {
-    getAllCustomers(token).then((response) => {
-      setCustomers(response.customers);
-    });
-    getAllServices(token).then((response) => {
+    Customers.getCustomer()
+      .then((res) => res.json())
+      .then((response) => {
+        setCustomers(response.data);
+      });
+    getAllServices().then((response) => {
       setServices(response.data);
     });
   }, []);
 
   useEffect(() => {
     if (selectedCustomer) {
-      getVehicleByCustomerId(selectedCustomer.customer_id, token).then(
+      console.log(selectedCustomer);
+
+      Vehicles.CustomerVehicle(selectedCustomer.customer_id).then(
         (response) => {
-          setVehicles(response.vehicle);
+          setVehicles(response.data);
         }
       );
     }

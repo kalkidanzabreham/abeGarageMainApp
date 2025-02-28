@@ -16,7 +16,7 @@ router.get('/api/employee', [verifyToken, verifyAdmin], employeeController.getAl
 // Create a route to handle the get single employee request on get
 router.get(
 	"/api/employee/:id",
-	[verifyToken,verifyAdmin],
+	
 	employeeController.getSingleEmployee
 );
 

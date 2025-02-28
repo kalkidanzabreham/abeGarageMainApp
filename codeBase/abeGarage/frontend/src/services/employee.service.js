@@ -44,19 +44,19 @@ const getAllEmployees = async (token) => {
 };
 
 // A function to send get request to get employee
-const getEmployee = async (token, employee_id) => {
+const getEmployee = async (employee_id) => {
 	try {
 		const response = await fetch(
 			`${apiurl}/employee/${employee_id}`,
 			{
 		method: "GET",
 		headers: {
-			"Content-Type": "application/json",
-			"x-access-token": token,
+			"Content-Type": "application/json"
+			
 		},
 	}
 )
-
+console.log(response);
 		// console.log('employee: response==',response);
 		return response;
 	} catch (error) {

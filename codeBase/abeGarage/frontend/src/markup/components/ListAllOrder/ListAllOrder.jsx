@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { getAllOrders } from "../../../services/order.service";
 import { FiExternalLink } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
-import { getCustomerById } from "../../../services/customer.service";
-import { getVehicleById } from "../../../services/vehicle.service";
-import { getSingleEmployee } from "../../../services/employee.service";
+import Customers from "../../../services/customer.service";
+import Vehicles from "../../../services/vehicle.service";
+import { getEmployee } from "../../../services/employee.service";
 
 function ListAllOrder() {
   const [orders, setOrders] = useState([]);
@@ -17,11 +17,7 @@ function ListAllOrder() {
   const [apiError, setApiError] = useState(false);
   const [receiver, setReceiver] = useState({});
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
-  const { employee } = useAuth();
-  let token = null;
-  if (employee) {
-    token = employee.token;
-  }
+  const { employee, token } = useAuth();
 
   // Helper function to remove "Updated" from a string
   const removeUpdatedWord = (str) => {
@@ -81,39 +77,35 @@ function ListAllOrder() {
 
           // Fetch customer, vehicle, and receiver information for each order
           allOrders.data.forEach(async (order) => {
+            console.log(order);
+
             try {
-              const vehicleResponse = await getVehicleById(
-                order.vehicle_id,
-                token
+              const vehicleResponse = await Vehicles.singleVehicle(
+                order.vehicle_id
               );
-              if (vehicleResponse.status === "success") {
-                setVehicles((prevVehicles) => ({
-                  ...prevVehicles,
-                  [order.vehicle_id]: vehicleResponse.data,
-                }));
-              }
 
-              const customerResponse = await getCustomerById(
-                order.customer_id,
-                token
-              );
-              if (customerResponse.status === "success") {
-                setCustomers((prevCustomers) => ({
-                  ...prevCustomers,
-                  [order.customer_id]: customerResponse.data,
-                }));
-              }
+              setVehicles((prevVehicles) => ({
+                ...prevVehicles,
+                [order.vehicle_id]: vehicleResponse.data[0],
+              }));
 
-              const receiverResponse = await getSingleEmployee(
-                order.employee_id,
-                token
-              );
-              if (receiverResponse.status === "success") {
-                setReceiver((prevReceivers) => ({
-                  ...prevReceivers,
-                  [order.employee_id]: receiverResponse.data[0],
-                }));
-              }
+              const customerResponse = await Customers.singleCustomer(
+                order.customer_id
+              ).then((res) => res.json());
+
+              setCustomers((prevCustomers) => ({
+                ...prevCustomers,
+                [order.customer_id]: customerResponse.data[0],
+              }));
+
+              const receiverResponse = await getEmployee(
+                order.employee_id
+              ).then((res) => res.json());
+
+              setReceiver((prevReceivers) => ({
+                ...prevReceivers,
+                [order.employee_id]: receiverResponse.data,
+              }));
             } catch (error) {
               console.error(
                 "Error fetching customer, vehicle, or receiver data:",
