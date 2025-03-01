@@ -34,6 +34,7 @@ import EditVehicles from "./markup/pages/admin/EditVehicles";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
+import EditOrder from "./markup/components/OrderEdit/OrderEdit";
 
 function App() {
   return (
@@ -93,7 +94,7 @@ function App() {
         <Route
           path="/admin/new-order"
           element={
-            <ProtectedRoute roles={[ 3]}>
+            <ProtectedRoute roles={[3]}>
               <Orders />
             </ProtectedRoute>
           }
@@ -103,6 +104,14 @@ function App() {
           element={
             <ProtectedRoute roles={[1, 2, 3]}>
               <OrderList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit-order/:id"
+          element={
+            <ProtectedRoute roles={[1, 2, 3]}>
+              <EditOrder />
             </ProtectedRoute>
           }
         />

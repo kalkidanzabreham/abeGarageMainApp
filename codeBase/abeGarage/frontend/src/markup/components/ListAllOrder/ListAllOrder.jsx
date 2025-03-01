@@ -26,19 +26,13 @@ function ListAllOrder() {
 
   // Helper function to determine order status
   const getOrderStatus = (order) => {
-    if (order.active_order === 0) {
+    if (order.order_completed === 0) {
       return "Received";
-    } else if (order.active_order === 1) {
-      const hasIncompleteService = order.order_services.some(
-        (service) => service.service_completed === 0
-      );
-      if (hasIncompleteService) {
-        return "In Progress";
-      } else {
-        return "Completed";
-      }
+    } else if (order.order_completed === 1) {
+      return "In Progress";
+    } else {
+      return "Completed";
     }
-    return "Unknown";
   };
 
   // Helper function to get status class
