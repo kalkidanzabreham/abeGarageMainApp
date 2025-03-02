@@ -260,3 +260,6 @@ input:disabled {
 .change-status {
   cursor: pointer;
 }
+.dropdown li a{
+  font-size: 13px !important;
+}

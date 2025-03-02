@@ -23,6 +23,8 @@ import Customer from "./markup/pages/admin/customer";
 import Order from "./markup/pages/admin/order";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
+import CustomerOrder from "./markup/pages/CustomerOrder";
+import CarStatusInfo from "./markup/pages/CarStatusInfo";
 function App() {
   return (
     <>
@@ -42,6 +44,8 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/employee" element={<Employee />} />
+        <Route path="/customer_order/:order_id" element={<CustomerOrder />} />
+        <Route path="/customer_info" element={<CarStatusInfo />} />
 
         <Route
           path="/admin/customer"
