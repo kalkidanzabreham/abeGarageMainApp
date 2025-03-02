@@ -1,7 +1,7 @@
 // create a login function to send the data to the server
  const login = async (data) => {
     try {
-      const response = await fetch(`http://localhost:7000/api/employee/login`, {
+      const response = await fetch(`http://localhost:8000/api/employee/login`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json",

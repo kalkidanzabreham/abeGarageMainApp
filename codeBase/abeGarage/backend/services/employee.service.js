@@ -92,5 +92,92 @@ const getAllEmployees = async () => {
   return result;
  
 };
+
+// A function to get Single employee
+async function getSingleEmployee(employeeId) {
+	const sql = `
+        SELECT * FROM employee
+        INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id
+        INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id
+        INNER JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id
+        WHERE employee.employee_id =?`;
+
+	const rows = await query(sql, [employeeId]);
+	return rows[0];
+}
+
+// A function to update employee by ID
+async function updateEmployee(EmployeeId, updatedData) {
+	try {
+		// Update data in customer_info table
+		const query1 =
+			"UPDATE employee_info SET employee_first_name = ?, employee_last_name = ?, employee_phone =? WHERE employee_id =?";
+		const rows1 = await query(query1, [
+			updatedData.employee_first_name,
+			updatedData.employee_last_name,
+			updatedData.employee_phone,
+			EmployeeId,
+		]);
+		const query2 =
+			"UPDATE employee SET active_employee = ?  WHERE employee_id = ?";
+		const rows2 = await query(query2, [
+			updatedData.active_employee,
+			EmployeeId,
+		]);
+
+		const query3 =
+			"UPDATE employee_role SET company_role_id = ?  WHERE employee_id = ?";
+		const rows3 = await query(query3, [
+			updatedData.company_role_id,
+			EmployeeId,
+		]);
+
+		if (
+			rows1.affectedRows !== 1 ||
+			rows2.affectedRows !== 1 ||
+			rows3.affectedRows !== 1
+		) {
+			return false;
+		}
+		// Construct the updated customer object to return
+		const updatedEmployee = {
+			employee_id: EmployeeId,
+			...updatedData,
+		};
+
+		return updatedEmployee;
+	} catch (err) {
+		console.log(err.message);
+		return false;
+	}
+}
+
+const deleteEmployee = async (employee_id) => {
+  try {
+    await query("START TRANSACTION");
+
+    await query("DELETE FROM employee_info WHERE employee_id = ?", [
+      employee_id,
+    ]);
+    await query("DELETE FROM employee_pass WHERE employee_id = ?", [
+      employee_id,
+    ]);
+    await query("DELETE FROM employee_role WHERE employee_id = ?", [
+      employee_id,
+    ]);
+
+    // Execute delete query and handle return value properly
+    const result = await query("DELETE FROM employee WHERE employee_id = ?", [
+      employee_id,
+    ]);
+
+    await query("COMMIT");
+
+    return result.affectedRows > 0; // Check affected rows properly
+  } catch (error) {
+    console.log(error.message);
+    return false;
+  }
+};
 // export the functions
-module.exports = { checkEmployeeExists, addEmployee,getEmployeeByEmail, getAllEmployees };
+module.exports = { checkEmployeeExists, addEmployee,getEmployeeByEmail, getAllEmployees,getSingleEmployee,updateEmployee,deleteEmployee };
