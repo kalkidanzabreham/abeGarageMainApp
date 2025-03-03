@@ -48,7 +48,7 @@ function Header(props) {
             <div className="logo-box">
               <div className="logo">
                 <a href="/">
-                  <img src={logo} alt="" />
+                  <img src={logo} alt="" width={"210px"} />
                 </a>
               </div>
             </div>
@@ -78,6 +78,9 @@ function Header(props) {
                       </li>
                       <li className="dropdown">
                         <a href="/dashboard">Admin</a>
+                      </li>
+                      <li className="dropdown">
+                        <Link to="/customer_info">Orders</Link>
                       </li>
                     </ul>
                   </div>
