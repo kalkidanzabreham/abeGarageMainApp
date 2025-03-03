@@ -6,7 +6,7 @@ import { useAuth } from '../../../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 // import createEmployee function]
 import { createEmployee } from '../../../../services/employee.service';
-function AddEmployee() {
+function AddEmployeeForm() {
   // create state to srore the form errors
   const [first_name_error, set_first_name] = useState("");  
   const [email_error, set_email] = useState("");
@@ -208,4 +208,4 @@ try {
   );
 }
 
-export default AddEmployee
+export default AddEmployeeForm

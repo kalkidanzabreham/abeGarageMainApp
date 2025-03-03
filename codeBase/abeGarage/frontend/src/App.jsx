@@ -34,6 +34,9 @@ import EditVehicles from "./markup/pages/admin/EditVehicles";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
+import AdminPage from "./markup/pages/admin/AdminPage";
+
+import { MdOutlineAirlineSeatLegroomReduced } from "react-icons/md";
 
 function App() {
   return (
@@ -71,8 +74,10 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/employee" element={<Employee />} />
         <Route path="/admin/service" element={<AdminService />} />
+        <Route path="/admin/add-employee" element={<AddEmploye/>} />
         <Route
           path="/admin/employees/edit/:employee_id"
           element={<EmployeeEdit />}
@@ -93,7 +98,7 @@ function App() {
         <Route
           path="/admin/new-order"
           element={
-            <ProtectedRoute roles={[ 3]}>
+            <ProtectedRoute roles={[3]}>
               <Orders />
             </ProtectedRoute>
           }

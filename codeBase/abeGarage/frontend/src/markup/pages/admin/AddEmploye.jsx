@@ -1,6 +1,6 @@
 import React from 'react'
 import AdminMenu from '../../components/Admin/AdminMenu/AdminMenu'
-import AddEmployeeForm from '../../components/Admin/AddEmployee/AddEmployee'
+import AddEmployeeForm from '../../components/Admin/AddEmployee/AddEmployeeForm'
 function AddEmploye() {
   return (
     <div>
@@ -10,7 +10,7 @@ function AddEmploye() {
             <AdminMenu />
           </div>
           <div className="col-md-9 admin-right-side">
-            <AddEmployeeForm />
+            <AddEmployeeForm/>
           </div>
         </div>
       </div>

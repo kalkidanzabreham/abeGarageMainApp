@@ -74,10 +74,10 @@ function Header(props) {
                         <a href="/services">Services</a>
                       </li>
                       <li className="dropdown">
-                        <a href="/contact">Contact us</a>
+                        <Link to="/contact">Contact us</Link>
                       </li>
                       <li className="dropdown">
-                        <a href="/dashboard">Admin</a>
+                        <Link to="/admin">Admin</Link>
                       </li>
                     </ul>
                   </div>
