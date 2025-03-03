@@ -18,7 +18,8 @@ const login = async (req, res) => {
       employee_id: employee.data.employee_id,
       employee_first_name: employee.data.employee_first_name,
     };
-    console.log(payload);
+    // console.log(payload);
+    
     // generate token
     const token = jwt.sign(payload, secret, { expiresIn: "24h" });
     // define a variable to store the token

@@ -224,7 +224,7 @@ function NewOrder() {
                 </div>
                 <div>
                   <strong>Edit Customer:</strong>{" "}
-                  <span className="edit-delete-icons">
+                  <span className="">
                     <Link to={`/admin/edit-customer/${selectedCustomer.id}`}>
                       <FaEdit
                         color="red"
@@ -311,7 +311,7 @@ function NewOrder() {
                 </div>
                 <div>
                   <strong>Edit vehicle info:</strong>{" "}
-                  <span className="edit-delete-icons">
+                  <span className="">
                     <Link to={`/admin/edit-customer/${selectedCustomer.id}`}>
                       <FaEdit
                         color="red"

@@ -23,6 +23,10 @@ import Customer from "./markup/pages/admin/customer";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
 
+import CustomerOrder from "./markup/pages/CustomerOrder";
+import CarStatusInfo from "./markup/pages/CarStatusInfo";
+
+
 import Orders from "./markup/pages/admin/Order";
 import OrderList from "./markup/pages/admin/OrderList";
 
@@ -34,9 +38,14 @@ import EditVehicles from "./markup/pages/admin/EditVehicles";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
+<<<<<<< HEAD
 import AdminPage from "./markup/pages/admin/AdminPage";
 
 import { MdOutlineAirlineSeatLegroomReduced } from "react-icons/md";
+=======
+import EditOrder from "./markup/components/OrderEdit/OrderEdit";
+
+>>>>>>> 9445088ff6363b9a148f066e95271111f49f68ce
 
 function App() {
   return (
@@ -76,8 +85,17 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/employee" element={<Employee />} />
+
+        <Route path="/customer_order/:order_id" element={<CustomerOrder />} />
+        <Route path="/customer_info" element={<CarStatusInfo />} />
+
+
         <Route path="/admin/service" element={<AdminService />} />
+<<<<<<< HEAD
         <Route path="/admin/add-employee" element={<AddEmploye/>} />
+=======
+
+>>>>>>> 9445088ff6363b9a148f066e95271111f49f68ce
         <Route
           path="/admin/employees/edit/:employee_id"
           element={<EmployeeEdit />}
@@ -108,6 +126,14 @@ function App() {
           element={
             <ProtectedRoute roles={[1, 2, 3]}>
               <OrderList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit-order/:id"
+          element={
+            <ProtectedRoute roles={[1, 2, 3]}>
+              <EditOrder />
             </ProtectedRoute>
           }
         />
