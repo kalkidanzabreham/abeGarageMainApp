@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
-import orders from "../../services/order.service";
+import {getAllOrders} from "../../services/order.service";
+import { useAuth } from "../../Context/AuthContext";
 function CarStatusInfo() {
   const [loading, setLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState("");
   const [orderList, setOrderList] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const {token} = useAuth()
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const res = await orders.getAllOrders();
-        if (!res.ok) {
+        const res = await getAllOrders(token);
+        console.log(res);
+        if (res.status!=="success") {
           console.error("Error fetching orders");
           return;
         }
-        const data = await res.json();
-        setOrderList(data.data || []);
+        
+
+          setOrderList(res.data);
+        
       } catch (err) {
         console.error("Error:", err);
       } finally {
@@ -28,6 +32,8 @@ function CarStatusInfo() {
 
     fetchOrders();
   }, []);
+
+  console.log(orderList);
   const orderExists = orderList.some(
     (order) => Number(order.order_id) === Number(customerInfo)
   );

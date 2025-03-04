@@ -1,4 +1,3 @@
-
 // import query function from the db.config.js file
 const query = require("../config/db.config");
 const { v4: uuidv4 } = require("uuid");
@@ -69,13 +68,19 @@ const updateOrder = async (id, order) => {
 
     // Fetch existing services for this order from the order_services table
     const fetchExistingServicesSql = `SELECT service_id FROM order_services WHERE order_id = ?`;
-    const existingServices = await query(fetchExistingServicesSql, [order.order_id]);
+    const existingServices = await query(fetchExistingServicesSql, [
+      order.order_id,
+    ]);
 
     // Extract the list of existing service_ids
-    const existingServiceIds = existingServices.map((service) => service.service_id);
+    const existingServiceIds = existingServices.map(
+      (service) => service.service_id
+    );
 
     // Extract the list of updated service_ids from the order
-    const updatedServiceIds = order.order_services.map((service) => service.service_id);
+    const updatedServiceIds = order.order_services.map(
+      (service) => service.service_id
+    );
 
     // Identify service_ids to delete (present in existing but not in updated)
     const servicesToDelete = existingServiceIds.filter(
@@ -101,12 +106,20 @@ const updateOrder = async (id, order) => {
       // If the service_id does not exist, insert it into the order_services table
       if (!existingService) {
         const insertSql = `INSERT INTO order_services (order_id, service_id, service_completed) VALUES (?, ?, ?)`;
-        const insertData = [order.order_id, service.service_id, service.service_completed || 0]; // Default to 0 if not provided
+        const insertData = [
+          order.order_id,
+          service.service_id,
+          service.service_completed || 0,
+        ]; // Default to 0 if not provided
         await query(insertSql, insertData);
       } else {
         // If the service_id exists, update the service_completed status
         const updateSql = `UPDATE order_services SET service_completed = ? WHERE order_id = ? AND service_id = ?`;
-        const updateData = [service.service_completed, order.order_id, service.service_id];
+        const updateData = [
+          service.service_completed,
+          order.order_id,
+          service.service_id,
+        ];
         await query(updateSql, updateData);
       }
     }
@@ -192,10 +205,15 @@ const getOrderById = async (id) => {
         order_info.completion_date,
         order_status.order_status AS order_completed,
         order_services.service_id,
-        order_services.service_completed
+        order_services.service_completed,
+          customer_info.customer_first_name,
+          customer_info.customer_last_name,
+          customer_vehicle_info.vehicle_year
       FROM orders
       JOIN order_info ON orders.order_id = order_info.order_id
       JOIN order_status ON orders.order_id = order_status.order_id
+      INNER JOIN customer_info on orders.customer_id=customer_info.customer_id
+      INNER JOIN customer_vehicle_info on orders.vehicle_id=customer_vehicle_info.vehicle_id
       LEFT JOIN order_services ON orders.order_id = order_services.order_id
       WHERE orders.order_id = ?
     `;
@@ -212,6 +230,9 @@ const getOrderById = async (id) => {
           active_order: cur.active_order,
           estimated_completion_date: cur.estimated_completion_date,
           completion_date: cur.completion_date,
+          customer_first_name: cur.customer_first_name,
+          customer_last_name: cur.customer_last_name,
+          customer_vehicle_year: cur.vehicle_year,
           order_completed: cur.order_completed,
           order_services: [
             {
@@ -241,4 +262,3 @@ module.exports = {
   getAllOrders,
   getOrderById,
 };
-

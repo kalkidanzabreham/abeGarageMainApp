@@ -224,9 +224,7 @@ function ListAllOrder() {
                             <Link to={""}>
                               <FiExternalLink />
                             </Link>
-                            <Link
-                              to={`/admin/employee/${employee.employee_id}`}
-                            >
+                            <Link to={`/admin/edit-order/${order.order_id}`}>
                               <FaEdit
                                 style={{
                                   cursor: "pointer",

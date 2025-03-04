@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import orders from "../../services/order.service";
+import { getOrderById } from "../../services/order.service";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-
+import { useAuth } from "../../Context/AuthContext";
 function CustomerOrder() {
   const [singleOrderData, setSingleOrderData] = useState([]);
   const { order_id } = useParams();
+  const {token} = useAuth()
   const fetchSingelOrderList = () => {
     try {
-      const singleOrder = orders.singleOrder(order_id);
+      const singleOrder = getOrderById(order_id,token);
+      
+      
       singleOrder.then((data) => {
+        
         if (data.error) {
           console.log(data.error);
           toast.error(data.error);
           return;
         }
-        setSingleOrderData(data?.data[0]);
+        setSingleOrderData(data[0]);
         // console.log(data>.data[0])
       });
     } catch (error) {
@@ -139,7 +143,7 @@ function CustomerOrder() {
                         <p>
                           <strong>vehicle_year:</strong>{" "}
                           <span className="text-muted">
-                            {singleOrderData?.vehicle_year}
+                            {singleOrderData?.customer?.vehicle_year}
                           </span>
                         </p>
                         <p>
