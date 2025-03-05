@@ -81,7 +81,7 @@ const handleDelete = async (employee_id) => {
               <div className="contact-title">
                 <h2>Employees</h2>
               </div>
-              <Table striped bordered hover>
+              <Table striped bordered hover className="table-responsive ">
                 <thead>
                   <tr>
                     <th>Active</th>

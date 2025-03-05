@@ -1,7 +1,7 @@
 import React from 'react'
 import AdminMenu from '../../components/Admin/AdminMenu/AdminMenu';
 import Card from '../../components/Admin/AdminCard/Card';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 function AdminPage() {
   return (
     <div>
@@ -34,9 +34,9 @@ function AdminPage() {
                     <div className="inner-box hvr-float-shadow">
                       <h5>OPEN FOR LEADS </h5>
                       <h2>New Orders</h2>
-                      <a href="service-details.html" className="read-more">
+                      <Link to="service-details.html" className="read-more">
                         ADD ORDER +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-gearbox"></span>
                       </div>
@@ -46,9 +46,9 @@ function AdminPage() {
                     <div className="inner-box hvr-float-shadow">
                       <h5>OPEN FOR ADMINS </h5>
                       <h2>Employees</h2>
-                      <a href="service-details.html" className="read-more">
+                      <Link to="service-details.html" className="read-more">
                         LIST OF EMPLOYEES +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-brake-disc"></span>
                       </div>
@@ -58,9 +58,9 @@ function AdminPage() {
                     <div className="inner-box hvr-float-shadow">
                       <h5>OPEN FOR ADMINS</h5>
                       <h2>Add Employees</h2>
-                      <a href="service-details.html" className="read-more">
+                      <Link to="service-details.html" className="read-more">
                         READ MORE +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-spray-gun"></span>
                       </div>
@@ -68,11 +68,11 @@ function AdminPage() {
                   </div>
                   <div className="col-lg-4 service-block-one">
                     <div className="inner-box hvr-float-shadow">
-                      <h5>SERVICE AND REPAIRS</h5>
-                      <h2>Engine Service & Repair</h2>
-                      <a href="service-details.html" className="read-more">
+                      <h5>Customer Mangagment</h5>
+                      <h2>Add Customer</h2>
+                      <Link to="service-details.html" className="read-more">
                         READ MORE +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-tire"></span>
                       </div>
@@ -80,11 +80,11 @@ function AdminPage() {
                   </div>
                   <div className="col-lg-4 service-block-one">
                     <div className="inner-box hvr-float-shadow">
-                      <h5>SERVICE AND REPAIRS</h5>
-                      <h2>Tyre & Wheels</h2>
-                      <a href="service-details.html" className="read-more">
+                      <h5>CUSTOMER MANAGEMENT</h5>
+                      <h2>Customer</h2>
+                      <Link to="service-details.html" className="read-more">
                         READ MORE +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-spray-gun"></span>
                       </div>
@@ -93,39 +93,17 @@ function AdminPage() {
                   <div className="col-lg-4 service-block-one">
                     <div className="inner-box hvr-float-shadow">
                       <h5>SERVICE AND REPAIRS</h5>
-                      <h2>Denting & Painting</h2>
-                      <a href="service-details.html" className="read-more">
+                      <h2>Add Services</h2>
+                      <Link to="service-details.html" className="read-more">
                         READ MORE +
-                      </a>
+                      </Link>
                       <div className="icon">
                         <span className="flaticon-spray-gun"></span>
                       </div>
                     </div>
                   </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>SERVICE AND REPAIRS</h5>
-                      <h2>Engine Service and Repair</h2>
-                      <a href="service-details.html" className="read-more">
-                        READ MORE +
-                      </a>
-                      <div className="icon">
-                        <span className="flaticon-spray-gun"></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>SERVICE AND REPAIRS</h5>
-                      <h2>tyre & Wheels </h2>
-                      <a href="service-details.html" className="read-more">
-                        READ MORE +
-                      </a>
-                      <div className="icon">
-                        <span className="flaticon-spray-gun"></span>
-                      </div>
-                    </div>
-                  </div>
+                  
+                  
                 </div>
               </div>
             </section>

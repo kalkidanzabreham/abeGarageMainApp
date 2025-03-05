@@ -54,7 +54,7 @@ function GetSingleVehicle({ customer_id, vehicleData, showBtn = true }) {
                 <td>{vehicle.vehicle_mileage}</td>
 
                 <td>
-                  <Link to={`/admin/orders/${vehicle.vehicle_id}`}>
+                  <Link to={`/admin/new-order`}>
                     <div
                       className="edit-delete-icons"
                       style={{ cursor: "pointer" }}

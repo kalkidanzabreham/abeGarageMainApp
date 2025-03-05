@@ -32,7 +32,7 @@ function EmployeeEditForm() {
 
     const fetchEmployeeData = async () => {
       try {
-        const res = await getEmployee(token, employee_id);
+        const res = await getEmployee(employee_id);
         if (!res.ok) {
           setApiError(true);
           setApiErrorMessage(

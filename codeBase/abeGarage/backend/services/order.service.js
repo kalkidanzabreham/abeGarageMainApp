@@ -154,6 +154,7 @@ const getAllOrders = async () => {
       JOIN order_info ON orders.order_id = order_info.order_id
       JOIN order_status ON orders.order_id = order_status.order_id
       LEFT JOIN order_services ON orders.order_id = order_services.order_id
+      ORDER BY orders.order_id DESC
     `;
     const orders = await query(sql);
     const formattedOrders = orders.reduce((acc, cur) => {

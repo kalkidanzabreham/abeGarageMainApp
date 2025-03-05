@@ -22,10 +22,10 @@ function AdminMenu() {
         <a href="/admin/employee" className="list-group-item">
           Employees
         </a>
-        <a href="/admin/add-customer" className="list-group-item">
+        <a href="/admin/add_customers" className="list-group-item">
           Add customer
         </a>
-        <a href="/admin/customers" className="list-group-item">
+        <a href="/admin/all_customers" className="list-group-item">
           Customers
         </a>
         <a href="/admin/service" className="list-group-item">

@@ -155,7 +155,7 @@ function NewOrder() {
                       </div>
                       {searchTerm === "" && (
                         <div className="form-group col-md-12">
-                          <Link to="/admin/add-customer">
+                          <Link to="/admin/add_customers" >
                             <button
                               className="theme-btn btn-style-one"
                               data-loading-text="Please wait..."
@@ -225,7 +225,7 @@ function NewOrder() {
                 <div>
                   <strong>Edit Customer:</strong>{" "}
                   <span className="">
-                    <Link to={`/admin/edit-customer/${selectedCustomer.id}`}>
+                    <Link to={`/admin/customer_edit/${selectedCustomer.id}`}>
                       <FaEdit
                         color="red"
                         style={{ cursor: "pointer", marginRight: "5px" }}

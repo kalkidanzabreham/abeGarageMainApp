@@ -5,7 +5,7 @@ import { useAuth } from '../../../Context/AuthContext'
 import { logout } from '../../../services/login.service'
 import {Link} from 'react-router'
 function Header(props) {
-    const {employee,isLoggedIn,setIsLoggedIn} =useAuth()
+    const {employee,isLoggedIn,setIsLoggedIn,isAdmin} =useAuth()
     console.log(employee);
 
     const logOUt = () =>{
@@ -76,9 +76,9 @@ function Header(props) {
                       <li className="dropdown">
                         <Link to="/contact">Contact us</Link>
                       </li>
-                      <li className="dropdown">
+                      {isAdmin && <li className="dropdown">
                         <Link to="/admin">Admin</Link>
-                      </li>
+                      </li>}
                       <li className="dropdown">
                         <Link to="/customer_info">Orders</Link>
                       </li>

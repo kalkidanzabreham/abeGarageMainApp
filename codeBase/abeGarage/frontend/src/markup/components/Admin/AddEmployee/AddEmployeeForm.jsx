@@ -77,7 +77,7 @@ try {
   } else {
     set_succes_message(true);
     setTimeout(() => {
-      navigate("/");
+      navigate("/admin/employee");
     }, 3000);
   }});
 } catch (error) {
