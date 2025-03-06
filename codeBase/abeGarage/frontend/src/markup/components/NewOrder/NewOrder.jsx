@@ -294,7 +294,7 @@ function NewOrder() {
                 <h3 className="text-danger border border-danger p-3 mb-3">
                   No Vehicle Found
                 </h3>
-                <Link to="/admin/add_customers">
+                <Link to={`/admin/customer_profile/${selectedCustomer.customer_id}`}>
                   <button
                     className="theme-btn btn-style-one"
                     data-loading-text="Please wait..."
