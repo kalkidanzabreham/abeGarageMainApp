@@ -94,7 +94,7 @@ function NewOrder() {
       })),
     };
     console.log(orderData);
-    
+
     addOrder(orderData, token).then((response) => {
       // console.log("Order added successfully:", response);
       if (response.status === "success") {
@@ -155,7 +155,7 @@ function NewOrder() {
                       </div>
                       {searchTerm === "" && (
                         <div className="form-group col-md-12">
-                          <Link to="/admin/add_customers" >
+                          <Link to="/admin/add_customers">
                             <button
                               className="theme-btn btn-style-one"
                               data-loading-text="Please wait..."
@@ -175,30 +175,36 @@ function NewOrder() {
 
         {!selectedCustomer && searchTerm !== "" && (
           <div className="row clearfix">
-            <div className="form-column col-lg-12">
-              <Table striped bordered hover>
-                <tbody>
-                  {filteredCustomers.map((customer) => (
-                    <tr
-                      key={customer.customer_id}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{customer.customer_first_name}</td>
-                      <td>{customer.customer_last_name}</td>
-                      <td>{customer.customer_email}</td>
-                      <td>{customer.customer_phone_number}</td>
-                      <td>
-                        <TbHandFinger
-                          fill="black"
-                          size={24}
-                          onClick={() => handleCustomerSelect(customer)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
+            {filteredCustomers.length != 0 ? (
+              <div className="form-column col-lg-12">
+                <Table striped bordered hover>
+                  <tbody>
+                    {filteredCustomers.map((customer) => (
+                      <tr
+                        key={customer.customer_id}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <td>{customer.customer_first_name}</td>
+                        <td>{customer.customer_last_name}</td>
+                        <td>{customer.customer_email}</td>
+                        <td>{customer.customer_phone_number}</td>
+                        <td>
+                          <TbHandFinger
+                            fill="black"
+                            size={24}
+                            onClick={() => handleCustomerSelect(customer)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            ) : (
+              <h3 className="text-danger border border-danger p-3">
+                customer not found
+              </h3>
+            )}
           </div>
         )}
 
@@ -245,43 +251,59 @@ function NewOrder() {
         {/* Vehicle Section */}
         {selectedCustomer && !selectedVehicle && (
           <div className="row clearfix">
-            <div className="form-column col-lg-12 selected-customer">
-              <h4 style={{ fontWeight: "bold" }}>Choose a vehicle</h4>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Year</th>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Tag</th>
-                    <th>Serial</th>
-                    <th>Color</th>
-                    <th>Mileage</th>
-                    <th>Choose</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {vehicles.map((vehicle) => (
-                    <tr key={vehicle.id}>
-                      <td>{vehicle.vehicle_year}</td>
-                      <td>{vehicle.vehicle_make}</td>
-                      <td>{vehicle.vehicle_model}</td>
-                      <td>{vehicle.vehicle_tag}</td>
-                      <td>{vehicle.vehicle_serial}</td>
-                      <td>{vehicle.vehicle_color}</td>
-                      <td>{vehicle.vehicle_mileage}</td>
-                      <td>
-                        <TbHandFinger
-                          fill="black"
-                          size={24}
-                          onClick={() => handleVehicleSelect(vehicle)}
-                        />
-                      </td>
+            {vehicles.length != 0 ? (
+              <div className="form-column col-lg-12 selected-customer">
+                <h4 style={{ fontWeight: "bold" }}>Choose a vehicle</h4>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Year</th>
+                      <th>Make</th>
+                      <th>Model</th>
+                      <th>Tag</th>
+                      <th>Serial</th>
+                      <th>Color</th>
+                      <th>Mileage</th>
+                      <th>Choose</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {vehicles.map((vehicle) => (
+                      <tr key={vehicle.id}>
+                        <td>{vehicle.vehicle_year}</td>
+                        <td>{vehicle.vehicle_make}</td>
+                        <td>{vehicle.vehicle_model}</td>
+                        <td>{vehicle.vehicle_tag}</td>
+                        <td>{vehicle.vehicle_serial}</td>
+                        <td>{vehicle.vehicle_color}</td>
+                        <td>{vehicle.vehicle_mileage}</td>
+                        <td>
+                          <TbHandFinger
+                            fill="black"
+                            size={24}
+                            onClick={() => handleVehicleSelect(vehicle)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            ) : (
+              <div className="form-group ">
+                <h3 className="text-danger border border-danger p-3 mb-3">
+                  No Vehicle Found
+                </h3>
+                <Link to="/admin/add_customers">
+                  <button
+                    className="theme-btn btn-style-one"
+                    data-loading-text="Please wait..."
+                  >
+                    <span>Add Vehicle</span>
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         )}
 
