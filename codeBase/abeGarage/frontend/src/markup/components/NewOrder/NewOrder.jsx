@@ -23,7 +23,6 @@ function NewOrder() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [orderDescription, setOrderDescription] = useState("");
   const [vehicles, setVehicles] = useState([]);
   const [services, setServices] = useState([]);
   const [estimatedCompletionDate, setEstimatedCompletionDate] = useState("");
@@ -85,7 +84,6 @@ function NewOrder() {
       employee_id: employee.employee_id,
       customer_id: selectedCustomer.customer_id,
       vehicle_id: selectedVehicle.vehicle_id,
-      order_description: orderDescription,
       estimated_completion_date: estimatedCompletionDate,
       completion_date: null,
       order_completed: 0,
@@ -294,7 +292,9 @@ function NewOrder() {
                 <h3 className="text-danger border border-danger p-3 mb-3">
                   No Vehicle Found
                 </h3>
-                <Link to={`/admin/customer_profile/${selectedCustomer.customer_id}`}>
+                <Link
+                  to={`/admin/customer_profile/${selectedCustomer.customer_id}`}
+                >
                   <button
                     className="theme-btn btn-style-one"
                     data-loading-text="Please wait..."
@@ -388,16 +388,7 @@ function NewOrder() {
             <div className="form-column col-lg-12">
               <h3>Order Details:</h3>
               <Form>
-                <Form.Group controlId="orderDescription">
-                  <Form.Label>Order Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={orderDescription}
-                    placeholder="write the order description here"
-                    onChange={(e) => setOrderDescription(e.target.value)}
-                  />
-                </Form.Group>
+                
                 <Form.Group controlId="estimatedCompletionDate">
                   <Form.Label>Estimated Completion Date</Form.Label>
                   <Form.Control
