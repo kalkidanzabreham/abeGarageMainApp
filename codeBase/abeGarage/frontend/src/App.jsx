@@ -35,6 +35,7 @@ import CustomersList from "./markup/pages/admin/CustomersList";
 import CustomerProfileLists from "./markup/pages/admin/CustomerProfileLists";
 import EditCustomer from "./markup/pages/admin/EditCustomer";
 import EditVehicles from "./markup/pages/admin/EditVehicles";
+import ViewOrder from "./markup/pages/admin/ViewOrder";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
@@ -86,7 +87,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/employee" element={<Employee />} />
 
-        <Route path="/customer_order/:order_id" element={<CustomerOrder />} />
+        <Route path="/customer_order/:order_hash" element={<CustomerOrder />} />
         <Route path="/customer_info" element={<CarStatusInfo />} />
 
 
@@ -126,6 +127,14 @@ function App() {
           element={
             <ProtectedRoute roles={[1, 2, 3]}>
               <OrderList />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/orders/:order_id"
+          element={
+            <ProtectedRoute roles={[1, 2, 3]}>
+              <ViewOrder/>
             </ProtectedRoute>
           }
         />

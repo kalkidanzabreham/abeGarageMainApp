@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
-import {getAllOrders} from "../../services/order.service";
+import { getAllOrders } from "../../services/order.service";
 import { useAuth } from "../../Context/AuthContext";
 function CarStatusInfo() {
   const [loading, setLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState("");
   const [orderList, setOrderList] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const {token} = useAuth()
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const res = await getAllOrders(token);
+        const res = await getAllOrders();
         console.log(res);
-        if (res.status!=="success") {
+        if (res.status !== "success") {
           console.error("Error fetching orders");
           return;
         }
-        
 
-          setOrderList(res.data);
-        
+        setOrderList(res.data);
       } catch (err) {
         console.error("Error:", err);
       } finally {
@@ -35,7 +32,7 @@ function CarStatusInfo() {
 
   console.log(orderList);
   const orderExists = orderList.some(
-    (order) => Number(order.order_id) === Number(customerInfo)
+    (order) => order.order_hash === customerInfo
   );
 
   const handleCheckOrder = () => {
@@ -59,7 +56,7 @@ function CarStatusInfo() {
       >
         <h3 className="text-center mb-4">
           Welcome! 🚗 <br />
-          Access your car status by entering your secret order ID.
+          Access your car status by entering your secret hash key.
         </h3>
 
         <div className="form-group mb-3 mt-4">
@@ -69,7 +66,7 @@ function CarStatusInfo() {
             value={customerInfo}
             onChange={(event) => setCustomerInfo(event.target.value)}
             className="form-control p-2"
-            placeholder="Insert your secret order ID here"
+            placeholder="Insert your secret hash key here"
             required
           />
         </div>

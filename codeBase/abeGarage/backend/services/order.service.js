@@ -144,6 +144,7 @@ const getAllOrders = async () => {
         orders.customer_id,
         orders.vehicle_id,
         orders.order_date,
+        orders.order_hash,
         orders.active_order,
         order_info.estimated_completion_date,
         order_info.completion_date,
@@ -167,6 +168,7 @@ const getAllOrders = async () => {
           vehicle_id: cur.vehicle_id,
           order_date: cur.order_date,
           active_order: cur.active_order,
+          order_hash: cur.order_hash,
           estimated_completion_date: cur.estimated_completion_date,
           completion_date: cur.completion_date,
           order_completed: cur.order_completed,
@@ -195,29 +197,41 @@ const getAllOrders = async () => {
 const getOrderById = async (id) => {
   try {
     const sql = `
-      SELECT 
-        orders.order_id,
-        orders.employee_id,
-        orders.customer_id,
-        orders.vehicle_id,
-        orders.order_date,
-        orders.active_order,
-        order_info.estimated_completion_date,
-        order_info.completion_date,
-        order_status.order_status AS order_completed,
-        order_services.service_id,
-        order_services.service_completed,
-          customer_info.customer_first_name,
-          customer_info.customer_last_name,
-          customer_vehicle_info.vehicle_year
-      FROM orders
-      JOIN order_info ON orders.order_id = order_info.order_id
-      JOIN order_status ON orders.order_id = order_status.order_id
-      INNER JOIN customer_info on orders.customer_id=customer_info.customer_id
-      INNER JOIN customer_vehicle_info on orders.vehicle_id=customer_vehicle_info.vehicle_id
-      LEFT JOIN order_services ON orders.order_id = order_services.order_id
-      WHERE orders.order_id = ?
-    `;
+  SELECT 
+    orders.order_id,
+    orders.employee_id,
+    orders.customer_id,
+    orders.vehicle_id,
+    orders.order_date,
+    orders.active_order,
+    order_info.estimated_completion_date,
+    order_info.completion_date,
+    order_status.order_status AS order_completed,
+    order_services.service_id,
+    order_services.service_completed,
+    common_services.service_name,
+    common_services.service_description,
+    customer_identifier.customer_email,
+    customer_identifier.customer_phone_number,
+    customer_info.customer_first_name,
+    customer_info.customer_last_name,
+    customer_info.active_customer_status,
+    customer_vehicle_info.vehicle_make,
+    customer_vehicle_info.vehicle_model,
+    customer_vehicle_info.vehicle_tag,
+    customer_vehicle_info.vehicle_color,
+    customer_vehicle_info.vehicle_mileage,
+    customer_vehicle_info.vehicle_year
+  FROM orders
+  JOIN order_info ON orders.order_id = order_info.order_id
+  JOIN order_status ON orders.order_id = order_status.order_id
+  INNER JOIN customer_identifier ON orders.customer_id = customer_identifier.customer_id
+  INNER JOIN customer_info ON orders.customer_id = customer_info.customer_id
+  INNER JOIN customer_vehicle_info ON orders.vehicle_id = customer_vehicle_info.vehicle_id
+  LEFT JOIN order_services ON orders.order_id = order_services.order_id
+  LEFT JOIN common_services ON order_services.service_id = common_services.service_id
+  WHERE orders.order_id = ?
+`;
     const orders = await query(sql, [id]);
     const formattedOrders = orders.reduce((acc, cur) => {
       const order = acc.find((o) => o.order_id === cur.order_id);
@@ -232,13 +246,23 @@ const getOrderById = async (id) => {
           estimated_completion_date: cur.estimated_completion_date,
           completion_date: cur.completion_date,
           customer_first_name: cur.customer_first_name,
+          customer_email: cur.customer_email,
+          customer_phone_number: cur.customer_phone_number,
           customer_last_name: cur.customer_last_name,
-          customer_vehicle_year: cur.vehicle_year,
+          active_customer_status: cur.active_customer_status,
+          vehicle_make: cur.vehicle_make,
+          vehicle_model: cur.vehicle_model,
+          vehicle_year: cur.vehicle_year,
+          vehicle_tag: cur.vehicle_tag,
+          vehicle_mileage: cur.vehicle_mileage,
+          vehicle_color: cur.vehicle_color,
           order_completed: cur.order_completed,
           order_services: [
             {
               service_id: cur.service_id,
               service_completed: cur.service_completed,
+              service_name: cur.service_name, // Add service_name
+              service_description: cur.service_description, // Add service_description
             },
           ],
         });
@@ -246,6 +270,103 @@ const getOrderById = async (id) => {
         order.order_services.push({
           service_id: cur.service_id,
           service_completed: cur.service_completed,
+          service_name: cur.service_name, // Add service_name
+          service_description: cur.service_description, // Add service_description
+        });
+      }
+      return acc;
+    }, []);
+    return { status: "success", data: formattedOrders };
+  } catch (error) {
+    console.error(error);
+    return { status: "error", message: error.message };
+  }
+};
+// get order by hash
+const getOrderByHash = async (hash) => {
+  const order_id = await query(`SELECT order_id FROM orders WHERE order_hash = ?`, [
+    hash,
+  ])
+  const id = order_id[0].order_id;
+  // console.log(id);
+
+  try {
+    const sql = `
+  SELECT 
+    orders.order_id,
+    orders.employee_id,
+    orders.customer_id,
+    orders.vehicle_id,
+    orders.order_date,
+    orders.active_order,
+    order_info.estimated_completion_date,
+    order_info.completion_date,
+    order_status.order_status AS order_completed,
+    order_services.service_id,
+    order_services.service_completed,
+    common_services.service_name,
+    common_services.service_description,
+    customer_identifier.customer_email,
+    customer_identifier.customer_phone_number,
+    customer_info.customer_first_name,
+    customer_info.customer_last_name,
+    customer_info.active_customer_status,
+    customer_vehicle_info.vehicle_make,
+    customer_vehicle_info.vehicle_model,
+    customer_vehicle_info.vehicle_tag,
+    customer_vehicle_info.vehicle_color,
+    customer_vehicle_info.vehicle_mileage,
+    customer_vehicle_info.vehicle_year
+  FROM orders
+  JOIN order_info ON orders.order_id = order_info.order_id
+  JOIN order_status ON orders.order_id = order_status.order_id
+  INNER JOIN customer_identifier ON orders.customer_id = customer_identifier.customer_id
+  INNER JOIN customer_info ON orders.customer_id = customer_info.customer_id
+  INNER JOIN customer_vehicle_info ON orders.vehicle_id = customer_vehicle_info.vehicle_id
+  LEFT JOIN order_services ON orders.order_id = order_services.order_id
+  LEFT JOIN common_services ON order_services.service_id = common_services.service_id
+  WHERE orders.order_id = ?
+`;
+    const orders = await query(sql, [id]);
+    const formattedOrders = orders.reduce((acc, cur) => {
+      const order = acc.find((o) => o.order_id === cur.order_id);
+      if (!order) {
+        acc.push({
+          order_id: cur.order_id,
+          employee_id: cur.employee_id,
+          customer_id: cur.customer_id,
+          vehicle_id: cur.vehicle_id,
+          order_date: cur.order_date,
+          active_order: cur.active_order,
+          estimated_completion_date: cur.estimated_completion_date,
+          completion_date: cur.completion_date,
+          customer_first_name: cur.customer_first_name,
+          customer_email: cur.customer_email,
+          customer_phone_number: cur.customer_phone_number,
+          customer_last_name: cur.customer_last_name,
+          active_customer_status: cur.active_customer_status,
+          vehicle_make: cur.vehicle_make,
+          vehicle_model: cur.vehicle_model,
+          vehicle_year: cur.vehicle_year,
+          vehicle_tag: cur.vehicle_tag,
+          vehicle_mileage: cur.vehicle_mileage,
+          vehicle_color: cur.vehicle_color,
+          order_completed: cur.order_completed,
+          order_services: [
+            {
+              service_id: cur.service_id,
+              service_completed: cur.service_completed,
+              service_name: cur.service_name, // Add service_name
+              service_description: cur.service_description, // Add service_description
+            },
+          ],
+        });
+      } else {
+        order.order_services.push({
+          service_id: cur.service_id,
+          service_completed: cur.service_completed,
+          service_name: cur.service_name, // Add service_name
+          service_description: cur.service_description, // Add service_description
         });
       }
       return acc;
@@ -262,4 +383,5 @@ module.exports = {
   updateOrder,
   getAllOrders,
   getOrderById,
+  getOrderByHash,
 };

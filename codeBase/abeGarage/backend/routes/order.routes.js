@@ -21,7 +21,7 @@ router.put(
 // create a get request to get all orders
 router.get(
   "/api/orders",
-  [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
+
   orderController.getAllOrders
 );
 // create a get request to get a single order by id
@@ -30,6 +30,11 @@ router.get(
   [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
   orderController.getOrderById
 );
+// a route to get order by hash
+router.get(
+  "/api/order/hash/:hash",
 
+  orderController.getOrderByHash
+);
 // export the router
 module.exports = router;

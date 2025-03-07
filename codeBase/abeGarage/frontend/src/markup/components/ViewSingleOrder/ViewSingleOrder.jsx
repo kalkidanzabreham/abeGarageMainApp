@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getOrderByHash } from "../../services/order.service";
+import { getOrderById } from "../../../services/order.service";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../Context/AuthContext";
-function CustomerOrder() {
+import { useAuth } from "../../../Context/AuthContext";
+function ViewSingleOrder() {
   const [singleOrderData, setSingleOrderData] = useState([]);
-  const { order_hash } = useParams();
-console.log(order_hash);
-
+  const { order_id } = useParams();
+  const { token } = useAuth();
   const fetchSingelOrderList = () => {
     try {
-      const singleOrder = getOrderByHash(order_hash);
+      const singleOrder = getOrderById(order_id, token);
 
       singleOrder.then((data) => {
         if (data.error) {
@@ -226,4 +225,4 @@ console.log(order_hash);
   );
 }
 
-export default CustomerOrder;
+export default ViewSingleOrder;

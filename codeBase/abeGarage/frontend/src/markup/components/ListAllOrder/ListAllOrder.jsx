@@ -142,6 +142,7 @@ function ListAllOrder() {
                     <th>Vehicle</th>
                     <th>Order date</th>
                     <th>Received by</th>
+                    <th>Order Hash</th>
                     <th>Order status</th>
                     <th>View/Edit</th>
                   </tr>
@@ -217,11 +218,14 @@ function ListAllOrder() {
                           )}
                         </td>
                         <td>
+                          <div>{order.order_hash}</div>
+                        </td>
+                        <td>
                           <span className={statusClass}>{status}</span>
                         </td>
                         <td>
                           <div className="edit-delete-icons">
-                            <Link to={""}>
+                            <Link to={`/admin/orders/${order.order_id}`}>
                               <FiExternalLink />
                             </Link>
                             <Link to={`/admin/edit-order/${order.order_id}`}>

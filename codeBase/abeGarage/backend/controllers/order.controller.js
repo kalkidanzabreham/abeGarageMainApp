@@ -57,10 +57,26 @@ const getOrderById = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+// a function to get order by hash
+const getOrderByHash = async (req, res) => {
+  try {
+    const response = await orderService.getOrderByHash(req.params.hash);
+    if (response.status === "success") {
+      res.status(200).send(response.data);
+    } else {
+      res.status(400).send(response);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 // export the functions
 module.exports = {
   addOrder,
   updateOrder,
   getAllOrders,
   getOrderById,
+  getOrderByHash,
 };
