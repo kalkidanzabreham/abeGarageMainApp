@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {  singleCustomersOrder} from '../../../../services/order.service'
+import { singleCustomersOrder } from "../../../../services/order.service";
 import { Table } from "react-bootstrap";
 import { format } from "date-fns";
 function CustomerOfAllOrder({ customer_id }) {
   const [orderData, setOrderData] = useState([]);
-
 
   const getAllOrdersPercustomer = () => {
     singleCustomersOrder(customer_id)
@@ -18,7 +17,7 @@ function CustomerOfAllOrder({ customer_id }) {
   useEffect(() => {
     getAllOrdersPercustomer();
   }, [customer_id]);
-  console.log(orderData)
+  console.log(orderData);
 
   return (
     <div>

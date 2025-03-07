@@ -78,7 +78,6 @@ const getOrderByHash = async (order_hash) => {
   return response.json();
 }
 // export the function
-export { getAllOrders, addOrder, getOrderById, updateOrder,getOrderByHash };
 const singleCustomersOrder = async (customer_id) => {
   try {
     const options = {
@@ -115,5 +114,5 @@ const singleOrder = async (order_id) => {
 };
 
 // export the function
-export { getAllOrders, addOrder, getOrderById, updateOrder,singleCustomersOrder,singleOrder};
+export { getAllOrders, addOrder, getOrderById, updateOrder,singleCustomersOrder,singleOrder, getOrderByHash };
 
