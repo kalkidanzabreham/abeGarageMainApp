@@ -31,10 +31,13 @@ router.get(
   orderController.getOrderById
 );
 // a route to get order by hash
+router.get("/api/order/hash/:hash", orderController.getOrderByHash);
 router.get(
-  "/api/order/hash/:hash",
-
-  orderController.getOrderByHash
+  "/api/singleorder_per_customer/:id",
+  orderController.getsinglecustomersOrder
 );
+
+router.get("/api/singleorder/:id", orderController.getsingleOrder);
+
 // export the router
 module.exports = router;

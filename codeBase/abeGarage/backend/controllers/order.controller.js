@@ -72,6 +72,36 @@ const getOrderByHash = async (req, res) => {
   }
 };
 
+const getsinglecustomersOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getAllOrdersPerCustomer(id);
+    if (!order) {
+      return res.status(400).json({ error: "Failed to get order" });
+    } else {
+      return res.status(200).json({
+        data: order,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getsingleOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getSingleOrderInfo(id);
+    if (!order) {
+      return res.status(400).json({ error: "Failed to get order" });
+    } else {
+      return res.status(200).json({
+        data: order,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 // export the functions
 module.exports = {
   addOrder,
@@ -79,4 +109,6 @@ module.exports = {
   getAllOrders,
   getOrderById,
   getOrderByHash,
+  getsinglecustomersOrder,
+  getsingleOrder,
 };

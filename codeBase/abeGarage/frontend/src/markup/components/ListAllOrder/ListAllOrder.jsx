@@ -134,7 +134,7 @@ function ListAllOrder() {
               <div className="contact-title">
                 <h2>Orders</h2>
               </div>
-              <Table striped bordered hover>
+              <Table striped bordered hover className="table-responsive-mobile">
                 <thead>
                   <tr>
                     <th>Order id</th>
