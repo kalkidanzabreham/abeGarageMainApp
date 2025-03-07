@@ -37,6 +37,8 @@ function EditOrder() {
   useEffect(() => {
     getOrderById(id, token).then((response) => {
       const orderData = response[0];
+      console.log(orderData);
+      
       setOrder(orderData);
       // Format the estimatedCompletionDate before setting it in the state
       const formattedDate = formatDateForInput(
