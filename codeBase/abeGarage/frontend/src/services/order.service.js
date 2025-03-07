@@ -62,6 +62,41 @@ const updateOrder = async (orderId, order, loggedInEmployeeToken) => {
   );
   return response.json();
 };
+const singleCustomersOrder = async (customer_id) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await fetch(
+      `${api_url}/singleorder_per_customer/${customer_id}`,
+      options
+    );
+    return response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+const singleOrder = async (order_id) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await fetch(
+      `${api_url}/singleorder/${order_id}`,
+      options
+    );
+    return response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // export the function
-export { getAllOrders, addOrder, getOrderById, updateOrder };
+export { getAllOrders, addOrder, getOrderById, updateOrder,singleCustomersOrder,singleOrder};
 

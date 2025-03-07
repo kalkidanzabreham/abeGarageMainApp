@@ -175,7 +175,12 @@ function NewOrder() {
           <div className="row clearfix">
             {filteredCustomers.length != 0 ? (
               <div className="form-column col-lg-12">
-                <Table striped bordered hover>
+                <Table
+                  striped
+                  bordered
+                  hover
+                  className="table-responsive-mobile "
+                >
                   <tbody>
                     {filteredCustomers.map((customer) => (
                       <tr
@@ -252,7 +257,12 @@ function NewOrder() {
             {vehicles.length != 0 ? (
               <div className="form-column col-lg-12 selected-customer">
                 <h4 style={{ fontWeight: "bold" }}>Choose a vehicle</h4>
-                <Table striped bordered hover>
+                <Table
+                  striped
+                  bordered
+                  hover
+                  className="table-responsive-mobile"
+                >
                   <thead>
                     <tr>
                       <th>Year</th>
@@ -388,7 +398,6 @@ function NewOrder() {
             <div className="form-column col-lg-12">
               <h3>Order Details:</h3>
               <Form>
-                
                 <Form.Group controlId="estimatedCompletionDate">
                   <Form.Label>Estimated Completion Date</Form.Label>
                   <Form.Control

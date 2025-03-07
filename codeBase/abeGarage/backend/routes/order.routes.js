@@ -30,6 +30,11 @@ router.get(
   [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
   orderController.getOrderById
 );
+router.get(
+  "/api/singleorder_per_customer/:id",
+ orderController.getsinglecustomersOrder
+);
+router.get("/api/singleorder/:id", orderController.getsingleOrder);
 
 // export the router
 module.exports = router;

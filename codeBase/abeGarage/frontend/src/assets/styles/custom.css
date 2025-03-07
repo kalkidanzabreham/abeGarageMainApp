@@ -402,4 +402,18 @@ button:disabled{
 }
 
 
+.customer_order{
+  background-color: #e2e5ee;
+
+
+}
+@media (max-width: 768px) {
+  .table-responsive-mobile {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+     
+  }
+}
 
