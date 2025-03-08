@@ -9,8 +9,8 @@ import banner from "../../assets/images/banner/banner.jpg";
 function About() {
   return (
     <>
-      <section className="video-section">
-        <div data-parallax='{"y": 50}' class="sec-bg">
+      <section className="video-section darker-background">
+        <div data-parallax='{"y": 50}' class="sec-bg ">
           <img src={bannerImage} alt="banner image" />
           {/* style={{backgroundImage: "url('../../assets/images/banner/banner.jpg')"}}> */}
         </div>

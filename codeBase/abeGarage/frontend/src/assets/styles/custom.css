@@ -401,5 +401,18 @@ button:disabled{
   color: white !important;
 }
 
+/* landing pages css */
+/* .darker-background {
+  background-color: #060505;
+}
+.text-black h5,h2{
+  color: #000;
+} */
 
+.bg-white{
+  background-color: #fff;
+}
+.contact-bg{
+  margin-top: -80px;
+}
 

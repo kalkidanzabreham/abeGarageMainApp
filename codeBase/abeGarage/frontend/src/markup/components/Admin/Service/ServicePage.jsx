@@ -77,12 +77,23 @@ function ServicePage() {
 
   return (
     <div className="container">
-      <h1 className="mt-4">Services we provide</h1>
+      <div className="sec-title style-two m-5">
+        <h2>Services we provide</h2>
+        <div className="text">
+          <p className="m-2">
+            Bring to the table win-win survival strategies to ensure proactive
+            domination. At the end of the day, going forward, a new normal that
+            has evolved from generation X is on the runway heading towards a
+            streamlined cloud solution.
+          </p>
+        </div>
+      </div>
+
       <ul className="list-group mt-3">
         {services.map((service) => (
           <li
             key={service.service_id}
-            className="list-group-item d-flex justify-content-between align-items-center"
+            className="list-group-item d-flex justify-content-between align-items-center m-1"
           >
             <div>
               <h3>{service.service_name}</h3>
@@ -103,7 +114,7 @@ function ServicePage() {
           </li>
         ))}
       </ul>
-      <section className="contact-section mt-4">
+      <section className="contact-section mt-4 bg-white">
         <div className="auto-container">
           <div className="contact-title">
             <h2>{serviceToEdit ? "Update Service" : "Add a New Service"}</h2>
@@ -112,7 +123,7 @@ function ServicePage() {
           <div class="form-column col-lg-7">
             <div class="inner-column">
               <div class="contact-form">
-                <form onSubmit={handleSubmit} >
+                <form onSubmit={handleSubmit}>
                   <div class="row clearfix">
                     <div class="form-group col-md-12">
                       <input

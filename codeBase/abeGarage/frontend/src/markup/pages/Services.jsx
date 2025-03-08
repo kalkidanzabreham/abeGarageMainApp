@@ -7,11 +7,11 @@ function Services() {
   return (
     <div>
       <section className="video-section">
-        <div data-parallax='{"y": 50}' class="sec-bg">
+        <div data-parallax='{"y": 50}' className="sec-bg ">
           <img src={bannerImage} alt="banner image" />
           {/* style={{backgroundImage: "url('../../assets/images/banner/banner.jpg')"}}> */}
         </div>
-        <div className="auto-container">
+        <div className="auto-container text-black">
           <h5>Working since 1992</h5>
           <h2>
             Turnup Your Car <br /> to Next Level
