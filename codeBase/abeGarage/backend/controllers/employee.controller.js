@@ -41,7 +41,7 @@ const getAllEmployees = async (req, res) => {
   try {
     const employees = await employeeService.getAllEmployees();
     // console.log(employees);
-    
+
     if (employees) {
       return res.status(200).json({
         success: "true",
@@ -62,61 +62,61 @@ const getAllEmployees = async (req, res) => {
 
 // Create the getSingleEmployee controller
 async function getSingleEmployee(req, res, next) {
-	const employeeId = req.params.id;
+  const employeeId = req.params.id;
 
-	try {
-		// Call the employee service to get the employee by ID
-		const employee = await employeeService.getSingleEmployee(employeeId);
+  try {
+    // Call the employee service to get the employee by ID
+    const employee = await employeeService.getSingleEmployee(employeeId);
 
-		if (!employee) {
-			return res.status(404).json({
-				status: "error",
-				message: "Employee not found",
-			});
-		}
-		// Send back the successful response with the employee data
-		return res.status(200).json({
-			status: "success",
-			data: employee,
-		});
-	} catch (error) {
-		// If there is an error in the try block, send a 500 status with the error message
-		console.error("Error fetching employee:", error);
-		return res.status(500).json({
-			status: "error",
-			message: "Failed to get employee. Please try again later.",
-		});
-	}
+    if (!employee) {
+      return res.status(404).json({
+        status: "error",
+        message: "Employee not found",
+      });
+    }
+    // Send back the successful response with the employee data
+    return res.status(200).json({
+      status: "success",
+      data: employee,
+    });
+  } catch (error) {
+    // If there is an error in the try block, send a 500 status with the error message
+    console.error("Error fetching employee:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to get employee. Please try again later.",
+    });
+  }
 }
 
 // Create the updateEmployee controller
 const updateEmployee = async (req, res) => {
-	try {
-		const employeeId = req.params.id; // Get employee ID from the URL params
-		const updatedEmployee = await employeeService.updateEmployee(
-			employeeId,
-			req.body // Pass the data from the request body
-		);
+  try {
+    const employeeId = req.params.id; // Get employee ID from the URL params
+    const updatedEmployee = await employeeService.updateEmployee(
+      employeeId,
+      req.body // Pass the data from the request body
+    );
 
-		if (!updatedEmployee) {
-			// Return 404 if employee not found
-			return res.status(404).json({
-				error: "Employee does not exist",
-			});
-		}
+    if (!updatedEmployee) {
+      // Return 404 if employee not found
+      return res.status(404).json({
+        error: "Employee does not exist",
+      });
+    }
 
-		// Return success response with the updated employee data
-		res.status(200).json({
-			success: true, // More standard response
-			employee: updatedEmployee,
-		});
-	} catch (error) {
-		// Handle unexpected errors
-		console.error(error);
-		res.status(500).json({
-			error: "Internal Server Error",
-		});
-	}
+    // Return success response with the updated employee data
+    res.status(200).json({
+      success: true, // More standard response
+      employee: updatedEmployee,
+    });
+  } catch (error) {
+    // Handle unexpected errors
+    console.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
 };
 const deleteEmployee = async (req, res) => {
   try {
@@ -149,5 +149,5 @@ module.exports = {
   getAllEmployees,
   getSingleEmployee,
   updateEmployee,
-  deleteEmployee
+  deleteEmployee,
 };

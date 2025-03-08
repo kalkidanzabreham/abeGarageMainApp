@@ -6,6 +6,7 @@ import GetSingleVehicle from "../GetSinngelVehicle/GetSingleVehicle";
 
 import vehicles from "../../../../services/vehicle.service";
 import SingleCustomerAllorders from "../SingleCustomerAllorders/SingleCustomerAllorders";
+import CustomerOfAllOrder from "../CustomersOfAllOrder/CustomerOfAllOrder";
 function CustomerProfile() {
   const navigate = useNavigate();
   const { customer_id } = useParams();
@@ -127,7 +128,7 @@ function CustomerProfile() {
             <h3 className="bold">
               Orders of {customerData?.customer_first_name}
             </h3>
-            {/* <SingleCustomerAllorders customer_id={customerData?.customer_id} /> */}
+            <CustomerOfAllOrder  customer_id={customerData?.customer_id} />
           </div>
         </div>
       </div>

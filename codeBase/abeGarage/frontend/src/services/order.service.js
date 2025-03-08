@@ -2,12 +2,11 @@
 // a function to get all orders from backend
 const api_url = import.meta.env.VITE_API_URL;
 
-const getAllOrders = async (loggedInEmployeeToken) => {
+const getAllOrders = async () => {
   const requestOptions = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-access-token": loggedInEmployeeToken,
     },
   };
   const response = await fetch(`${api_url}/orders`, requestOptions);
@@ -62,6 +61,58 @@ const updateOrder = async (orderId, order, loggedInEmployeeToken) => {
   );
   return response.json();
 };
+// get order by hash
+const getOrderByHash = async (order_hash) => {
+  console.log("hash", order_hash);
+  
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const response = await fetch(
+    `${api_url}/order/hash/${order_hash}`,
+    requestOptions
+  );
+  return response.json();
+}
 // export the function
-export { getAllOrders, addOrder, getOrderById, updateOrder };
+const singleCustomersOrder = async (customer_id) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await fetch(
+      `${api_url}/singleorder_per_customer/${customer_id}`,
+      options
+    );
+    return response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+const singleOrder = async (order_id) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await fetch(
+      `${api_url}/singleorder/${order_id}`,
+      options
+    );
+    return response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// export the function
+export { getAllOrders, addOrder, getOrderById, updateOrder,singleCustomersOrder,singleOrder, getOrderByHash };
 

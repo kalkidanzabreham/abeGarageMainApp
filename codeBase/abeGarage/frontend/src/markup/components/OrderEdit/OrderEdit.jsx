@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { MdCancelPresentation } from "react-icons/md";
 
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext";
 import { getAllServices } from "../../../services/service.service";
 import { getOrderById, updateOrder } from "../../../services/order.service";
 
@@ -37,6 +37,8 @@ function EditOrder() {
   useEffect(() => {
     getOrderById(id, token).then((response) => {
       const orderData = response[0];
+      console.log(orderData);
+      
       setOrder(orderData);
       // Format the estimatedCompletionDate before setting it in the state
       const formattedDate = formatDateForInput(

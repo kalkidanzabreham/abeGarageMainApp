@@ -409,10 +409,26 @@ button:disabled{
   color: #000;
 } */
 
+<<<<<<< HEAD
 .bg-white{
   background-color: #fff;
 }
 .contact-bg{
   margin-top: -80px;
+=======
+.customer_order{
+  background-color: #e2e5ee;
+
+
+}
+@media (max-width: 768px) {
+  .table-responsive-mobile {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+     
+  }
+>>>>>>> e93149bc00e1b093343023d6e9b3b891dceaf499
 }
 

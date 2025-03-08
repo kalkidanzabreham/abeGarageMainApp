@@ -57,10 +57,58 @@ const getOrderById = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+// a function to get order by hash
+const getOrderByHash = async (req, res) => {
+  try {
+    const response = await orderService.getOrderByHash(req.params.hash);
+    if (response.status === "success") {
+      res.status(200).send(response.data);
+    } else {
+      res.status(400).send(response);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const getsinglecustomersOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getAllOrdersPerCustomer(id);
+    if (!order) {
+      return res.status(400).json({ error: "Failed to get order" });
+    } else {
+      return res.status(200).json({
+        data: order,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getsingleOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getSingleOrderInfo(id);
+    if (!order) {
+      return res.status(400).json({ error: "Failed to get order" });
+    } else {
+      return res.status(200).json({
+        data: order,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 // export the functions
 module.exports = {
   addOrder,
   updateOrder,
   getAllOrders,
   getOrderById,
+  getOrderByHash,
+  getsinglecustomersOrder,
+  getsingleOrder,
 };
