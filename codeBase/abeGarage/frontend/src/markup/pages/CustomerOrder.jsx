@@ -51,13 +51,14 @@ function CustomerOrder() {
               <div className="row justify-content-center">
                 <div className="col-md-10">
                   <div
-                    className="card shadow-sm p-4"
-                    style={{ borderBottom: "2px solid red" }}
+                    className=" p-0 contact-section"
                   >
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2 className="mb-3">
-                          {singleOrderData?.customer_first_name}
+                    <div className="d-flex justify-content-between align-items-center auto-container">
+                      <div className="contact-title mb-0
+                      ">
+                        <h2 className="mb-3 ">
+                          {singleOrderData?.customer_first_name}{" "}
+                          {singleOrderData?.customer_last_name}
                         </h2>
                         <p className="text-muted">
                           We will keep you updated on the progress of your
@@ -100,7 +101,10 @@ function CustomerOrder() {
                         style={{ borderBottom: "2px solid red" }}
                       >
                         <small>CUSTOMER</small>
-                        <h2>{singleOrderData?.customer_first_name}</h2>
+                        <h2>
+                          {singleOrderData?.customer_first_name}{" "}
+                          {singleOrderData?.customer_last_name}
+                        </h2>
                         <p>
                           <strong>Email:</strong>{" "}
                           <span className="text-muted">

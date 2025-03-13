@@ -345,7 +345,7 @@ input:disabled {
   cursor: not-allowed;
 }
 .customer_order{
-  background-color: #a2a5ad;
+  background-color: #F5F4F7;
 }
 .sub_order{
 padding-top: 50px;
@@ -409,16 +409,14 @@ button:disabled{
   color: #000;
 } */
 
-<<<<<<< HEAD
 .bg-white{
   background-color: #fff;
 }
 .contact-bg{
   margin-top: -80px;
-=======
 .customer_order{
-  background-color: #e2e5ee;
-
+  background-color: #fafbff;
+}
 
 }
 @media (max-width: 768px) {
@@ -429,6 +427,5 @@ button:disabled{
     -webkit-overflow-scrolling: touch;
      
   }
->>>>>>> e93149bc00e1b093343023d6e9b3b891dceaf499
 }
 

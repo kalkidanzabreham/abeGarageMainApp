@@ -1,11 +1,11 @@
 import React from 'react'
-import bannerImage from "../../assets/images/banner/banner.jpg";
+import bannerTire from "../../assets/images/misc/dark_tire_large.png";
 function Contact() {
   return (
     <section class="contact-section">
       <section className="video-section contact-bg">
         <div data-parallax='{"y": 50}' class="sec-bg">
-          <img src={bannerImage} alt="banner image" />
+          <img src={bannerTire} alt="banner image" />
         </div>
         <div class="auto-container">
           <h2>Contact</h2>

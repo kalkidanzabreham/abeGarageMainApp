@@ -16,6 +16,8 @@ import "./assets/template_assets/css/style.css";
 import "./assets/template_assets/css/responsive.css";
 import "./assets/template_assets/css/color.css";
 import "./assets/styles/custom.css";
+// import all styles
+
 import Footer from "./markup/components/Footer/Footer";
 // import components from './components
 import Employee from "./markup/pages/admin/Employee";
@@ -102,14 +104,6 @@ function App() {
           element={<EmployeeEdit />}
         />
 
-        {/* <Route
-          path="/admin/customer"
-          element={
-            <ProtectedRoute roles={[2, 3]}>
-              <Customer />
-            </ProtectedRoute>
-          }
-        /> */}
         <Route
           path="/admin/customer_profile/:customer_id"
           element={<CustomerProfileLists />}
