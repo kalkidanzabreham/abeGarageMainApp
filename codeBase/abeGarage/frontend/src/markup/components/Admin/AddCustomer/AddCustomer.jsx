@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
 import { useAuth } from "../../../../Context/AuthContext";
-
+import Swal from "sweetalert2";
 
 function AddCustomer() {
   const [customer_email, setEmail] = useState("");
@@ -14,7 +14,7 @@ function AddCustomer() {
   const [customer_phone_number, setPhoneNumber] = useState("");
   const [active_customer_status, setActive_customer] = useState(1);
   const [loading, setLoading] = useState(false);
-  const { isAdmin } = useAuth();
+  const { isAdmin,isGuest } = useAuth();
   const navigate = useNavigate();
 
   // Errors
@@ -24,6 +24,10 @@ function AddCustomer() {
   const [serverError, setServerError] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
+     if (isGuest) {
+          Swal.fire("Access Denied", "Guests cannot add customers.", "warning");
+          return;
+        }
     if (!isAdmin) {
       toast.error("Unauthorized Access");
       return;

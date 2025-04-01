@@ -1,5 +1,4 @@
 import React from "react";
-import bannerImage from "../../assets/images/misc/background.jpg";
 import vban1 from "../../assets/images/misc/vban1.jpg";
 import vban2 from "../../assets/images/misc/vban2.jpg";
 import skilled from "../../assets/images/misc/skilled.jpg";
@@ -10,9 +9,7 @@ function About() {
   return (
     <>
       <section className="video-section darker-background">
-        <div data-parallax='{"y": 50}' class="sec-bg ">
-          <img src={bannerImage} alt="banner image" />
-          {/* style={{backgroundImage: "url('../../assets/images/banner/banner.jpg')"}}> */}
+        <div data-parallax='{"y": 50}' class="sec-bg about_bg">
         </div>
         <div className="auto-container">
           <h5>Working since 1992</h5>

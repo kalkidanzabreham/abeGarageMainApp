@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+
 import {
   updateEmployee,
   getEmployee,
@@ -22,7 +24,7 @@ function EmployeeEditForm() {
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
   const [serverError, setServerError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const { employee } = useAuth();
+  const { employee,isGuest } = useAuth();
   const token = employee ? employee.token : null;
 
 
@@ -70,6 +72,10 @@ function EmployeeEditForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isGuest) {
+      Swal.fire("Access Denied", "Guests cannot edit employees.", "warning");
+      return;
+    }
 
     try {
       const res = await updateEmployee(employee_id, employeeValue, token);

@@ -17,6 +17,9 @@ function ProtectedRoute({roles,children}) {
                 if(roles && roles.includes(employee.employee_role_id)){
                     setIsAuthorized(true)
                 }
+                if(roles && roles.includes("guest")){
+                    setIsAuthorized(true)
+                }
             }
             setIsChecked(true)
     })

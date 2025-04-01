@@ -6,6 +6,7 @@ const router = express.Router();
 const loginController = require('../controllers/login.controller');
 // define the routes
 router.post('/api/employee/login', loginController.login); 
+router.post("/api/guest-login", loginController.guestLogin);
 
 // export the router
 module.exports = router;

@@ -8,10 +8,10 @@ const employeeController = require('../controllers/employee.controller');
 const {verifyToken} = require("../middlewares/auth.middleware");
 const {verifyAdmin }= require('../middlewares/auth.middleware');
 // define the routes
-router.post('/api/employee',[verifyToken,verifyAdmin],employeeController.addEmployee);
+router.post('/api/employee',[verifyAdmin],employeeController.addEmployee);
 // create a get route to get all employees
 
-router.get('/api/employee', [verifyToken, verifyAdmin], employeeController.getAllEmployees);
+router.get('/api/employee', employeeController.getAllEmployees);
 
 // Create a route to handle the get single employee request on get
 router.get(

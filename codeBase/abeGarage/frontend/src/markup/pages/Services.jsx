@@ -1,5 +1,5 @@
 import React from "react";
-import bannerImage from "../../assets/images/misc/1920x516.jpg";
+import bannerImage from "../../assets/images/misc/longCar.jpg";
 import banner from "../../assets/images/banner/banner.jpg";
 import additional from "../../assets/images/misc/additional.jpg";
 

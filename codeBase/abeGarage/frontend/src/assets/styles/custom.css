@@ -429,3 +429,25 @@ button:disabled{
   }
 }
 
+  .keep{
+    background: url('../images/banner/bannerOrg.jpg') center/cover no-repeat;
+  }
+  @media (max-width:768px) {
+    .keep{
+    background: url('../images/banner/banner.jpg') center/cover no-repeat;
+  }
+  }
+
+  .mobile-menu .menu-backdrop {
+    background-color: #e0a8a8;
+}
+.about_bg{
+    background: url('../images/misc/redLagre.jpg') center/cover no-repeat ;
+    transform: scaleX(-1);
+  }
+  @media (max-width:768px) {
+    .about_bg{
+    background: url('../images/misc/redLagre.jpg') center/cover no-repeat;
+  }
+  }
+

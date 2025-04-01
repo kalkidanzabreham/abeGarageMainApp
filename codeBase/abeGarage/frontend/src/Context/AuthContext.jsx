@@ -1,8 +1,7 @@
-// import react from 'react';
 import React, { useContext, useEffect, useState } from "react";
 import customerService from "../services/customer.service";
-// import getauth
 import { getAuth } from "../util/Auth";
+
 const AuthContext = React.createContext();
 
 export const useAuth = () => {
@@ -10,7 +9,7 @@ export const useAuth = () => {
 };
 
 export const Authprovider = ({ children }) => {
-  const [customers, setcustomers] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
   const [apiError, setApiError] = useState(false);
@@ -19,20 +18,23 @@ export const Authprovider = ({ children }) => {
   const [employee, setEmployee] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isGuest, setIsGuest] = useState(false); 
+
   const value = {
     token,
     isLoggedIn,
+    isGuest, 
     employee,
     isAdmin,
     setIsLoggedIn,
     setIsAdmin,
+    setIsGuest, 
     customers,
     getAllCustomerList,
     loading,
     apiError,
     apiErrorMessage,
   };
-  // console.log("employee",employee);
 
   const fetch = () => {
     const auth = getAuth();
@@ -42,7 +44,10 @@ export const Authprovider = ({ children }) => {
 
         if (response.employee_role_id === 3) {
           setIsAdmin(true);
+        } else if (response.employee_role_id === "guest") {
+          setIsGuest(true); 
         }
+
         setEmployee(response);
       }
     });
@@ -54,8 +59,8 @@ export const Authprovider = ({ children }) => {
 
   function getAllCustomerList() {
     setLoading(true);
-    const allcustomers = customerService.getCustomer();
-    allcustomers
+    const allCustomers = customerService.getCustomer();
+    allCustomers
       .then((res) => {
         if (!res.ok) {
           setApiError(true);
@@ -71,7 +76,7 @@ export const Authprovider = ({ children }) => {
       })
       .then((data) => {
         if (data.data.length !== 0) {
-          setcustomers(data.data);
+          setCustomers(data.data);
         }
       })
       .catch((err) => {

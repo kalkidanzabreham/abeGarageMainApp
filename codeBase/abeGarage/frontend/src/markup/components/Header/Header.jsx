@@ -1,32 +1,36 @@
-import React, {useState}from 'react'
-import iconBar from '../../../assets/icons/icon-bar.png'
-import logo from '../../../assets/images/logo.png'
-import { useAuth } from '../../../Context/AuthContext'
-import { logout } from '../../../services/login.service'
-import {Link} from 'react-router'
+import React, { useState } from "react";
+import iconBar from "../../../assets/icons/icon-bar.png";
+import logo from "../../../assets/images/logo.png";
+import { useAuth } from "../../../Context/AuthContext";
+import { logout } from "../../../services/login.service";
+import { Link } from "react-router";
+
 function Header(props) {
-    const {employee,isLoggedIn,setIsLoggedIn,isAdmin} =useAuth()
-    const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
+  const { employee, isLoggedIn, setIsLoggedIn, isAdmin, isGuest } = useAuth();
+  const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
 
-    const logOUt = () => {
-      logout();
-      setIsLoggedIn(false);
-    };
+  const logOUt = () => {
+    logout();
+    setIsLoggedIn(false);
+    window.location.replace("/");
+    setIsMobileMenuVisible(false);
+  };
 
-    const toggleMobileMenu = () => {
-      setIsMobileMenuVisible(!isMobileMenuVisible);
-    };
+  const toggleMobileMenu = () => {
+    setIsMobileMenuVisible(!isMobileMenuVisible);
+  };
 
-    const closeMobileMenu = () => {
-      setIsMobileMenuVisible(false);
-    };
+  const closeMobileMenu = () => {
+    setIsMobileMenuVisible(false);
+  };
 
   return (
     <header
       className={`main-header header-style-one ${
-        isMobileMenuVisible ? "mobile-menu-visible" : " "
+        isMobileMenuVisible ? "mobile-menu-visible" : ""
       }`}
     >
+      {/* Header Top */}
       <div className="header-top">
         <div className="auto-container">
           <div className="inner-container">
@@ -38,14 +42,17 @@ function Header(props) {
             </div>
             {isLoggedIn ? (
               <div className="right-column">
-                <div className="phone-number">
+                <div
+                  className="phone-number mr-5"
+                  style={{ fontSize: "22px", fontWeight: "bold" }}
+                >
                   Welcome : {employee.employee_first_name}
                 </div>
               </div>
             ) : (
               <div className="right-column">
-                <div className="phone-number">
-                  Schedule Your Appontment Today :{" "}
+                <div className="phone-number mr-5">
+                  Schedule Your Appointment Today :{" "}
                   <strong>1800 456 7890</strong>
                 </div>
               </div>
@@ -54,6 +61,7 @@ function Header(props) {
         </div>
       </div>
 
+      {/* Header Upper */}
       <div className="header-upper">
         <div className="auto-container">
           <div className="inner-container">
@@ -66,172 +74,54 @@ function Header(props) {
             </div>
             <div className="right-column">
               <div className="nav-outer">
+                {/* Mobile Menu Toggler */}
                 <div className="mobile-nav-toggler" onClick={toggleMobileMenu}>
                   <img src={iconBar} alt="" />
                 </div>
 
+                {/* Main Navigation */}
                 <nav className="main-menu navbar-expand-md navbar-light">
-                  <div
-                    className="collapse navbar-collapse show clearfix"
-                    id="navbarSupportedContent"
-                  >
+                  <div className="collapse navbar-collapse show clearfix">
                     <ul className="navigation">
-                      <li className="dropdown">
-                        <a href="/">Home</a>
+                      <li>
+                        <Link to="/">Home</Link>
                       </li>
-                      <li className="dropdown">
-                        <a href="/about">About Us</a>
+                      <li>
+                        <Link to="/about">About Us</Link>
                       </li>
-                      <li className="dropdown">
-                        <a href="/services">Services</a>
+                      <li>
+                        <Link to="/services">Services</Link>
                       </li>
-                      <li className="dropdown">
-                        <Link to="/contact">Contact us</Link>
+                      <li>
+                        <Link to="/contact">Contact Us</Link>
                       </li>
-                      {isAdmin && (
-                        <li className="dropdown">
+                      {(isAdmin || isGuest) && (
+                        <li>
                           <Link to="/admin">Admin</Link>
                         </li>
                       )}
-                      <li className="dropdown">
+                      <li>
                         <Link to="/customer_info">Orders</Link>
                       </li>
                     </ul>
                   </div>
                 </nav>
-                <div class="mobile-menu">
-                  <div class="menu-backdrop"></div>
-                  <div class="close-btn">
-                    <span class="icon flaticon-remove"></span>
-                  </div>
-
-                  <nav class="menu-box">
-                    <div class="nav-logo">
-                      <a href="index.html">
-                        <img src="assets/images/logo-two.png" alt="" title="" />
-                      </a>
-                    </div>
-                    <div class="menu-outer"></div>
-
-                    <div class="social-links">
-                      <ul class="clearfix">
-                        <li>
-                          <a href="#">
-                            <span class="fab fa-twitter"></span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <span class="fab fa-facebook-square"></span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <span class="fab fa-pinterest-p"></span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <span class="fab fa-instagram"></span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <span class="fab fa-youtube"></span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </nav>
-                </div>
               </div>
-              <div className="search-btn"></div>
-              {isLoggedIn ? (
-                <div className="link-btn">
+
+              {/* Login/Logout Button */}
+              <div className="link-btn " >
+                {isLoggedIn ? (
                   <Link
                     to="/"
-                    className="theme-btn btn-style-one"
+                    className="theme-btn btn-style-one m-4"
                     onClick={logOUt}
                   >
                     Log Out
                   </Link>
-                </div>
-              ) : (
-                <div className="link-btn">
-                  <Link to="/login" className="theme-btn btn-style-one">
+                ) : (
+                  <Link to="/login" className="theme-btn btn-style-one m-4">
                     Log in
                   </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="sticky-header">
-        <div className="header-upper">
-          <div className="auto-container">
-            <div className="inner-container">
-              <div className="logo-box">
-                <div className="logo">
-                  <a href="index.html">
-                    <img src={logo} alt="" />
-                  </a>
-                </div>
-              </div>
-              <div className="right-column">
-                <div className="nav-outer">
-                  <div
-                    className="mobile-nav-toggler"
-                    onClick={toggleMobileMenu}
-                  >
-                    <img src={iconBar} alt="" />
-                  </div>
-
-                  <nav className="main-menu navbar-expand-md navbar-light">
-                    <div className="collapse navbar-collapse show clearfix">
-                      <ul className="navigation">
-                        <li>
-                          <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                          <Link to="/about">About Us</Link>
-                        </li>
-                        <li>
-                          <Link to="/services">Services</Link>
-                        </li>
-                        <li>
-                          <Link to="/contact">Contact Us</Link>
-                        </li>
-                        {isAdmin && (
-                          <li>
-                            <Link to="/admin">Admin</Link>
-                          </li>
-                        )}
-                        <li>
-                          <Link to="/customer_info">Orders</Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </nav>
-                </div>
-                <div className="search-btn"></div>
-                {isLoggedIn ? (
-                  <div className="link-btn">
-                    <Link
-                      to="/"
-                      className="theme-btn btn-style-one"
-                      onClick={logOUt}
-                    >
-                      Log Out
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="link-btn">
-                    <Link to="/login" className="theme-btn btn-style-one">
-                      Log in
-                    </Link>
-                  </div>
                 )}
               </div>
             </div>
@@ -239,86 +129,111 @@ function Header(props) {
         </div>
       </div>
 
-      <div className="mobile-menu">
-        <div className="menu-backdrop" onClick={closeMobileMenu}></div>
-        <div className="menu-box">
-          <div className="close-btn" onClick={closeMobileMenu}>
-            <span className="icon flaticon-remove"></span>
-          </div>
-          <nav className="menu-box">
-            <div className="nav-logo">
-              <a href="/">
-                <img src={logo} alt="Logo" />
-              </a>
+      {/* Mobile Menu */}
+      {isMobileMenuVisible && (
+        <div className="mobile-menu">
+          <div className="menu-backdrop" onClick={closeMobileMenu}></div>
+          <div className="menu-box">
+            <div className="close-btn" onClick={closeMobileMenu}>
+              <span className="icon flaticon-remove"></span>
             </div>
-            <div className="menu-outer">
-              <ul className="navigation">
-                <li>
-                  <Link to="/" onClick={closeMobileMenu}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about" onClick={closeMobileMenu}>
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/services" onClick={closeMobileMenu}>
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/contact" onClick={closeMobileMenu}>
-                    Contact Us
-                  </Link>
-                </li>
-                {isAdmin && (
+            <nav className="menu-box">
+              <div className="nav-logo">
+                <a href="/">
+                  <img src={logo} alt="Logo" />
+                </a>
+              </div>
+              <div className="menu-outer">
+                <ul className="navigation">
                   <li>
-                    <Link to="/admin" onClick={closeMobileMenu}>
-                      Admin
+                    <Link to="/" onClick={closeMobileMenu}>
+                      Home
                     </Link>
                   </li>
-                )}
-                <li>
-                  <Link to="/customer_info" onClick={closeMobileMenu}>
-                    Orders
+                  <li>
+                    <Link to="/about" onClick={closeMobileMenu}>
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/services" onClick={closeMobileMenu}>
+                      Services
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" onClick={closeMobileMenu}>
+                      Contact Us
+                    </Link>
+                  </li>
+                  {isAdmin && (
+                    <li>
+                      <Link to="/admin" onClick={closeMobileMenu}>
+                        Admin
+                      </Link>
+                    </li>
+                  )}
+                  <li>
+                    <Link to="/customer_info" onClick={closeMobileMenu}>
+                      Orders
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              {/* Login/Logout Button inside Mobile Menu */}
+              <div className="mobile-menu-login m-4">
+                {isLoggedIn ? (
+                  <Link
+                    to="/"
+                    className="theme-btn btn-style-one ml-4"
+                    onClick={logOUt}
+                  >
+                    Log Out
                   </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="social-links">
-              <ul>
-                <li>
-                  <a href="#">
-                    <span className="fab fa-twitter"></span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fab fa-facebook-square"></span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fab fa-pinterest-p"></span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fab fa-instagram"></span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fab fa-youtube"></span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="theme-btn btn-style-one ml-4"
+                    onClick={closeMobileMenu}
+                  >
+                    Log in
+                  </Link>
+                )}
+              </div>
+
+              {/* Social Links */}
+              <div className="social-links">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <span className="fab fa-twitter"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span className="fab fa-facebook-square"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span className="fab fa-pinterest-p"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span className="fab fa-instagram"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span className="fab fa-youtube"></span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="nav-overlay">
         <div className="cursor"></div>
@@ -328,4 +243,4 @@ function Header(props) {
   );
 }
 
-export default Header
+export default Header;

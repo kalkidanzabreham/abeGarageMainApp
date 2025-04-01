@@ -193,11 +193,11 @@ function ViewSingleOrder() {
                                     {/* Right Side - Status Indicator */}
                                     <span className="px-3 py-2 rounded text-white text-center status-badge">
                                       {service.service_completed === 0 ? (
-                                        <span className="bg-primary text-white px-2 d-inline-block text-center status-badge">
+                                        <span className="bg-primary rounded text-white p-2 mr-2 d-inline-block text-center status-badge">
                                           In Progress
                                         </span>
                                       ) : (
-                                        <span className="bg-success text-white px-2 d-inline-block text-center status-badge">
+                                        <span className="bg-success rounded text-white p-2 mr-3 d-inline-block text-center status-badge">
                                           Completed
                                         </span>
                                       )}

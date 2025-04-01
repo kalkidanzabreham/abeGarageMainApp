@@ -71,7 +71,7 @@ const editVehicles = async (req, res) => {
       data: vehicle,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error);z
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getAllServices,addServiceService,updateServiceService,deleteServiceService } from "../../../../services/service.service";
+import Swal from "sweetalert2";
+import { useAuth } from "../../../../Context/AuthContext";
+
 
 function ServicePage() {
   const [services, setServices] = useState([]);
   const [serviceToEdit, setServiceToEdit] = useState(null);
   const [newService, setNewService] = useState({ name: "", description: "" });
+  const {isGuest} = useAuth()
 
   useEffect(() => {
     fetchServices();
@@ -22,6 +26,10 @@ function ServicePage() {
     }
   };
   const addService = async () => {
+    if (isGuest) {
+              Swal.fire("Access Denied", "Guests cannot add Services.", "warning");
+              return;
+            }
     if (!newService.service_name || !newService.service_description) return;
     try {
       const response = await addServiceService(newService);
@@ -34,6 +42,10 @@ function ServicePage() {
   };
 
   const updateService = async () => {
+    if (isGuest) {
+              Swal.fire("Access Denied", "Guests cannot update Services.", "warning");
+              return;
+            }
     if (
       !serviceToEdit ||
       !newService.service_name ||
@@ -50,6 +62,10 @@ function ServicePage() {
   };
 
   const deleteService = async (id) => {
+    if (isGuest) {
+              Swal.fire("Access Denied", "Guests cannot delete Services.", "warning");
+              return;
+            }
     try {
       const response = await deleteServiceService(id)
       fetchServices();
@@ -63,6 +79,10 @@ function ServicePage() {
   };
 
   const editService = (service) => {
+    if (isGuest) {
+      Swal.fire("Access Denied", "Guests cannot edit Services.", "warning");
+      return;
+    }
     setNewService({
       service_name: service.service_name,
       service_description: service.service_description,
@@ -97,7 +117,9 @@ function ServicePage() {
           >
             <div>
               <h3>{service.service_name}</h3>
-              <p>{service.service_description}</p>
+              <p style={{ maxWidth: "900px", wordWrap: "break-word" }}>
+                {service.service_description}
+              </p>
             </div>
             <div>
               <FontAwesomeIcon

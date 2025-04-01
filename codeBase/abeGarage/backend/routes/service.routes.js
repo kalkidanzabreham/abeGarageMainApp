@@ -8,11 +8,11 @@ const { verifyToken } = require("../middlewares/auth.middleware");
 const { verifyAdmin } = require("../middlewares/auth.middleware");
 // define the routes
 router.post(
-  "/api/services",
+  "/api/services",[verifyAdmin],
   serviceController.addService
 );
 router.put(
-  "/api/services/:id",
+  "/api/services/:id",[verifyAdmin],
   serviceController.updateService
 );
 
@@ -20,12 +20,8 @@ router.get(
   "/api/services",
   serviceController.getAllServices
 );
-// router.get(
-//   "/api/services/:id",
-//   serviceController.getSingleService
-// );
 router.delete(
-  "/api/services/:id",
+  "/api/services/:id",[verifyAdmin],
   serviceController.deleteService
 );
 // export the router

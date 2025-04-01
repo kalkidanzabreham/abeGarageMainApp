@@ -1,5 +1,5 @@
 import React from 'react'
-import bannerTire from "../../assets/images/misc/dark_tire_large.png";
+import bannerTire from "../../assets/images/misc/contact.jpg";
 function Contact() {
   return (
     <section class="contact-section">

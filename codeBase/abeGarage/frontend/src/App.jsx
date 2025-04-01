@@ -60,7 +60,7 @@ function App() {
         <Route
           path="/admin/addEmployee"
           element={
-            <ProtectedRoute roles={[3]}>
+            <ProtectedRoute roles={[3,"guest"]}>
               <AddEmploye />
             </ProtectedRoute>
           }
@@ -76,7 +76,7 @@ function App() {
         <Route
           path="/admin/add_customers"
           element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
               <AddCustomers />
             </ProtectedRoute>
           }
@@ -111,7 +111,7 @@ function App() {
         <Route
           path="/admin/new-order"
           element={
-            <ProtectedRoute roles={[3]}>
+            <ProtectedRoute roles={[3,"guest"]}>
               <Orders />
             </ProtectedRoute>
           }
@@ -119,7 +119,7 @@ function App() {
         <Route
           path="/admin/orders"
           element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
               <OrderList />
             </ProtectedRoute>
           }
@@ -127,7 +127,7 @@ function App() {
          <Route
           path="/admin/orders/:order_id"
           element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
               <ViewOrder/>
             </ProtectedRoute>
           }
@@ -135,7 +135,7 @@ function App() {
         <Route
           path="/admin/edit-order/:id"
           element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
               <EditOrder />
             </ProtectedRoute>
           }

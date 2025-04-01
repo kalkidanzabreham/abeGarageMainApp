@@ -1,12 +1,8 @@
-import React from 'react'
-// import use state
-import { useState } from 'react';
-// import useNavigate
-import { useNavigate,useLocation} from 'react-router-dom';
-// import login fun
-import { login } from '../../../services/login.service';
-function LoginForm() {
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { login } from "../../../services/login.service"; // Ensure this service has a guest login method
 
+function LoginForm() {
   const [email_error, set_email] = useState("");
   const [server_error, set_server_error] = useState("");
   const [password_error, set_password] = useState("");
@@ -14,81 +10,80 @@ function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirect = location.redirect?.from || "/";
-  console.log(location);
-  //collecting data from the form
-  const handleSubmit =  async (e) => {
+
+  // **Handle Guest Login**
+  const handleGuestLogin = async () => {
+    try {
+      const response = await login({ role: "guest" }); // Modify your backend to handle this
+      if (response.status === "success") {
+        localStorage.setItem("Our-token", JSON.stringify(response.token));
+        navigate("/admin");
+         if (location.pathname === "/login") {
+           window.location.replace("/admin");
+         } else {
+           window.location.reload();
+         }
+      } 
+      
+      else {
+        set_server_error(response.message);
+      }
+    } catch (error) {
+      set_server_error("Guest login failed. Please try again.");
+    }
+  };
+
+  // **Handle Normal Login**
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // set the states to empty
     set_email("");
     set_server_error("");
     set_password("");
+
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     let valid = true;
-  
 
-    // define a variable to store email regex
     const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
-    // check if the email is empty
-    if (data.employee_email === "") {
+    if (!data.employee_email) {
       set_email("Email is required");
-      valid = false;
-    } else if (!data.employee_email.includes("@")) {
-      set_email("Email is invalid");
       valid = false;
     } else if (!email_regex.test(data.employee_email)) {
       set_email("Email is invalid");
       valid = false;
     }
 
-    // check if the password is empty
-    if (data.employee_password === "") {
+    if (!data.employee_password) {
       set_password("Password is required");
       valid = false;
-    }
-    // check if the password is less than 6 characters
-    if (data.employee_password.length < 6) {
+    } else if (data.employee_password.length < 6) {
       set_password("Password must be at least 6 characters");
       valid = false;
     }
-    // if the form is valid
-    if (!valid) {
-      return;
-    }
-    // call the login function to send the data to the server
+
+    if (!valid) return;
+
     try {
       const response = await login(data);
-      console.log(response);
       if (response.status === "success") {
         set_succes_message(true);
-        // set jwt token to local storage
-        const token = response.token
-        localStorage.setItem("Our-token",JSON.stringify(token))
+        localStorage.setItem("Our-token", JSON.stringify(response.token));
         setTimeout(() => {
           navigate(redirect);
         }, 2000);
-
-        // Check if user is logged in after login without refresh
          if (location.pathname === "/login") {
-           // navigate('/admin');
-           // window.location.replace('/admin');
-           // To home for now
-           window.location.replace("/");
+           window.location.replace("/admin");
          } else {
-           window.location.reload();
-         }
-      
+          window.location.reload();
+        }
       } else {
         set_server_error(response.message);
       }
-      
     } catch (error) {
-      console.log(error);
-      
+      set_server_error("Login failed. Please try again.");
     }
-  
-  }
+  };
 
   return (
     <section className="contact-section">
@@ -140,20 +135,30 @@ function LoginForm() {
                         </div>
                       )}
                     </div>
-                    <div className="form-group col-md-12">
-                      <button
-                        className="theme-btn btn-style-one"
-                        type="submit"
-                        data-loading-text="Please wait..."
-                      >
-                        <span>Login</span>
-                      </button>
+                    <div className="d-flex">
+                      <div className="form-group col-md-12 d-flex">
+                        <button
+                          className="theme-btn btn-style-one w-100"
+                          type="submit"
+                        >
+                          Login
+                        </button>
+                      </div>
+                      <div className="form-group col-md-12 d-flex">
+                        <button
+                          className="theme-btn btn-style-one w-80"
+                          type="button"
+                          onClick={handleGuestLogin} 
+                        >
+                          Login As A Guest
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </form>
                 {succes_message && (
                   <div className="success_message">
-                    Employee logged successfully!
+                    Employee logged in successfully!
                   </div>
                 )}
               </div>
@@ -165,4 +170,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm
+export default LoginForm;

@@ -1,5 +1,5 @@
 import React from "react";
-import bannerImage from "../../assets/images/banner/banner.jpg";
+import bannerImage from "../../assets/images/banner/bannerOrg.jpg";
 import vban1 from "../../assets/images/misc/vban1.jpg";
 import vban2 from "../../assets/images/misc/vban2.jpg";
 import quality from "../../assets/images/misc/quality.jpg";
@@ -10,8 +10,7 @@ function Home() {
   return (
     <div>
       <section className="video-section">
-        <div data-parallax='{"y": 50}' class="sec-bg">
-          <img src={bannerImage} alt="banner image" />
+        <div data-parallax='{"y": 10}' class="sec-bg keep">
         </div>
         <div className="auto-container">
           <h5>Working since 1992</h5>
@@ -267,8 +266,8 @@ function Home() {
         </div>
       </section>
       <section className="video-section">
-        <div data-parallax='{"y": 50}' className="sec-bg">
-          <img src={background} alt="" />
+        <div data-parallax='{"y": 50}' className="sec-bg about_bg">
+          
         </div>
         <div className="auto-container pb-5">
           <h5>Working since 1992</h5>

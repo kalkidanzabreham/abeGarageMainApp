@@ -1,20 +1,29 @@
 // create a login function to send the data to the server
  const login = async (data) => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/employee/login`, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify(data),
-      });
-      const responseData = await response.json();
-     
-      return responseData;
-    } catch (error) {
-      console.error(error);
-    }
+   try {
+     let endpoint = "http://localhost:8000/api/employee/login"; // Default for employee login
+
+     // If logging in as a guest, change the endpoint
+     if (data.role === "guest") {
+       endpoint = "http://localhost:8000/api/guest-login";
      }
+
+     const response = await fetch(endpoint, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(data),
+     });
+
+     const responseData = await response.json();
+     return responseData;
+   } catch (error) {
+     console.error("Login request failed:", error);
+     return { status: "error", message: "Login failed. Please try again." };
+   }
+ };
+
 
   const logout = () =>{
     localStorage.removeItem("Our-token"); // redirect to login page

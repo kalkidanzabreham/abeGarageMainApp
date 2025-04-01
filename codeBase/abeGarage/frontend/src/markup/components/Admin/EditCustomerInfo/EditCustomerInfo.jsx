@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import updateCustomers from "../../../../services/customer.service";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 import SingleCustomer from "../SingleCustomer/SingleCustomer";
 import { PulseLoader } from "react-spinners";
@@ -12,7 +13,7 @@ function EditCustomersInfo() {
   const [customerData, setCustomerData] = useState();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isAdmin,isGuest } = useAuth();
   // State variables for form fields
   const [customer_first_name, setFirstName] = useState("");
   const [customer_last_name, setLastName] = useState("");
@@ -20,7 +21,6 @@ function EditCustomersInfo() {
   const [active_customer_status, setActiveCustomeer] = useState(1);
   const [serverError, setServerError] = useState("");
 
-  // ✅ Load customer data when available
   useEffect(() => {
     if (customerData) {
       setFirstName(customerData.customer_first_name || "");
@@ -30,9 +30,18 @@ function EditCustomersInfo() {
     }
   }, [customerData]);
 
-  // ✅ Handle form submission
+  //  Handle form submission
   const handleForm = async (e) => {
     e.preventDefault();
+       if (isGuest) {
+         Swal.fire(
+           "Access Denied",
+           "Guests cannot edit customers.",
+           "warning"
+         );
+         return;
+       }
+ 
     if (!isAdmin) {
       toast.error("You don't have permission to edit this page");
       return;

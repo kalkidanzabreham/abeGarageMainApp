@@ -8,7 +8,7 @@ import { useAuth } from "../../../../Context/AuthContext";
 import { PulseLoader } from "react-spinners";
 
 function AllCustomersList() {
-  const { customers, apiError, apiErrorMessage, loading, getAllCustomerList } =
+  const { customers, apiError, apiErrorMessage, loading, getAllCustomerList,isGuest } =
     useAuth();
 
   const [search, setSearch] = useState("");
@@ -27,7 +27,7 @@ function AllCustomersList() {
   useEffect(() => {
     getAllCustomerList();
   }, []);
-
+ 
   // Pagination logic
   const indexOfLastCustomer = currentPage * customersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
@@ -111,13 +111,13 @@ function AllCustomersList() {
                             <td>
                               <div className="edit-link-icons">
                                 <span className="text-danger">
-                                  <Link
+                                  <Link 
                                     to={`/admin/customer_edit/${customer.customer_id}`}
                                   >
                                     <FaRegEdit className="text-danger" />
                                   </Link>
                                 </span>
-                                <Link
+                                <Link 
                                   to={`/admin/customer_profile/${customer.customer_id}`}
                                 >
                                   <span className="text-primary">
