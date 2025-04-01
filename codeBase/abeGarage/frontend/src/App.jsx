@@ -21,7 +21,6 @@ import "./assets/styles/custom.css";
 import Footer from "./markup/components/Footer/Footer";
 // import components from './components
 import Employee from "./markup/pages/admin/Employee";
-import Customer from "./markup/pages/admin/customer";
 import Unauthorized from "./markup/pages/Unauthorized";
 import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
 
