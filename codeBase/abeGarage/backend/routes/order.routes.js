@@ -27,7 +27,6 @@ router.get(
 // create a get request to get a single order by id
 router.get(
   "/api/order/:id",
-  [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
   orderController.getOrderById
 );
 // a route to get order by hash

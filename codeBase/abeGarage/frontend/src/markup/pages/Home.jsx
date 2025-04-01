@@ -68,7 +68,7 @@ function Home() {
                 </div>
                 <div className="link-btn mt-40">
                   <a
-                    href="about.html"
+                    href="./about"
                     className="theme-btn btn-style-one style-two"
                   >
                     <span>
