@@ -73,9 +73,9 @@ const vehicleBody = z.object({
 const createVehicle = { params: idParam("customer_id"), body: vehicleBody };
 const updateVehicle = { params: idParam("vehicle_id"), body: vehicleBody };
 
-// 0 received, 1 in progress, 2 completed; 3 is also written by the
-// edit-order page when every service is completed
-const orderStatus = z.coerce.number().int().min(0).max(3);
+// 0 received, 1 in progress, 2 completed (3 was a second "completed" value
+// written by the edit page; migration 005 converted those to 2)
+const orderStatus = z.coerce.number().int().min(0).max(2);
 const uniqueServiceIds = (list) =>
   new Set(list.map((s) => s.service_id)).size === list.length;
 

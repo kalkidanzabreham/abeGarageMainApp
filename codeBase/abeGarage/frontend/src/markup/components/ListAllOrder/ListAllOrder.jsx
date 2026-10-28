@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { getAllOrders } from "../../../services/order.service";
 import { formatPrice } from "../../../util/money";
+import { orderStatusMeta } from "../../../util/orderStatus";
 import { FiExternalLink } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
 
@@ -17,31 +18,6 @@ function ListAllOrder() {
   // Helper function to remove "Updated" from a string
   const removeUpdatedWord = (str) => {
     return str ? str.replace(/Updated/g, "").trim() : "";
-  };
-
-  // Helper function to determine order status
-  const getOrderStatus = (order) => {
-    if (order.order_completed === 0) {
-      return "Received";
-    } else if (order.order_completed === 1) {
-      return "In Progress";
-    } else {
-      return "Completed";
-    }
-  };
-
-  // Helper function to get status class
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Completed":
-        return "status completed";
-      case "In Progress":
-        return "status in-progress";
-      case "Received":
-        return "status received";
-      default:
-        return "status received";
-    }
   };
 
   useEffect(() => {
@@ -106,8 +82,8 @@ function ListAllOrder() {
                 </thead>
                 <tbody>
                   {orders.map((order) => {
-                    const status = getOrderStatus(order);
-                    const statusClass = getStatusClass(status);
+                    const { label: status, listClass: statusClass } =
+                      orderStatusMeta(order);
 
                     return (
                       <tr key={order.order_id}>

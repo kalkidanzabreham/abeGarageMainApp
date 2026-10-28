@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { orderStatusMeta } from "../../util/orderStatus";
 import { useParams } from "react-router-dom";
 import { getOrderByHash } from "../../services/order.service";
 import toast from "react-hot-toast";
@@ -71,21 +72,9 @@ function CustomerOrder() {
                         </p>
                       </div>
                       <span className="">
-                        {singleOrderData?.order_status === 0 ? (
-                          <span className="bg-warning round text-white px-2 d-inline-block text-center status-badge">
-                            Received
+                        <span className={`${orderStatusMeta(singleOrderData).badge} round text-white px-2 d-inline-block text-center status-badge`}>
+                            {orderStatusMeta(singleOrderData).label}
                           </span>
-                        ) : singleOrderData?.order_status === 1 ? (
-                          <span className="bg-primary round text-white px-2 d-inline-block text-center status-badge">
-                            In Progress
-                          </span>
-                        ) : (
-                          singleOrderData?.order_status === 2 && (
-                            <span className="bg-success round text-white px-2 d-inline-block text-center status-badge">
-                              Completed
-                            </span>
-                          )
-                        )}
                       </span>
                     </div>
                   </div>

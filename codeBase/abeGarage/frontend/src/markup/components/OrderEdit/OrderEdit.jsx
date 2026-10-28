@@ -7,6 +7,7 @@ import { useAuth } from "../../../Context/AuthContext";
 import { getAllServices } from "../../../services/service.service";
 import { getOrderById, updateOrder } from "../../../services/order.service";
 import { formatPrice } from "../../../util/money";
+import { ORDER_STATUS } from "../../../util/orderStatus";
 
 function EditOrder() {
   const { id } = useParams();
@@ -68,8 +69,9 @@ function EditOrder() {
     const allServicesCompleted = updatedServices.every(
       (service) => service.service_completed === 1
     );
-    if (allServicesCompleted && orderCompleted !== 0) {
-      setOrderCompleted(3); // Set order_completed to 3
+    if (allServicesCompleted && orderCompleted !== ORDER_STATUS.RECEIVED) {
+      // was 3, which the tracking page could not display
+      setOrderCompleted(ORDER_STATUS.COMPLETED);
     }
   };
 
@@ -91,11 +93,9 @@ function EditOrder() {
   const handleCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     if (isChecked) {
-      // If checkbox is checked, set order_completed to 1 (in progress)
-      setOrderCompleted(1);
+      setOrderCompleted(ORDER_STATUS.IN_PROGRESS);
     } else {
-      // If checkbox is unchecked, set order_completed to 0 (not in progress)
-      setOrderCompleted(0);
+      setOrderCompleted(ORDER_STATUS.RECEIVED);
     }
   };
 
@@ -193,7 +193,7 @@ function EditOrder() {
                         parseInt(e.target.value)
                       )
                     }
-                    disabled={orderCompleted !== 1} // Disable if order is not in progress
+                    disabled={orderCompleted !== ORDER_STATUS.IN_PROGRESS} // only while in progress
                   >
                     <option value={0}>In Progress</option>
                     <option value={1}>Completed</option>

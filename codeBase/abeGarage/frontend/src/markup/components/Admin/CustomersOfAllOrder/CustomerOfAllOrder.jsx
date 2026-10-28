@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { orderStatusMeta } from "../../../../util/orderStatus";
 import { singleCustomersOrder } from "../../../../services/order.service";
 import { Table } from "react-bootstrap";
 import { format } from "date-fns";
@@ -69,21 +70,9 @@ function CustomerOfAllOrder({ customer_id }) {
                 </td>
 
                 <td>
-                  {order.order_status === 0 ? (
-                    <span className="bg-warning rounded text-white px-3">
-                      Received
+                  <span className={`${orderStatusMeta(order).badge} rounded text-white px-3`}>
+                      {orderStatusMeta(order).label}
                     </span>
-                  ) : order.order_status === 1 ? (
-                    <span className="bg-primary rounded text-white px-3">
-                      In Progress
-                    </span>
-                  ) : (
-                    order.order_status === 2 && (
-                      <span className="bg-success rounded text-white px-3">
-                        Completed
-                      </span>
-                    )
-                  )}
                 </td>
               </tr>
             ))
