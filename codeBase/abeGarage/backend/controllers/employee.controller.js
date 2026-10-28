@@ -1,5 +1,9 @@
 // import service from '../services/employee.service.js';
 const employeeService = require("../services/employee.service");
+const { notFound, conflict } = require("../utils/AppError");
+const { wrapAll } = require("../utils/asyncHandler");
+
+// Errors are thrown and handled by middlewares/error.middleware.js
 
 // define the addEmployee function
 const addEmployee = async (req, res) => {
@@ -7,147 +11,67 @@ const addEmployee = async (req, res) => {
   const employeeExists = await employeeService.checkEmployeeExists(
     req.body.employee_email
   );
-  // if the employee email exists, return an error message
   if (employeeExists) {
-    return res.status(400).json({
-      message: "Employee already exists",
-    });
+    throw conflict("Employee already exists");
   }
-  // if the employee email does not exist, add the employee
-  else {
-    try {
-      const employee = await employeeService.addEmployee(req.body);
-      //  if employee add successfully, return the employee details else return an error message
-      if (employee) {
-        return res.status(200).json({
-          success: "true",
-        });
-      } else {
-        return res.status(400).json({
-          message: "Error adding employee",
-        });
-      }
-    } catch (error) {
-      console.log(error.message);
-      return res.status(500).json({
-        message: "Internal server error",
-      });
-    }
-  }
+  await employeeService.addEmployee(req.body);
+  return res.status(200).json({
+    success: "true",
+  });
 };
+
 // a function to get all employees
-
 const getAllEmployees = async (req, res) => {
-  try {
-    const employees = await employeeService.getAllEmployees();
-    // console.log(employees);
-
-    if (employees) {
-      return res.status(200).json({
-        success: "true",
-        data: employees,
-      });
-    } else {
-      return res.status(404).json({
-        message: "No employees found",
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
+  const employees = await employeeService.getAllEmployees();
+  return res.status(200).json({
+    success: "true",
+    data: employees,
+  });
 };
 
 // Create the getSingleEmployee controller
-async function getSingleEmployee(req, res, next) {
-  const employeeId = req.params.id;
-
-  try {
-    // Call the employee service to get the employee by ID
-    const employee = await employeeService.getSingleEmployee(employeeId);
-
-    if (!employee) {
-      return res.status(404).json({
-        status: "error",
-        message: "Employee not found",
-      });
-    }
-    // Send back the successful response with the employee data
-    return res.status(200).json({
-      status: "success",
-      data: employee,
-    });
-  } catch (error) {
-    // If there is an error in the try block, send a 500 status with the error message
-    console.error("Error fetching employee:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Failed to get employee. Please try again later.",
-    });
+const getSingleEmployee = async (req, res) => {
+  const employee = await employeeService.getSingleEmployee(req.params.id);
+  if (!employee) {
+    throw notFound("Employee not found");
   }
-}
+  return res.status(200).json({
+    status: "success",
+    data: employee,
+  });
+};
 
 // Create the updateEmployee controller
 const updateEmployee = async (req, res) => {
-  try {
-    const employeeId = req.params.id; // Get employee ID from the URL params
-    const updatedEmployee = await employeeService.updateEmployee(
-      employeeId,
-      req.body // Pass the data from the request body
-    );
-
-    if (!updatedEmployee) {
-      // Return 404 if employee not found
-      return res.status(404).json({
-        error: "Employee does not exist",
-      });
-    }
-
-    // Return success response with the updated employee data
-    res.status(200).json({
-      success: true, // More standard response
-      employee: updatedEmployee,
-    });
-  } catch (error) {
-    // Handle unexpected errors
-    console.error(error);
-    res.status(500).json({
-      error: "Internal Server Error",
-    });
+  const updatedEmployee = await employeeService.updateEmployee(
+    req.params.id,
+    req.body
+  );
+  if (!updatedEmployee) {
+    throw notFound("Employee does not exist");
   }
+  res.status(200).json({
+    success: true,
+    employee: updatedEmployee,
+  });
 };
+
 const deleteEmployee = async (req, res) => {
-  try {
-    const employee_id = req.params.id;
-
-    // Delete the employee
-    const isDeleted = await employeeService.deleteEmployee(employee_id);
-
-    if (isDeleted) {
-      return res.status(200).json({
-        success: true,
-        message: "Employee deleted successfully",
-      });
-    } else {
-      return res.status(400).json({
-        message: "Error deleting employee",
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+  const isDeleted = await employeeService.deleteEmployee(req.params.id);
+  if (!isDeleted) {
+    throw notFound("Employee does not exist");
   }
+  return res.status(200).json({
+    success: true,
+    message: "Employee deleted successfully",
+  });
 };
 
 // export the addEmployee function
-module.exports = {
+module.exports = wrapAll({
   addEmployee,
   getAllEmployees,
   getSingleEmployee,
   updateEmployee,
   deleteEmployee,
-};
+});

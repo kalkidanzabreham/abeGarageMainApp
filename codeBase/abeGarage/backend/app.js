@@ -16,6 +16,10 @@ app.use(express.json());
 
 // use routes
 app.use(routes);
+// unknown routes -> JSON 404; every error -> one JSON shape (see middleware)
+const { notFoundHandler, errorHandler } = require("./middlewares/error.middleware");
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 
 // define port

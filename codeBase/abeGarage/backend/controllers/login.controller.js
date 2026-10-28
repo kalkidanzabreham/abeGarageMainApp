@@ -1,3 +1,4 @@
+const { wrapAll } = require("../utils/asyncHandler");
 // import login servie
 // import loginService from '../services/login.service';
 const loginService = require("../services/login.service");
@@ -52,7 +53,7 @@ const guestLogin = (req, res) => {
   });
 };
 // export the login function
-module.exports = {
+module.exports = wrapAll({
   login,
   guestLogin
-};
+});

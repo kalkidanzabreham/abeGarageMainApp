@@ -1,3 +1,4 @@
+const { wrapAll } = require("../utils/asyncHandler");
 // import installService from '../services/install.service';
 const installService = require('../services/install.service');
 
@@ -16,4 +17,4 @@ const install = async (req, res) => {
     }
 };
 // export install method
-module.exports = { install };
+module.exports = wrapAll({ install });
