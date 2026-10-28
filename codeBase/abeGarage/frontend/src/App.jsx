@@ -1,6 +1,6 @@
 import "./App.css";
 // import routes and route from react-router-dom
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 // import components
 import Home from "./markup/pages/Home";
 import About from "./markup/pages/About";
@@ -46,13 +46,17 @@ import AdminPage from "./markup/pages/admin/AdminPage";
 
 import EditOrder from "./markup/components/OrderEdit/OrderEdit";
 import { ALL_ROLES, PERMISSIONS } from "./util/roles";
+import ErrorBoundary from "./markup/components/ErrorBoundary/ErrorBoundary";
 
 
 
 function App() {
+  const location = useLocation();
   return (
     <>
       <Header />
+      {/* keyed by path: a crash on one page is cleared by navigating away */}
+      <ErrorBoundary key={location.pathname}>
       <Routes>
         {/* public pages */}
         <Route path="/" element={<Home />} />
@@ -188,6 +192,7 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </ErrorBoundary>
       <Footer />
     </>
   );

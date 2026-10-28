@@ -6,9 +6,11 @@ function CustomerOfAllOrder({ customer_id }) {
   const [orderData, setOrderData] = useState([]);
 
   const getAllOrdersPercustomer = () => {
+    if (!customer_id) return;
     singleCustomersOrder(customer_id)
       .then((response) => {
-        setOrderData(response.data);
+        // an error response has no data array; show an empty list, not a crash
+        setOrderData(response?.data ?? []);
       })
       .catch((error) => {
         console.log(error);
