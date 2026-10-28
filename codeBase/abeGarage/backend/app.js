@@ -24,8 +24,11 @@ app.use(errorHandler);
 
 // define port
 const PORT = process.env.PORT;
-// listen to port
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// listen only when run directly (node app.js); tests import the app instead
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 // export the app
+module.exports = app;
