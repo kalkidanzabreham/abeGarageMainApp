@@ -1,5 +1,6 @@
 // import db connection
 const query = require("../config/db.config");
+const { withTransaction } = require("../config/db.config");
 const checkIfCustomerExists = async (email) => {
   const checkEmail =
     "SELECT * FROM customer_identifier WHERE customer_email = ?";
@@ -13,25 +14,26 @@ const checkIfCustomerExists = async (email) => {
 const addCustomer = async (customer) => {
   let returnDatas = {};
   try {
-    const quary1 =
-      "INSERT INTO customer_identifier(customer_email,customer_phone_number) VALUES(?,?)";
-    const row1 = await query(quary1, [
-      customer.customer_email,
-      customer.customer_phone_number,
-    ]);
-    const customer_id = row1.insertId;
+    // both rows or neither: no orphaned customer_identifier on failure
+    returnDatas = await withTransaction(async (txQuery) => {
+      const quary1 =
+        "INSERT INTO customer_identifier(customer_email,customer_phone_number) VALUES(?,?)";
+      const row1 = await txQuery(quary1, [
+        customer.customer_email,
+        customer.customer_phone_number,
+      ]);
+      const customer_id = row1.insertId;
 
-    const quary2 =
-      "INSERT INTO customer_info(customer_id,customer_first_name,customer_last_name,active_customer_status) VALUES(?,?,?,?)";
-    const row2 = await query(quary2, [
-      customer_id,
-      customer.customer_first_name,
-      customer.customer_last_name,
-      customer.active_customer_status,
-    ]);
-    returnDatas = {
-      customer_id: customer_id,
-    };
+      const quary2 =
+        "INSERT INTO customer_info(customer_id,customer_first_name,customer_last_name,active_customer_status) VALUES(?,?,?,?)";
+      await txQuery(quary2, [
+        customer_id,
+        customer.customer_first_name,
+        customer.customer_last_name,
+        customer.active_customer_status,
+      ]);
+      return { customer_id: customer_id };
+    });
   } catch (error) {
     console.log(error);
   }

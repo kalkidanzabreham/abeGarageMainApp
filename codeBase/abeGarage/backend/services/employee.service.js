@@ -1,5 +1,6 @@
 // import the query function from the database configuration file
 const query = require("../config/db.config");
+const { withTransaction } = require("../config/db.config");
 // import the bcrypt module
 const bcrypt = require("bcrypt");
 
@@ -23,48 +24,32 @@ const addEmployee = async (employee) => {
     const salt = await bcrypt.genSalt(10);
     // hash the employee password
     const hashedPassword = await bcrypt.hash(employee.employee_password, salt);
-    // define the query
-    const sql =
-      "INSERT INTO employee (employee_email,active_employee) VALUES (?, ?)";
-    // execute the query
-    const result = await query(sql, [
-      employee.employee_email,
-      employee.active_employee,
-    ]);
-    console.log(result);
-
-    if (result.affectedRows !== 1) {
-      return false;
-    }
-    const employee_id = result.insertId;
-    // insert the reamining inforamtion to employee_info table, employee_pass tables , employee_role tables separetly
-    const sql2 =
-      "INSERT INTO employee_info (employee_id, employee_first_name, employee_last_name, employee_phone) VALUES (?, ?, ?, ?)";
-    const result2 = await query(sql2, [
-      employee_id,
-      employee.employee_first_name,
-      employee.employee_last_name,
-      employee.employee_phone,
-    ]);
-    if (result2.affectedRows !== 1) {
-      console.log("Error in inserting employee info");
-
-      return false;
-    }
-    const sql3 =
-      "INSERT INTO employee_pass (employee_id, employee_password_hashed) VALUES (?, ?)";
-    const result3 = await query(sql3, [employee_id, hashedPassword]);
-    if (result3.affectedRows !== 1) {
-      console.log("Error in inserting employee pass");
-      return false;
-    }
-    const sql4 =
-      "INSERT INTO employee_role (employee_id,company_role_id) VALUES (?, ?)";
-    const result4 = await query(sql4, [employee_id, employee.company_role_id]);
-    if (result4.affectedRows !== 1) {
-      console.log("Error in inserting employee role");
-      return false;
-    }
+    // the four inserts run in one transaction so a failure part-way through
+    // cannot leave an employee without a password or role
+    await withTransaction(async (txQuery) => {
+      const sql =
+        "INSERT INTO employee (employee_email,active_employee) VALUES (?, ?)";
+      const result = await txQuery(sql, [
+        employee.employee_email,
+        employee.active_employee,
+      ]);
+      const employee_id = result.insertId;
+      // insert the reamining inforamtion to employee_info table, employee_pass tables , employee_role tables separetly
+      const sql2 =
+        "INSERT INTO employee_info (employee_id, employee_first_name, employee_last_name, employee_phone) VALUES (?, ?, ?, ?)";
+      await txQuery(sql2, [
+        employee_id,
+        employee.employee_first_name,
+        employee.employee_last_name,
+        employee.employee_phone,
+      ]);
+      const sql3 =
+        "INSERT INTO employee_pass (employee_id, employee_password_hashed) VALUES (?, ?)";
+      await txQuery(sql3, [employee_id, hashedPassword]);
+      const sql4 =
+        "INSERT INTO employee_role (employee_id,company_role_id) VALUES (?, ?)";
+      await txQuery(sql4, [employee_id, employee.company_role_id]);
+    });
     return true;
   } catch (error) {
     console.log(error.message);
@@ -109,43 +94,37 @@ async function getSingleEmployee(employeeId) {
 // A function to update employee by ID
 async function updateEmployee(EmployeeId, updatedData) {
 	try {
-		// Update data in customer_info table
-		const query1 =
-			"UPDATE employee_info SET employee_first_name = ?, employee_last_name = ?, employee_phone =? WHERE employee_id =?";
-		const rows1 = await query(query1, [
-			updatedData.employee_first_name,
-			updatedData.employee_last_name,
-			updatedData.employee_phone,
-			EmployeeId,
-		]);
-		const query2 =
-			"UPDATE employee SET active_employee = ?  WHERE employee_id = ?";
-		const rows2 = await query(query2, [
-			updatedData.active_employee,
-			EmployeeId,
-		]);
+		return await withTransaction(async (txQuery) => {
+			// lock the row; a missing employee is "not found", not a partial update
+			const existing = await txQuery(
+				"SELECT employee_id FROM employee WHERE employee_id = ? FOR UPDATE",
+				[EmployeeId]
+			);
+			if (existing.length === 0) {
+				return false;
+			}
+			const query1 =
+				"UPDATE employee_info SET employee_first_name = ?, employee_last_name = ?, employee_phone =? WHERE employee_id =?";
+			await txQuery(query1, [
+				updatedData.employee_first_name,
+				updatedData.employee_last_name,
+				updatedData.employee_phone,
+				EmployeeId,
+			]);
+			const query2 =
+				"UPDATE employee SET active_employee = ?  WHERE employee_id = ?";
+			await txQuery(query2, [updatedData.active_employee, EmployeeId]);
 
-		const query3 =
-			"UPDATE employee_role SET company_role_id = ?  WHERE employee_id = ?";
-		const rows3 = await query(query3, [
-			updatedData.company_role_id,
-			EmployeeId,
-		]);
+			const query3 =
+				"UPDATE employee_role SET company_role_id = ?  WHERE employee_id = ?";
+			await txQuery(query3, [updatedData.company_role_id, EmployeeId]);
 
-		if (
-			rows1.affectedRows !== 1 ||
-			rows2.affectedRows !== 1 ||
-			rows3.affectedRows !== 1
-		) {
-			return false;
-		}
-		// Construct the updated customer object to return
-		const updatedEmployee = {
-			employee_id: EmployeeId,
-			...updatedData,
-		};
-
-		return updatedEmployee;
+			// Construct the updated customer object to return
+			return {
+				employee_id: EmployeeId,
+				...updatedData,
+			};
+		});
 	} catch (err) {
 		console.log(err.message);
 		return false;
@@ -154,26 +133,24 @@ async function updateEmployee(EmployeeId, updatedData) {
 
 const deleteEmployee = async (employee_id) => {
   try {
-    await query("START TRANSACTION");
-
-    await query("DELETE FROM employee_info WHERE employee_id = ?", [
-      employee_id,
-    ]);
-    await query("DELETE FROM employee_pass WHERE employee_id = ?", [
-      employee_id,
-    ]);
-    await query("DELETE FROM employee_role WHERE employee_id = ?", [
-      employee_id,
-    ]);
-
-    // Execute delete query and handle return value properly
-    const result = await query("DELETE FROM employee WHERE employee_id = ?", [
-      employee_id,
-    ]);
-
-    await query("COMMIT");
-
-    return result.affectedRows > 0; // Check affected rows properly
+    // Real transaction on one connection: if the final DELETE fails (e.g. the
+    // employee still has orders), the info/pass/role deletes are rolled back.
+    return await withTransaction(async (txQuery) => {
+      await txQuery("DELETE FROM employee_info WHERE employee_id = ?", [
+        employee_id,
+      ]);
+      await txQuery("DELETE FROM employee_pass WHERE employee_id = ?", [
+        employee_id,
+      ]);
+      await txQuery("DELETE FROM employee_role WHERE employee_id = ?", [
+        employee_id,
+      ]);
+      const result = await txQuery(
+        "DELETE FROM employee WHERE employee_id = ?",
+        [employee_id]
+      );
+      return result.affectedRows > 0; // Check affected rows properly
+    });
   } catch (error) {
     console.log(error.message);
     return false;
