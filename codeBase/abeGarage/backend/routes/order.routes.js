@@ -3,40 +3,25 @@ const express = require("express");
 const router = express.Router();
 // import the controller
 const orderController = require("../controllers/order.controller");
-// import authMiddleware
-const authMiddleware = require("../middlewares/auth.middleware");
+const { authorize } = require("../middlewares/auth.middleware");
 
-// create a route to handle the add order request on post
-router.post(
-  "/api/order",
-  [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
-  orderController.addOrder
-);
-// create a get request to update the order
-router.put(
-  "/api/order/:id",
-  [authMiddleware.verifyToken, authMiddleware.verifyAdmin],
-  orderController.updateOrder
-);
-// create a get request to get all orders
-router.get(
-  "/api/orders",
+// authentication is applied to every route in routes/index.js
+// (the public tracking link GET /api/order/hash/:hash is in tracking.routes.js)
+router.post("/api/order", authorize("orders:create"), orderController.addOrder);
 
-  orderController.getAllOrders
-);
-// create a get request to get a single order by id
-router.get(
-  "/api/order/:id",
-  orderController.getOrderById
-);
-// a route to get order by hash
-router.get("/api/order/hash/:hash", orderController.getOrderByHash);
+router.put("/api/order/:id", authorize("orders:update"), orderController.updateOrder);
+
+router.get("/api/orders", authorize("orders:read"), orderController.getAllOrders);
+
+router.get("/api/order/:id", authorize("orders:read"), orderController.getOrderById);
+
 router.get(
   "/api/singleorder_per_customer/:id",
+  authorize("orders:read"),
   orderController.getsinglecustomersOrder
 );
 
-router.get("/api/singleorder/:id", orderController.getsingleOrder);
+router.get("/api/singleorder/:id", authorize("orders:read"), orderController.getsingleOrder);
 
 // export the router
 module.exports = router;

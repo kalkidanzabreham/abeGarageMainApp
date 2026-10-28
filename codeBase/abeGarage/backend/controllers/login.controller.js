@@ -33,27 +33,7 @@ const login = async (req, res) => {
   }
 };
 
-// Guest login function
-const guestLogin = (req, res) => {
-  // Define a guest payload (limited access)
-  const guestPayload = {
-    employee_role_id: "guest",
-    employee_id: "guest_user",
-    employee_first_name: "Guest",
-  };
-
-  // Generate a JWT token for the guest user
-  const token = jwt.sign(guestPayload, secret, { expiresIn: JWT_EXPIRES_IN });
-
-  // Send the response
-  res.status(200).json({
-    token: token,
-    message: "Guest login successful",
-    status: "success",
-  });
-};
 // export the login function
 module.exports = wrapAll({
   login,
-  guestLogin
 });

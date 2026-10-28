@@ -1,28 +1,17 @@
 const express = require("express");
 // create a router
 const router = express.Router();
-// import the employee controller
-const serviceController = require("../controllers/service.controller")
-// import middlewaare fuction to validate the employee data
-const { verifyToken } = require("../middlewares/auth.middleware");
-const { verifyAdmin } = require("../middlewares/auth.middleware");
-// define the routes
-router.post(
-  "/api/services",[verifyAdmin],
-  serviceController.addService
-);
-router.put(
-  "/api/services/:id",[verifyAdmin],
-  serviceController.updateService
-);
+const serviceController = require("../controllers/service.controller");
+const { authorize } = require("../middlewares/auth.middleware");
 
-router.get(
-  "/api/services",
-  serviceController.getAllServices
-);
-router.delete(
-  "/api/services/:id",[verifyAdmin],
-  serviceController.deleteService
-);
+// authentication is applied to every route in routes/index.js
+router.post("/api/services", authorize("services:write"), serviceController.addService);
+
+router.put("/api/services/:id", authorize("services:write"), serviceController.updateService);
+
+router.get("/api/services", authorize("services:read"), serviceController.getAllServices);
+
+router.delete("/api/services/:id", authorize("services:write"), serviceController.deleteService);
+
 // export the router
 module.exports = router;
