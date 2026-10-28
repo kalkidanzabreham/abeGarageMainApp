@@ -8,11 +8,20 @@ const routes = require('./routes');
 const app = express();
 // number of proxies to trust for the client IP (rate limiting); 0 locally
 app.set('trust proxy', env.TRUST_PROXY);
-// use cors
+// security headers (also removes X-Powered-By)
+const helmet = require('helmet');
+app.use(helmet());
+// CORS: only the configured frontend origins may call the API from a
+// browser (was cors() with no options = any origin). Requests without an
+// Origin header (curl, server-to-server) are not affected by CORS; the
+// JWT check is what protects the API.
 const cors = require('cors');
-app.use(cors());
-// use express.json
-app.use(express.json());
+app.use(cors({
+    origin: env.CORS_ORIGINS,
+    allowedHeaders: ['Content-Type', 'x-access-token'],
+}));
+// use express.json (explicit body size cap)
+app.use(express.json({ limit: '100kb' }));
 
 // use routes
 app.use(routes);
