@@ -1,9 +1,7 @@
 // import express from 'express';
 const express = require('express');
-// import dotenv from 'dotenv';
-const dotenv = require('dotenv');
-// configure dotenv
-dotenv.config();
+// load and validate environment first; throws if anything is missing
+const env = require('./config/env');
 // import routes
 const routes = require('./routes');
 // create express app
@@ -23,7 +21,7 @@ app.use(errorHandler);
 
 
 // define port
-const PORT = process.env.PORT;
+const PORT = env.PORT;
 // listen only when run directly (node app.js); tests import the app instead
 if (require.main === module) {
     app.listen(PORT, () => {

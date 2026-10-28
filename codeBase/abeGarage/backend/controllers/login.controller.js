@@ -5,7 +5,7 @@ const loginService = require("../services/login.service");
 // import jwt
 const jwt = require("jsonwebtoken");
 // import jwt secret key
-const secret = process.env.JWT_SECRET;
+const { JWT_SECRET: secret, JWT_EXPIRES_IN } = require("../config/env");
 
 // define login function
 const login = async (req, res) => {
@@ -22,7 +22,7 @@ const login = async (req, res) => {
     // console.log(payload);
     
     // generate token
-    const token = jwt.sign(payload, secret, { expiresIn: "24h" });
+    const token = jwt.sign(payload, secret, { expiresIn: JWT_EXPIRES_IN });
     // define a variable to store the token
     const result = {
       token: token,
@@ -43,7 +43,7 @@ const guestLogin = (req, res) => {
   };
 
   // Generate a JWT token for the guest user
-  const token = jwt.sign(guestPayload, secret, { expiresIn: "24h" });
+  const token = jwt.sign(guestPayload, secret, { expiresIn: JWT_EXPIRES_IN });
 
   // Send the response
   res.status(200).json({

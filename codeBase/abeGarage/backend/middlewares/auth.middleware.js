@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const { JWT_SECRET } = require('../config/env');
 const verifyToken = (req, res, next) => {
     
     const token = req.headers['x-access-token'];
@@ -7,7 +7,7 @@ const verifyToken = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ message: 'No token provided' });
     }
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             console.log(err);
             return res.status(403).json({ message: 'Invalid token' });

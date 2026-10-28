@@ -1,13 +1,14 @@
 // import mysql from 'mysql2/promise';
 const mysql = require("mysql2/promise");
 // define connection parameters
+const env = require("./env");
 const pool = mysql.createPool({
   connectionLimit: 10,
-  password: process.env.DB_PASS,
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT) || 3306,
-  database: process.env.DB_NAME,
+  password: env.DB_PASS,
+  user: env.DB_USER,
+  host: env.DB_HOST,
+  port: env.DB_PORT,
+  database: env.DB_NAME,
 });
 
 // create query function

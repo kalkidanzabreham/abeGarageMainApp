@@ -48,7 +48,9 @@ const errorHandler = (err, req, res, next) => {
 
   const body = { status: "error", code, message };
   if (details) body.details = details;
-  // stack traces only help a developer; never send them in production
+  // stack traces only with an explicit NODE_ENV=development (read raw, not
+  // from config/env where it defaults to development), so a deploy that
+  // forgets NODE_ENV never leaks them
   if (process.env.NODE_ENV === "development") body.stack = err.stack;
   res.status(statusCode).json(body);
 };
