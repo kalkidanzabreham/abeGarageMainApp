@@ -114,6 +114,10 @@ const updateOrder = async (id, order) => {
 };
 
 // a function to get all orders and get order by id
+// One query returns each order with its customer, vehicle and the name of
+// the employee who created it. The order list used to fetch customer,
+// vehicle and employee separately for every row (3 requests per order), and
+// the employee lookup needs employees:read, which Mechanics don't have.
 const getAllOrders = async () => {
   const sql = `
     SELECT 
@@ -126,48 +130,51 @@ const getAllOrders = async () => {
       orders.active_order,
       order_info.estimated_completion_date,
       order_info.completion_date,
+      order_info.order_total_price,
       order_status.order_status AS order_completed,
+      customer_info.customer_first_name,
+      customer_info.customer_last_name,
+      customer_identifier.customer_email,
+      customer_identifier.customer_phone_number,
+      customer_vehicle_info.vehicle_make,
+      customer_vehicle_info.vehicle_model,
+      customer_vehicle_info.vehicle_year,
+      customer_vehicle_info.vehicle_tag,
+      employee_info.employee_first_name,
+      employee_info.employee_last_name,
       order_services.service_id,
       order_services.service_completed
     FROM orders
     JOIN order_info ON orders.order_id = order_info.order_id
     JOIN order_status ON orders.order_id = order_status.order_id
+    JOIN customer_info ON orders.customer_id = customer_info.customer_id
+    JOIN customer_identifier ON orders.customer_id = customer_identifier.customer_id
+    JOIN customer_vehicle_info ON orders.vehicle_id = customer_vehicle_info.vehicle_id
+    LEFT JOIN employee_info ON orders.employee_id = employee_info.employee_id
     LEFT JOIN order_services ON orders.order_id = order_services.order_id
     ORDER BY orders.order_id DESC
   `;
-  const orders = await query(sql);
-  const formattedOrders = orders.reduce((acc, cur) => {
-    const order = acc.find((o) => o.order_id === cur.order_id);
+  const rows = await query(sql);
+  // group the one-row-per-service result into one object per order
+  // (Map keeps insertion order, so the ORDER BY is preserved)
+  const byId = new Map();
+  for (const cur of rows) {
+    let order = byId.get(cur.order_id);
     if (!order) {
-      acc.push({
-        order_id: cur.order_id,
-        employee_id: cur.employee_id,
-        customer_id: cur.customer_id,
-        vehicle_id: cur.vehicle_id,
-        order_date: cur.order_date,
-        active_order: cur.active_order,
-        order_hash: cur.order_hash,
-        estimated_completion_date: cur.estimated_completion_date,
-        completion_date: cur.completion_date,
-        order_completed: cur.order_completed,
-        // LEFT JOIN yields one row with service_id NULL when an order has no
-        // services; don't turn it into a phantom service entry
-        order_services: cur.service_id === null ? [] : [
-          {
-            service_id: cur.service_id,
-            service_completed: cur.service_completed,
-          },
-        ],
-      });
-    } else if (cur.service_id !== null) {
+      const { service_id, service_completed, ...orderFields } = cur;
+      order = { ...orderFields, order_services: [] };
+      byId.set(cur.order_id, order);
+    }
+    // LEFT JOIN yields one row with service_id NULL for an order with no
+    // services; don't turn it into a phantom service entry
+    if (cur.service_id !== null) {
       order.order_services.push({
         service_id: cur.service_id,
         service_completed: cur.service_completed,
       });
     }
-    return acc;
-  }, []);
-  return { status: "success", data: formattedOrders };
+  }
+  return { status: "success", data: [...byId.values()] };
 };
 
 const getOrderById = async (id) => {
