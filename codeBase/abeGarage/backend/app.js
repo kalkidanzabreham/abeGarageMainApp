@@ -6,6 +6,8 @@ const env = require('./config/env');
 const routes = require('./routes');
 // create express app
 const app = express();
+// number of proxies to trust for the client IP (rate limiting); 0 locally
+app.set('trust proxy', env.TRUST_PROXY);
 // use cors
 const cors = require('cors');
 app.use(cors());

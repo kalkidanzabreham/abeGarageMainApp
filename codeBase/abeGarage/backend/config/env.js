@@ -25,6 +25,9 @@ const schema = z.object({
   // number of reverse proxies in front of the app (Render/Heroku: 1);
   // needed so rate limiting sees the client IP, not the proxy's
   TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+  // failed login attempts allowed per IP per window
+  LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
+  LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
 });
 
 const parsed = schema.safeParse(process.env);
