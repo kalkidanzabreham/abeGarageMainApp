@@ -7,7 +7,7 @@ const { wrapAll } = require("../utils/asyncHandler");
 
 // define a function to handle the add order request
 const addOrder = async (req, res) => {
-  const response = await orderService.addOrder(req.body);
+  const response = await orderService.addOrder(req.body, req.user.employee_id);
   res.status(201).send(response);
 };
 

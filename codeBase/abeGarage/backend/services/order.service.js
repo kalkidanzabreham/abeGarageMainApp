@@ -2,11 +2,22 @@
 const query = require("../config/db.config");
 const { withTransaction } = require("../config/db.config");
 const { v4: uuidv4 } = require("uuid");
+const { notFound, badRequest } = require("../utils/AppError");
 
 // a function to add a new order
-const addOrder = async (order) => {
+// employeeId is the logged-in employee (from the JWT), never the request
+// body: a client could otherwise record any employee as the order's creator.
+const addOrder = async (order, employeeId) => {
   // all five tables are written atomically; no half-created orders
   return await withTransaction(async (txQuery) => {
+    const [vehicle] = await txQuery(
+      `SELECT vehicle_id FROM customer_vehicle_info WHERE vehicle_id = ? AND customer_id = ?`,
+      [order.vehicle_id, order.customer_id]
+    );
+    if (!vehicle) {
+      throw badRequest("Vehicle does not belong to this customer");
+    }
+    order.employee_id = employeeId;
     const orderHash = uuidv4();
     const sql = `INSERT INTO orders (employee_id,customer_id,vehicle_id,active_order,order_hash) VALUES (?,?,?,?,?)`;
     order.active_order = order.active_order || 1;
@@ -56,20 +67,29 @@ const addOrder = async (order) => {
 const updateOrder = async (id, order) => {
   // the order and its service list change together or not at all
   return await withTransaction(async (txQuery) => {
+    // The order to update is the one in the URL. The body's order_id used to
+    // be used instead, so PUT /api/order/5 could silently modify order 7.
+    const [existing] = await txQuery(
+      `SELECT order_id FROM orders WHERE order_id = ? FOR UPDATE`,
+      [id]
+    );
+    if (!existing) {
+      throw notFound("Order not found");
+    }
     // Update order_info table
     const sql1 = `UPDATE order_info SET estimated_completion_date = ? WHERE order_id = ?`;
-    const data1 = [order.estimated_completion_date, order.order_id];
+    const data1 = [order.estimated_completion_date, id];
     await txQuery(sql1, data1);
 
     // Update order_status table
     const sql2 = `UPDATE order_status SET order_status = ? WHERE order_id = ?`;
-    const data2 = [order.order_completed, order.order_id];
+    const data2 = [order.order_completed, id];
     await txQuery(sql2, data2);
 
     // Fetch existing services for this order from the order_services table
     const fetchExistingServicesSql = `SELECT service_id FROM order_services WHERE order_id = ?`;
     const existingServices = await txQuery(fetchExistingServicesSql, [
-      order.order_id,
+      id,
     ]);
 
     // Extract the list of existing service_ids
@@ -92,7 +112,7 @@ const updateOrder = async (id, order) => {
       // Dynamically generate placeholders for the IN clause
       const placeholders = servicesToDelete.map(() => "?").join(",");
       const deleteSql = `DELETE FROM order_services WHERE order_id = ? AND service_id IN (${placeholders})`;
-      const deleteData = [order.order_id, ...servicesToDelete]; // Spread the array into the query parameters
+      const deleteData = [id, ...servicesToDelete]; // Spread the array into the query parameters
       await txQuery(deleteSql, deleteData);
     }
 
@@ -100,14 +120,14 @@ const updateOrder = async (id, order) => {
     for (const service of order.order_services) {
       // Check if the service_id exists in the order_services table for this order
       const checkSql = `SELECT * FROM order_services WHERE order_id = ? AND service_id = ?`;
-      const checkData = [order.order_id, service.service_id];
+      const checkData = [id, service.service_id];
       const [existingService] = await txQuery(checkSql, checkData);
 
       // If the service_id does not exist, insert it into the order_services table
       if (!existingService) {
         const insertSql = `INSERT INTO order_services (order_id, service_id, service_completed) VALUES (?, ?, ?)`;
         const insertData = [
-          order.order_id,
+          id,
           service.service_id,
           service.service_completed || 0,
         ]; // Default to 0 if not provided
@@ -117,7 +137,7 @@ const updateOrder = async (id, order) => {
         const updateSql = `UPDATE order_services SET service_completed = ? WHERE order_id = ? AND service_id = ?`;
         const updateData = [
           service.service_completed,
-          order.order_id,
+          id,
           service.service_id,
         ];
         await txQuery(updateSql, updateData);
