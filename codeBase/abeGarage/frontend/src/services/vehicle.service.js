@@ -1,29 +1,14 @@
-const apiurl = import.meta.env.VITE_API_URL;
-const addVehicles = async (customer_id, vehicleData) => {
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(vehicleData),
-  };
+import { apiFetch } from "./api";
 
-  const response = await fetch(
-    `${apiurl}/addvehicle/${customer_id}`,
-    options
-  );
-  return response;
+const addVehicles = async (customer_id, vehicleData) => {
+  return apiFetch(`/addvehicle/${customer_id}`, {
+    method: "POST",
+    body: JSON.stringify(vehicleData),
+  });
 };
 const CustomerVehicle = async (customer_id) => {
   try {
-    const options = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-    const response = await fetch(
-      `${apiurl}/addvehicle/${customer_id}`,
-      options
-    );
+    const response = await apiFetch(`/addvehicle/${customer_id}`, { method: "GET" });
     return response.json();
   } catch (error) {
     console.log(error);
@@ -31,30 +16,20 @@ const CustomerVehicle = async (customer_id) => {
 };
 const singleVehicle = async (vehicle_id) => {
   try {
-    const options = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-    const response = await fetch(
-      `${apiurl}/getvehicle/${vehicle_id}`,
-      options
-    );
+    const response = await apiFetch(`/getvehicle/${vehicle_id}`, { method: "GET" });
     return response.json();
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const editVehicle = async (vehicle_id, data) => {
   try {
-    const options = {
+    // (the old URL had a stray space: "/editvehicle/ 12")
+    return await apiFetch(`/editvehicle/${vehicle_id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    };
-    const response = await fetch(
-      `${apiurl}/editvehicle/ ${vehicle_id}`,
-      options
-    );
-    return response;
+    });
   } catch (error) {
     console.log(error);
   }

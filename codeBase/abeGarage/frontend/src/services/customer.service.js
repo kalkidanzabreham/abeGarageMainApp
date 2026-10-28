@@ -1,40 +1,20 @@
-const apiurl = import.meta.env.VITE_API_URL;
-console.log(apiurl)
+import { apiFetch } from "./api";
+
 const addCustomers = async (formData) => {
   try {
-    
-    const options = {
+    return await apiFetch("/customers", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(formData),
-    };
-    const response = await fetch(`${apiurl}/customers`, options);
-    console.log(response)
-    return response;
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 const getCustomer = async () => {
-  const options = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  const response = await fetch(`${apiurl}/customers`, options);
-  return response;
+  return apiFetch("/customers", { method: "GET" });
 };
 const singleCustomer = async (id) => {
-  const options = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  const response = await fetch(`${apiurl}/customers/${id}`, options);
+  const response = await apiFetch(`/customers/${id}`, { method: "GET" });
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to load customer");
@@ -43,17 +23,14 @@ const singleCustomer = async (id) => {
 };
 const editCustomerInfo = async (id, data) => {
   try {
-    const options = {
+    const response = await apiFetch(`/customers/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
-    };
-    const response = await fetch(`${apiurl}/customers/${id}`, options);
-
+    });
     return response.json();
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 const customers = {
   addCustomers,
