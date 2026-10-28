@@ -4,6 +4,7 @@ import { useAuth } from "../../../Context/AuthContext";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { getAllOrders } from "../../../services/order.service";
+import { formatPrice } from "../../../util/money";
 import { FiExternalLink } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
 
@@ -98,6 +99,7 @@ function ListAllOrder() {
                     <th>Order date</th>
                     <th>Received by</th>
                     <th>Order Hash</th>
+                    <th>Total</th>
                     <th>Order status</th>
                     <th>View/Edit</th>
                   </tr>
@@ -137,6 +139,7 @@ function ListAllOrder() {
                         <td>
                           <div>{order.order_hash}</div>
                         </td>
+                        <td>{formatPrice(order.order_total_price)}</td>
                         <td>
                           <span className={statusClass}>{status}</span>
                         </td>

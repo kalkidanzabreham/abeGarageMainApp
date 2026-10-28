@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getOrderByHash } from "../../services/order.service";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { formatPrice } from "../../util/money";
 
 function CustomerOrder() {
   const [singleOrderData, setSingleOrderData] = useState([]);
@@ -193,6 +194,9 @@ function CustomerOrder() {
                                       <p className="text-muted">
                                         {service.service_description}
                                       </p>
+                                      <strong>
+                                        {formatPrice(service.service_price)}
+                                      </strong>
                                     </div>
 
                                     {/* Right Side - Status Indicator */}
@@ -216,6 +220,14 @@ function CustomerOrder() {
                           <p>No services found.</p>
                         )}
                       </div>
+                    </div>
+
+                    {/* order total: computed by the API from catalog prices */}
+                    <div className="d-flex justify-content-between border-top pt-3 mt-3">
+                      <h4 className="mb-0">Total</h4>
+                      <h4 className="mb-0" data-testid="order-total">
+                        {formatPrice(singleOrderData?.order_total_price)}
+                      </h4>
                     </div>
 
                     {/* Additional Order Section */}

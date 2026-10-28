@@ -188,11 +188,13 @@ const getOrderById = async (id) => {
   orders.active_order,
   order_info.estimated_completion_date,
   order_info.completion_date,
+  order_info.order_total_price,
   order_status.order_status AS order_completed,
   order_services.service_id,
   order_services.service_completed,
   common_services.service_name,
   common_services.service_description,
+  common_services.service_price,
   customer_identifier.customer_email,
   customer_identifier.customer_phone_number,
   customer_info.customer_first_name,
@@ -227,6 +229,7 @@ const getOrderById = async (id) => {
         active_order: cur.active_order,
         estimated_completion_date: cur.estimated_completion_date,
         completion_date: cur.completion_date,
+        order_total_price: cur.order_total_price,
         customer_first_name: cur.customer_first_name,
         customer_email: cur.customer_email,
         customer_phone_number: cur.customer_phone_number,
@@ -247,6 +250,7 @@ const getOrderById = async (id) => {
             service_completed: cur.service_completed,
             service_name: cur.service_name, // Add service_name
             service_description: cur.service_description, // Add service_description
+            service_price: cur.service_price,
           },
         ],
       });
@@ -256,6 +260,7 @@ const getOrderById = async (id) => {
         service_completed: cur.service_completed,
         service_name: cur.service_name, // Add service_name
         service_description: cur.service_description, // Add service_description
+        service_price: cur.service_price,
       });
     }
     return acc;

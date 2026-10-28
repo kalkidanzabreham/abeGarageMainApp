@@ -6,6 +6,7 @@ import { MdCancelPresentation } from "react-icons/md";
 import { useAuth } from "../../../Context/AuthContext";
 import { getAllServices } from "../../../services/service.service";
 import { getOrderById, updateOrder } from "../../../services/order.service";
+import { formatPrice } from "../../../util/money";
 
 function EditOrder() {
   const { id } = useParams();
@@ -117,6 +118,15 @@ function EditOrder() {
   // Check if all services are selected
   const allServicesSelected = selectedServices.length === services.length;
 
+  // catalog price of a service (services added during this edit carry no
+  // price of their own); the API recomputes the stored total on save
+  const priceOf = (serviceId) =>
+    services.find((s) => s.service_id === serviceId)?.service_price;
+  const estimatedTotal = selectedServices.reduce(
+    (sum, service) => sum + Number(priceOf(service.service_id) || 0),
+    0
+  );
+
   return (
     <section className="contact-section">
       <div className="auto-container">
@@ -171,6 +181,7 @@ function EditOrder() {
                         ?.service_description
                     }
                   </div>
+                  <strong>{formatPrice(priceOf(service.service_id))}</strong>
                 </div>
                 <div className="col-3 text-right">
                   <Form.Control
@@ -219,6 +230,7 @@ function EditOrder() {
                         {service.service_name}
                       </h4>
                       <div>{service.service_description}</div>
+                      <strong>{formatPrice(service.service_price)}</strong>
                     </div>
                     <div className="col-3 text-right">
                       <Button
@@ -233,6 +245,13 @@ function EditOrder() {
             </div>
           </div>
         )}
+
+        <div className="row clearfix selected-customer">
+          <div className="form-column col-lg-12 d-flex justify-content-between">
+            <h3>Estimated total</h3>
+            <h3 data-testid="estimated-total">{formatPrice(estimatedTotal)}</h3>
+          </div>
+        </div>
 
         {/* Submit Button */}
         <div className="row clearfix form-group">
