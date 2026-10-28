@@ -6,7 +6,7 @@ import { logout } from "../../../services/login.service";
 import { Link } from "react-router";
 
 function Header(props) {
-  const { employee, isLoggedIn, setIsLoggedIn, isAdmin, isGuest } = useAuth();
+  const { employee, isLoggedIn, setIsLoggedIn, isAdmin, isDemo } = useAuth();
   const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
 
   const logOUt = () => {
@@ -95,7 +95,7 @@ function Header(props) {
                       <li>
                         <Link to="/contact">Contact Us</Link>
                       </li>
-                      {(isAdmin || isGuest) && (
+                      {isLoggedIn && (
                         <li>
                           <Link to="/admin">Admin</Link>
                         </li>
@@ -165,7 +165,7 @@ function Header(props) {
                       Contact Us
                     </Link>
                   </li>
-                  {isAdmin && (
+                  {isLoggedIn && (
                     <li>
                       <Link to="/admin" onClick={closeMobileMenu}>
                         Admin

@@ -13,7 +13,7 @@ function EditCustomersInfo() {
   const [customerData, setCustomerData] = useState();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { isAdmin,isGuest } = useAuth();
+  const { can, isDemo } = useAuth();
   // State variables for form fields
   const [customer_first_name, setFirstName] = useState("");
   const [customer_last_name, setLastName] = useState("");
@@ -33,16 +33,16 @@ function EditCustomersInfo() {
   //  Handle form submission
   const handleForm = async (e) => {
     e.preventDefault();
-       if (isGuest) {
+       if (isDemo) {
          Swal.fire(
            "Access Denied",
-           "Guests cannot edit customers.",
+           "The demo account cannot edit customers.",
            "warning"
          );
          return;
        }
  
-    if (!isAdmin) {
+    if (!can("customers:write")) {
       toast.error("You don't have permission to edit this page");
       return;
     }
