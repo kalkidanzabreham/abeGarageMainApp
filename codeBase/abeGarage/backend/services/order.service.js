@@ -188,14 +188,16 @@ const getAllOrders = async () => {
         estimated_completion_date: cur.estimated_completion_date,
         completion_date: cur.completion_date,
         order_completed: cur.order_completed,
-        order_services: [
+        // LEFT JOIN yields one row with service_id NULL when an order has no
+        // services; don't turn it into a phantom service entry
+        order_services: cur.service_id === null ? [] : [
           {
             service_id: cur.service_id,
             service_completed: cur.service_completed,
           },
         ],
       });
-    } else {
+    } else if (cur.service_id !== null) {
       order.order_services.push({
         service_id: cur.service_id,
         service_completed: cur.service_completed,
@@ -268,7 +270,9 @@ const getOrderById = async (id) => {
         vehicle_mileage: cur.vehicle_mileage,
         vehicle_color: cur.vehicle_color,
         order_completed: cur.order_completed,
-        order_services: [
+        // LEFT JOIN yields one row with service_id NULL when an order has no
+        // services; don't turn it into a phantom service entry
+        order_services: cur.service_id === null ? [] : [
           {
             service_id: cur.service_id,
             service_completed: cur.service_completed,
@@ -277,7 +281,7 @@ const getOrderById = async (id) => {
           },
         ],
       });
-    } else {
+    } else if (cur.service_id !== null) {
       order.order_services.push({
         service_id: cur.service_id,
         service_completed: cur.service_completed,
