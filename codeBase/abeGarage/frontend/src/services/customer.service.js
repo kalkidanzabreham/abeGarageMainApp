@@ -37,7 +37,7 @@ const singleCustomer = async (id) => {
   const response = await fetch(`${apiurl}/customers/${id}`, options);
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to update customer");
+    throw new Error(errorData.message || "Failed to load customer");
   }
   return response;
 };

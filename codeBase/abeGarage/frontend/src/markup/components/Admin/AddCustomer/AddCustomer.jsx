@@ -72,8 +72,8 @@ function AddCustomer() {
       const response = await customers.addCustomers(formData);
       const data = await response.json();
 
-      if (data.error) {
-        return setServerError(data.error);
+      if (data.status === "error") {
+        return setServerError(data.message);
       }
       setSuccess(true);
       setServerError("");

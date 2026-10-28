@@ -81,8 +81,8 @@ function EmployeeEditForm() {
       const res = await updateEmployee(employee_id, employeeValue, token);
       const data = await res.json();
 
-      if (data.error) {
-        setServerError(data.error);
+      if (data.status === "error") {
+        setServerError(data.message);
       } else {
         setUpdateSuccess(true);
         setServerError("");

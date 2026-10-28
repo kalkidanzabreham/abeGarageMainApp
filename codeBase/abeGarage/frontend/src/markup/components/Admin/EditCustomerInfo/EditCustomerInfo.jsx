@@ -58,8 +58,8 @@ function EditCustomersInfo() {
 
     try {
       edit.then((data) => {
-        if (data.error) {
-          setServerError(data.error);
+        if (data.status === "error") {
+          setServerError(data.message);
         } else {
           setServerError("");
           toast.success("employees updated successfully");

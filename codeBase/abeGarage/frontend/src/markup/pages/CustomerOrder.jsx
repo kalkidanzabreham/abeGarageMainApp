@@ -14,9 +14,9 @@ function CustomerOrder() {
       const singleOrder = getOrderByHash(order_hash);
 
       singleOrder.then((data) => {
-        if (data.error) {
-          console.log(data.error);
-          toast.error(data.error);
+        if (data.status === "error") {
+          console.log(data.message);
+          toast.error(data.message);
           return;
         }
         setSingleOrderData(data[0]);
