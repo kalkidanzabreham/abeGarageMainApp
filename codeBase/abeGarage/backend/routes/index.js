@@ -1,10 +1,8 @@
 // import routes
 const express = require("express");
-// import install route
-const installRoute = require("./install.routes");
-// use install route
 const router = express.Router();
-router.use(installRoute);
+// (GET /install was removed: the schema is managed by Knex migrations,
+// `npm run migrate`, instead of a public HTTP endpoint)
 // import employee route
 const employeeRoute = require("./employee.routes");
 // use employee route
