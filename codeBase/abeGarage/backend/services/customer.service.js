@@ -1,6 +1,7 @@
 // import db connection
 const query = require("../config/db.config");
 const { withTransaction } = require("../config/db.config");
+const { v4: uuidv4 } = require("uuid");
 const checkIfCustomerExists = async (email) => {
   const checkEmail =
     "SELECT * FROM customer_identifier WHERE customer_email = ?";
@@ -15,11 +16,14 @@ const addCustomer = async (customer) => {
   let returnDatas = {};
   // both rows or neither: no orphaned customer_identifier on failure
   returnDatas = await withTransaction(async (txQuery) => {
+    // customer_hash is NOT NULL with no default; it was never set, so every
+    // insert failed in MySQL strict mode (ER 1364). Same scheme as order_hash.
     const quary1 =
-      "INSERT INTO customer_identifier(customer_email,customer_phone_number) VALUES(?,?)";
+      "INSERT INTO customer_identifier(customer_email,customer_phone_number,customer_hash) VALUES(?,?,?)";
     const row1 = await txQuery(quary1, [
       customer.customer_email,
       customer.customer_phone_number,
+      uuidv4(),
     ]);
     const customer_id = row1.insertId;
 
