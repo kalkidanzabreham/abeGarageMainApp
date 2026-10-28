@@ -4,6 +4,24 @@ const { withTransaction } = require("../config/db.config");
 const { v4: uuidv4 } = require("uuid");
 const { notFound, badRequest } = require("../utils/AppError");
 
+// Look up catalog prices for the given service ids and return the order
+// total. The total is ALWAYS computed here from the catalog; a total sent
+// by the client is never used (the schema strips it). Unknown ids -> 400.
+// Summed in integer cents so 0.1 + 0.2 style float errors cannot appear.
+const priceServices = async (txQuery, serviceIds) => {
+  const rows = await txQuery(
+    `SELECT service_id, service_price FROM common_services WHERE service_id IN (?)`,
+    [serviceIds]
+  );
+  const found = new Set(rows.map((r) => r.service_id));
+  const unknown = serviceIds.filter((sid) => !found.has(sid));
+  if (unknown.length > 0) {
+    throw badRequest(`Unknown service id(s): ${unknown.join(", ")}`);
+  }
+  const cents = rows.reduce((sum, r) => sum + Math.round(r.service_price * 100), 0);
+  return cents / 100;
+};
+
 // a function to add a new order
 // employeeId is the logged-in employee (from the JWT), never the request
 // body: a client could otherwise record any employee as the order's creator.
@@ -17,48 +35,34 @@ const addOrder = async (order, employeeId) => {
     if (!vehicle) {
       throw badRequest("Vehicle does not belong to this customer");
     }
-    order.employee_id = employeeId;
-    const orderHash = uuidv4();
-    const sql = `INSERT INTO orders (employee_id,customer_id,vehicle_id,active_order,order_hash) VALUES (?,?,?,?,?)`;
-    order.active_order = order.active_order || 1;
-    const data = [
-      order.employee_id,
-      order.customer_id,
-      order.vehicle_id,
-      order.active_order,
-      orderHash,
-    ];
-    const results = await txQuery(sql, data);
+    const serviceIds = order.order_services.map((s) => s.service_id);
+    const total = await priceServices(txQuery, serviceIds);
+
+    const results = await txQuery(
+      `INSERT INTO orders (employee_id,customer_id,vehicle_id,active_order,order_hash) VALUES (?,?,?,?,?)`,
+      [employeeId, order.customer_id, order.vehicle_id, 1, uuidv4()]
+    );
     const order_id = results.insertId;
 
-    order.order_total_price = order.order_total_price || 0;
-    order.additional_requests_completed =
-      order.additional_requests_completed || 0;
-
-    const sql2 = `INSERT INTO order_info (order_id,order_total_price,additional_requests_completed,estimated_completion_date,completion_date) VALUES (?,?,?,?,?)`;
-    const data2 = [
+    await txQuery(
+      `INSERT INTO order_info (order_id,order_total_price,additional_requests_completed,estimated_completion_date) VALUES (?,?,?,?)`,
+      [order_id, total, 0, order.estimated_completion_date]
+    );
+    // one multi-row INSERT instead of one query per service
+    await txQuery(
+      `INSERT INTO order_services (order_id,service_id,service_completed) VALUES ?`,
+      [serviceIds.map((sid) => [order_id, sid, 0])]
+    );
+    await txQuery(`INSERT INTO order_status (order_id,order_status) VALUES (?,?)`, [
       order_id,
-      order.order_total_price,
-      order.additional_requests_completed,
-      order.estimated_completion_date,
-      order.completion_date,
-    ];
-    await txQuery(sql2, data2);
-
-    for (const service of order.order_services) {
-      service.completed = service.completed || 0;
-      const sql3 = `INSERT INTO order_services (order_id,service_id,service_completed) VALUES (?,?,?)`;
-      const data3 = [order_id, service.service_id, service.completed];
-      await txQuery(sql3, data3);
-    }
-
-    const sql4 = `INSERT INTO order_status (order_id,order_status) VALUES (?,?)`;
-    const data4 = [order_id, order.order_completed];
-    await txQuery(sql4, data4);
+      order.order_completed,
+    ]);
 
     return {
       status: "success",
       message: "Order added successfully",
+      order_id,
+      order_total_price: total,
     };
   });
 };
@@ -76,77 +80,35 @@ const updateOrder = async (id, order) => {
     if (!existing) {
       throw notFound("Order not found");
     }
-    // Update order_info table
-    const sql1 = `UPDATE order_info SET estimated_completion_date = ? WHERE order_id = ?`;
-    const data1 = [order.estimated_completion_date, id];
-    await txQuery(sql1, data1);
+    const serviceIds = order.order_services.map((s) => s.service_id);
+    const total = await priceServices(txQuery, serviceIds);
 
-    // Update order_status table
-    const sql2 = `UPDATE order_status SET order_status = ? WHERE order_id = ?`;
-    const data2 = [order.order_completed, id];
-    await txQuery(sql2, data2);
-
-    // Fetch existing services for this order from the order_services table
-    const fetchExistingServicesSql = `SELECT service_id FROM order_services WHERE order_id = ?`;
-    const existingServices = await txQuery(fetchExistingServicesSql, [
+    await txQuery(
+      `UPDATE order_info SET estimated_completion_date = ?, order_total_price = ? WHERE order_id = ?`,
+      [order.estimated_completion_date, total, id]
+    );
+    await txQuery(`UPDATE order_status SET order_status = ? WHERE order_id = ?`, [
+      order.order_completed,
       id,
     ]);
 
-    // Extract the list of existing service_ids
-    const existingServiceIds = existingServices.map(
-      (service) => service.service_id
+    // Sync the service list in 2 statements (was 1 SELECT + 1 write per
+    // service): drop services no longer listed, then upsert the rest.
+    // The upsert relies on UNIQUE (order_id, service_id) from migration 003.
+    await txQuery(
+      `DELETE FROM order_services WHERE order_id = ? AND service_id NOT IN (?)`,
+      [id, serviceIds]
     );
-
-    // Extract the list of updated service_ids from the order
-    const updatedServiceIds = order.order_services.map(
-      (service) => service.service_id
+    await txQuery(
+      `INSERT INTO order_services (order_id, service_id, service_completed) VALUES ?
+       ON DUPLICATE KEY UPDATE service_completed = VALUES(service_completed)`,
+      [order.order_services.map((s) => [id, s.service_id, s.service_completed])]
     );
-
-    // Identify service_ids to delete (present in existing but not in updated)
-    const servicesToDelete = existingServiceIds.filter(
-      (serviceId) => !updatedServiceIds.includes(serviceId)
-    );
-
-    // Delete removed services from the order_services table
-    if (servicesToDelete.length > 0) {
-      // Dynamically generate placeholders for the IN clause
-      const placeholders = servicesToDelete.map(() => "?").join(",");
-      const deleteSql = `DELETE FROM order_services WHERE order_id = ? AND service_id IN (${placeholders})`;
-      const deleteData = [id, ...servicesToDelete]; // Spread the array into the query parameters
-      await txQuery(deleteSql, deleteData);
-    }
-
-    // Loop through each service in the updated order
-    for (const service of order.order_services) {
-      // Check if the service_id exists in the order_services table for this order
-      const checkSql = `SELECT * FROM order_services WHERE order_id = ? AND service_id = ?`;
-      const checkData = [id, service.service_id];
-      const [existingService] = await txQuery(checkSql, checkData);
-
-      // If the service_id does not exist, insert it into the order_services table
-      if (!existingService) {
-        const insertSql = `INSERT INTO order_services (order_id, service_id, service_completed) VALUES (?, ?, ?)`;
-        const insertData = [
-          id,
-          service.service_id,
-          service.service_completed || 0,
-        ]; // Default to 0 if not provided
-        await txQuery(insertSql, insertData);
-      } else {
-        // If the service_id exists, update the service_completed status
-        const updateSql = `UPDATE order_services SET service_completed = ? WHERE order_id = ? AND service_id = ?`;
-        const updateData = [
-          service.service_completed,
-          id,
-          service.service_id,
-        ];
-        await txQuery(updateSql, updateData);
-      }
-    }
 
     return {
       status: "success",
       message: "Order updated successfully",
+      order_total_price: total,
     };
   });
 };

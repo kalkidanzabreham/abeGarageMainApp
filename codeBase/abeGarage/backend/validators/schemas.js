@@ -54,6 +54,8 @@ const updateEmployee = {
 const serviceBody = z.object({
   service_name: requiredText(),
   service_description: optionalText(2000),
+  // DECIMAL(10,2); order totals are computed from this
+  service_price: z.coerce.number().min(0).max(99_999_999.99).multipleOf(0.01),
 });
 const createService = { body: serviceBody };
 const updateService = { params: idParam(), body: serviceBody };

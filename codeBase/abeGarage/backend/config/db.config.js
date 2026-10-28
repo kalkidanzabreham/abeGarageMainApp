@@ -9,6 +9,8 @@ const pool = mysql.createPool({
   host: env.DB_HOST,
   port: env.DB_PORT,
   database: env.DB_NAME,
+  // return DECIMAL columns (prices) as JS numbers, not strings
+  decimalNumbers: true,
 });
 
 // create query function
