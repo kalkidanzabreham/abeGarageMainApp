@@ -108,7 +108,7 @@ function CustomerOrder() {
                           </span>
                         </p>
                         <p>
-                          <strong>Active-Employee:</strong>{" "}
+                          <strong>Active customer:</strong>{" "}
                           <span className="text-muted">
                             {singleOrderData?.active_customer_status === 1
                               ? "Yes"

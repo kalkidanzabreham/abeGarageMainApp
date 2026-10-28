@@ -236,12 +236,12 @@ function NewOrder() {
                 </div>
                 <div>
                   <strong>Active Customer:</strong>{" "}
-                  {selectedCustomer.active ? "Yes" : "No"}
+                  {selectedCustomer.active_customer_status === 1 ? "Yes" : "No"}
                 </div>
                 <div>
                   <strong>Edit Customer:</strong>{" "}
                   <span className="">
-                    <Link to={`/admin/customer_edit/${selectedCustomer.id}`}>
+                    <Link to={`/admin/customer_edit/${selectedCustomer.customer_id}`}>
                       <FaEdit
                         color="red"
                         style={{ cursor: "pointer", marginRight: "5px" }}
@@ -284,7 +284,7 @@ function NewOrder() {
                   </thead>
                   <tbody>
                     {vehicles.map((vehicle) => (
-                      <tr key={vehicle.id}>
+                      <tr key={vehicle.vehicle_id}>
                         <td>{vehicle.vehicle_year}</td>
                         <td>{vehicle.vehicle_make}</td>
                         <td>{vehicle.vehicle_model}</td>
@@ -351,7 +351,7 @@ function NewOrder() {
                 <div>
                   <strong>Edit vehicle info:</strong>{" "}
                   <span className="">
-                    <Link to={`/admin/edit-customer/${selectedCustomer.id}`}>
+                    <Link to={`/admin/edit_vehicle/${selectedVehicle.vehicle_id}`}>
                       <FaEdit
                         color="red"
                         style={{ cursor: "pointer", marginRight: "5px" }}
