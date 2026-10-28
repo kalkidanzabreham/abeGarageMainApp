@@ -2,7 +2,10 @@ import React from 'react'
 import AdminMenu from '../../components/Admin/AdminMenu/AdminMenu';
 import Card from '../../components/Admin/AdminCard/Card';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../Context/AuthContext';
+import { canVisit } from '../../../util/roles';
 function AdminPage() {
+  const { roleId } = useAuth();
   return (
     <div>
       <div className="container-fluid admin-pages">
@@ -25,90 +28,104 @@ function AdminPage() {
             <section className="services-section style-two pt-0">
               <div className="auto-container">
                 <div className="row">
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>Orders</h5>
-                      <h2>Orders</h2>
-                      <Link to="/admin/orderS" className="read-more">
-                        VIEW OREDER +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-power"></span>
+                  {canVisit(roleId, "/admin/orderS") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>Orders</h5>
+                        <h2>Orders</h2>
+                        <Link to="/admin/orderS" className="read-more">
+                          VIEW OREDER +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-power"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>OPEN FOR LEADS </h5>
-                      <h2>New Orders</h2>
-                      <Link to="/admin/new-order" className="read-more">
-                        ADD ORDER +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-gearbox"></span>
+                  )}
+                  {canVisit(roleId, "/admin/new-order") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>OPEN FOR LEADS </h5>
+                        <h2>New Orders</h2>
+                        <Link to="/admin/new-order" className="read-more">
+                          ADD ORDER +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-gearbox"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>OPEN FOR ADMINS </h5>
-                      <h2>Employees</h2>
-                      <Link to="/admin/employee" className="read-more">
-                        LIST OF EMPLOYEES +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-brake-disc"></span>
+                  )}
+                  {canVisit(roleId, "/admin/employee") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>OPEN FOR ADMINS </h5>
+                        <h2>Employees</h2>
+                        <Link to="/admin/employee" className="read-more">
+                          LIST OF EMPLOYEES +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-brake-disc"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>OPEN FOR ADMINS</h5>
-                      <h2>Add Employees</h2>
-                      <Link to="/admin/add-employee" className="read-more">
-                        ADD EMPLOYEE +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-spray-gun"></span>
+                  )}
+                  {canVisit(roleId, "/admin/add-employee") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>OPEN FOR ADMINS</h5>
+                        <h2>Add Employees</h2>
+                        <Link to="/admin/add-employee" className="read-more">
+                          ADD EMPLOYEE +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-spray-gun"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>Customer Mangagment</h5>
-                      <h2>Add Customer</h2>
-                      <Link to="/admin/add_customers" className="read-more">
-                        ADD CUSTOMER +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-tire"></span>
+                  )}
+                  {canVisit(roleId, "/admin/add_customers") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>Customer Mangagment</h5>
+                        <h2>Add Customer</h2>
+                        <Link to="/admin/add_customers" className="read-more">
+                          ADD CUSTOMER +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-tire"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>CUSTOMER MANAGEMENT</h5>
-                      <h2>Customer</h2>
-                      <Link to="/admin/all_customers" className="read-more">
-                        VIEW CUSTOMERS +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-spray-gun"></span>
+                  )}
+                  {canVisit(roleId, "/admin/all_customers") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>CUSTOMER MANAGEMENT</h5>
+                        <h2>Customer</h2>
+                        <Link to="/admin/all_customers" className="read-more">
+                          VIEW CUSTOMERS +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-spray-gun"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4 service-block-one">
-                    <div className="inner-box hvr-float-shadow">
-                      <h5>SERVICE AND REPAIRS</h5>
-                      <h2>Add Services</h2>
-                      <Link to="/admin/service" className="read-more">
-                        ADD SERVICE +
-                      </Link>
-                      <div className="icon">
-                        <span className="flaticon-spray-gun"></span>
+                  )}
+                  {canVisit(roleId, "/admin/service") && (
+                    <div className="col-lg-4 service-block-one">
+                      <div className="inner-box hvr-float-shadow">
+                        <h5>SERVICE AND REPAIRS</h5>
+                        <h2>Add Services</h2>
+                        <Link to="/admin/service" className="read-more">
+                          ADD SERVICE +
+                        </Link>
+                        <div className="icon">
+                          <span className="flaticon-spray-gun"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </section>

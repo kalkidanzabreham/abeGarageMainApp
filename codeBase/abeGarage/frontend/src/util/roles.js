@@ -30,3 +30,20 @@ export const PERMISSIONS = Object.freeze({
 
 export const can = (roleId, permission) =>
   (PERMISSIONS[permission] || []).includes(roleId);
+
+// Which staff pages each role may open. The route guards in App.jsx, the
+// admin side menu and the dashboard cards all read this map, so a link is
+// never shown for a page that would redirect to /unauthorized.
+export const PAGE_ROLES = Object.freeze({
+  "/admin": ALL_ROLES,
+  "/admin/orders": ALL_ROLES,
+  "/admin/new-order": PERMISSIONS["orders:create"],
+  "/admin/add-employee": PERMISSIONS["employees:write"],
+  "/admin/employee": PERMISSIONS["employees:read"],
+  "/admin/add_customers": PERMISSIONS["customers:write"],
+  "/admin/all_customers": ALL_ROLES,
+  "/admin/service": ALL_ROLES,
+});
+
+export const canVisit = (roleId, path) =>
+  (PAGE_ROLES[path.toLowerCase()] || []).includes(roleId);

@@ -45,7 +45,7 @@ import AdminPage from "./markup/pages/admin/AdminPage";
 
 
 import EditOrder from "./markup/components/OrderEdit/OrderEdit";
-import { ALL_ROLES, PERMISSIONS } from "./util/roles";
+import { ALL_ROLES, PERMISSIONS, PAGE_ROLES } from "./util/roles";
 import ErrorBoundary from "./markup/components/ErrorBoundary/ErrorBoundary";
 
 
@@ -72,7 +72,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute roles={ALL_ROLES}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin"]}>
               <AdminPage />
             </ProtectedRoute>
           }
@@ -80,7 +80,7 @@ function App() {
         <Route
           path="/admin/employee"
           element={
-            <ProtectedRoute roles={PERMISSIONS["employees:read"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/employee"]}>
               <Employee />
             </ProtectedRoute>
           }
@@ -96,7 +96,7 @@ function App() {
         <Route
           path="/admin/add-employee"
           element={
-            <ProtectedRoute roles={PERMISSIONS["employees:write"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/add-employee"]}>
               <AddEmploye />
             </ProtectedRoute>
           }
@@ -112,7 +112,7 @@ function App() {
         <Route
           path="/admin/all_customers"
           element={
-            <ProtectedRoute roles={ALL_ROLES}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/all_customers"]}>
               <CustomersList />
             </ProtectedRoute>
           }
@@ -120,7 +120,7 @@ function App() {
         <Route
           path="/admin/add_customers"
           element={
-            <ProtectedRoute roles={PERMISSIONS["customers:write"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/add_customers"]}>
               <AddCustomers />
             </ProtectedRoute>
           }
@@ -152,7 +152,7 @@ function App() {
         <Route
           path="/admin/service"
           element={
-            <ProtectedRoute roles={ALL_ROLES}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/service"]}>
               <AdminService />
             </ProtectedRoute>
           }
@@ -160,7 +160,7 @@ function App() {
         <Route
           path="/admin/new-order"
           element={
-            <ProtectedRoute roles={PERMISSIONS["orders:create"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/new-order"]}>
               <Orders />
             </ProtectedRoute>
           }
@@ -168,7 +168,7 @@ function App() {
         <Route
           path="/admin/orders"
           element={
-            <ProtectedRoute roles={ALL_ROLES}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/orders"]}>
               <OrderList />
             </ProtectedRoute>
           }
