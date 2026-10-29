@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --runInBand",
     "migrate": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
-    "seed": "knex seed:run"
+    "seed": "knex seed:run",
+    "test:coverage": "jest --runInBand --coverage"
   },
   "author": "Hamerochu",
   "license": "ISC",
@@ -28,5 +29,39 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "jest": "^30.5.2",
+    "supertest": "^7.3.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/tests/setupEnv.js"
+    ],
+    "globalSetup": "<rootDir>/tests/globalSetup.js",
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "testTimeout": 20000,
+    "collectCoverageFrom": [
+      "app.js",
+      "config/**/*.js",
+      "controllers/**/*.js",
+      "middlewares/**/*.js",
+      "routes/**/*.js",
+      "services/**/*.js",
+      "utils/**/*.js",
+      "validators/**/*.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "text-summary",
+      "json-summary",
+      "lcov"
+    ]
   }
 }
