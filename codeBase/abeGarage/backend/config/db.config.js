@@ -2,6 +2,7 @@
 const mysql = require("mysql2/promise");
 // define connection parameters
 const env = require("./env");
+const { dbSsl } = require("./dbSsl");
 const pool = mysql.createPool({
   connectionLimit: 10,
   password: env.DB_PASS,
@@ -9,6 +10,7 @@ const pool = mysql.createPool({
   host: env.DB_HOST,
   port: env.DB_PORT,
   database: env.DB_NAME,
+  ssl: dbSsl(env),
   // return DECIMAL columns (prices) as JS numbers, not strings
   decimalNumbers: true,
 });
