@@ -12,7 +12,8 @@
     "seed": "knex seed:run",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "eslint .",
-    "demo:reset": "node scripts/reset-demo.js"
+    "demo:reset": "node scripts/reset-demo.js",
+    "db:setup": "knex migrate:latest && knex seed:run"
   },
   "author": "Hamerochu",
   "license": "ISC",

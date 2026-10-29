@@ -1,0 +1,63 @@
+# GarageHub: MySQL + API + web, from a clean clone:
+#   docker compose up -d --build
+#   docker compose exec api npm run db:setup      # migrations + demo data
+# then open http://localhost:8080
+#
+# The ${VAR:-default} values below are for running locally only. For any
+# deployment, set real values (e.g. in a .env file next to this one):
+# JWT_SECRET, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD and the SEED_* passwords.
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: garagehub
+      MYSQL_USER: garagehub
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-local-db-password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-root-password}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  api:
+    build: ./codeBase/abeGarage/backend
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: garagehub
+      DB_PASS: ${MYSQL_PASSWORD:-local-db-password}
+      DB_NAME: garagehub
+      JWT_SECRET: ${JWT_SECRET:-local-only-jwt-secret-change-me-0123456789}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      # requests arrive through the nginx proxy in the web container
+      TRUST_PROXY: "1"
+      # db:setup seeds demo data; only the Demo password is meant to be public
+      SEED_ALLOW_PRODUCTION: "true"
+      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:-GarageHub-demo-1}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-local-admin-password}
+      SEED_MANAGER_PASSWORD: ${SEED_MANAGER_PASSWORD:-local-manager-password}
+      SEED_MECHANIC_PASSWORD: ${SEED_MECHANIC_PASSWORD:-local-mechanic-password}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-5000}:5000"
+
+  web:
+    build:
+      context: ./codeBase/abeGarage/frontend
+      args:
+        VITE_API_URL: /api
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+
+volumes:
+  db-data:
