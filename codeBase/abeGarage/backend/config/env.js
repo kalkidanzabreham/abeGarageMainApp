@@ -28,6 +28,9 @@ const schema = z.object({
   // failed login attempts allowed per IP per window
   LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default(
+    process.env.NODE_ENV === "test" ? "silent" : "info"
+  ),
 });
 
 const parsed = schema.safeParse(process.env);

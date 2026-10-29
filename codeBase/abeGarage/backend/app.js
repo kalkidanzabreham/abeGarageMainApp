@@ -6,6 +6,9 @@ const env = require('./config/env');
 const routes = require('./routes');
 // create express app
 const app = express();
+// request logging first, so every response (including errors) is logged
+const { logger, createHttpLogger } = require('./utils/logger');
+app.use(createHttpLogger());
 // number of proxies to trust for the client IP (rate limiting); 0 locally
 app.set('trust proxy', env.TRUST_PROXY);
 // security headers (also removes X-Powered-By)
@@ -36,7 +39,7 @@ const PORT = env.PORT;
 // listen only when run directly (node app.js); tests import the app instead
 if (require.main === module) {
     app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+        logger.info({ port: PORT }, `Server is running on port ${PORT}`);
     });
 }
 // export the app

@@ -51,7 +51,6 @@ const editVehicleInfo = async (vehicle_id, vehicle) => {
     vehicle.vehicle_color,
     vehicle_id,
   ]);
-  console.log(result);
   return result;
 };
 module.exports = {
