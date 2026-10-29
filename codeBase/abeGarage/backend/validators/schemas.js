@@ -1,5 +1,5 @@
 // Request schemas for every route. Used via validate() in the route files.
-const { z, id, idParam, email, requiredText, optionalText, flag, roleId, optionalDate } = require("./common");
+const { z, id, idParam, listQuery, email, requiredText, optionalText, flag, roleId, optionalDate } = require("./common");
 
 const login = {
   // strings only: an object here used to be expanded by mysql2 into SQL
@@ -106,6 +106,12 @@ const updateOrder = {
   }),
 };
 
+// list endpoints: GET /api/customers, /vehicles, /orders, /employee
+const listCustomers = { query: listQuery({ active: flag.optional() }) };
+const listVehicles = { query: listQuery({ customer_id: id.optional() }) };
+const listOrders = { query: listQuery({ status: orderStatus.optional(), customer_id: id.optional() }) };
+const listEmployees = { query: listQuery({ role: roleId.optional(), active: flag.optional() }) };
+
 const byId = { params: idParam() };
 const byCustomerId = { params: idParam("customer_id") };
 const byVehicleId = { params: idParam("vehicle_id") };
@@ -121,5 +127,6 @@ module.exports = {
   createService, updateService,
   createVehicle, updateVehicle,
   createOrder, updateOrder,
+  listCustomers, listVehicles, listOrders, listEmployees,
   byId, byCustomerId, byVehicleId, byHash, none,
 };

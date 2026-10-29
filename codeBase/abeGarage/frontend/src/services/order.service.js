@@ -1,9 +1,10 @@
-import { apiFetch } from "./api";
+import { apiFetch, withQuery } from "./api";
 
 // Callers still pass a token argument; it is ignored because apiFetch
 // adds the stored token itself.
-const getAllOrders = async () => {
-  const response = await apiFetch("/orders", { method: "GET" });
+// params: { page, page_size, q, status, customer_id } (paginated on the server)
+const getAllOrders = async (params) => {
+  const response = await apiFetch(withQuery("/orders", params), { method: "GET" });
   return response.json();
 };
 // a function to add an order to the backend

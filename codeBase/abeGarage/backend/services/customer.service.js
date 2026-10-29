@@ -2,6 +2,7 @@
 const query = require("../config/db.config");
 const { withTransaction } = require("../config/db.config");
 const { v4: uuidv4 } = require("uuid");
+const { limitOffset, likePattern, whereClause } = require("../utils/pagination");
 const checkIfCustomerExists = async (email) => {
   const checkEmail =
     "SELECT * FROM customer_identifier WHERE customer_email = ?";
@@ -40,13 +41,29 @@ const addCustomer = async (customer) => {
 
   return returnDatas;
 };
-const getAllCustomers = async () => {
-  // selelct all customers fro those two tables
-
-  const allCustomers =
-    "SELECT * FROM customer_identifier INNER JOIN customer_info  ON customer_identifier.customer_id = customer_info.customer_id ORDER BY customer_identifier.customer_id DESC";
-  const rows = await query(allCustomers);
-  return rows;
+// Paginated customer list, newest first.
+// filters: q (name, email or phone contains), active (0/1)
+const getAllCustomers = async (filters) => {
+  const like = filters.q && likePattern(filters.q);
+  const where = whereClause([
+    like && [
+      `customer_identifier.customer_email LIKE ? ESCAPE '\\\\'
+       OR customer_identifier.customer_phone_number LIKE ? ESCAPE '\\\\'
+       OR CONCAT(customer_info.customer_first_name, ' ', customer_info.customer_last_name) LIKE ? ESCAPE '\\\\'`,
+      [like, like, like],
+    ],
+    filters.active !== undefined && ["customer_info.active_customer_status = ?", [filters.active]],
+  ]);
+  const from = `FROM customer_identifier
+    INNER JOIN customer_info ON customer_identifier.customer_id = customer_info.customer_id
+    ${where.sql}`;
+  const [{ total }] = await query(`SELECT COUNT(*) AS total ${from}`, where.params);
+  const { limit, offset } = limitOffset(filters);
+  const rows = await query(
+    `SELECT * ${from} ORDER BY customer_identifier.customer_id DESC LIMIT ? OFFSET ?`,
+    [...where.params, limit, offset]
+  );
+  return { rows, total };
 };
 const getSingleCustomer = async (id) => {
   const singleCustomer =

@@ -9,17 +9,23 @@ import {
 } from "../../../services/employee.service";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa"; // Font Awesome icons
+import MoreCustomers from "../../pages/MoreCustomers";
+
+const PAGE_SIZE = 10;
 
 function EmployeeList() {
   const navigate = useNavigate();
   const { token, isDemo } = useAuth();
   const [employees, setEmployees] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      const response = await getAllEmployees(token);
+      // paginated on the server (the API used to cap this list at 10)
+      const response = await getAllEmployees({ page, page_size: PAGE_SIZE });
       if (!response.success) {
         setApiError(true);
         setApiErrorMessage(
@@ -29,10 +35,11 @@ function EmployeeList() {
         );
       } else {
         setEmployees(response.data);
+        setTotalPages(response.pagination.total_pages);
       }
     };
     fetchEmployees();
-  }, [token]);
+  }, [token, page]);
 
   const handleEdit = (employee_id) => {
     navigate(`/admin/employees/edit/${employee_id}`);
@@ -134,6 +141,7 @@ function EmployeeList() {
                 ))}
               </tbody>
             </Table>
+            <MoreCustomers currentPage={page} totalPages={totalPages} setCurrentPage={setPage} />
           </div>
         </section>
       )}

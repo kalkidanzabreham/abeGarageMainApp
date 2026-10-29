@@ -8,7 +8,7 @@ const { authorize } = require("../middlewares/auth.middleware");
 // authentication is applied to every route in routes/index.js
 routes.post("/api/customers", authorize("customers:write"), validate(schemas.createCustomer), customer.addCustomer);
 
-routes.get("/api/customers", authorize("customers:read"), validate(schemas.none), customer.getAllCustomers);
+routes.get("/api/customers", authorize("customers:read"), validate(schemas.listCustomers), customer.getAllCustomers);
 
 routes.get("/api/customers/:id", authorize("customers:read"), validate(schemas.byId), customer.singleCustomer);
 

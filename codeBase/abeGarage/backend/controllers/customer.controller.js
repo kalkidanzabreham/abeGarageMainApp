@@ -2,6 +2,7 @@
 const customerService = require("../services/customer.service");
 const { notFound, conflict } = require("../utils/AppError");
 const { wrapAll } = require("../utils/asyncHandler");
+const { paginationMeta } = require("../utils/pagination");
 
 // Errors are thrown and handled by middlewares/error.middleware.js
 const addCustomer = async (req, res) => {
@@ -19,8 +20,8 @@ const addCustomer = async (req, res) => {
 };
 
 const getAllCustomers = async (req, res) => {
-  const customers = await customerService.getAllCustomers();
-  res.status(200).json({ data: customers });
+  const { rows, total } = await customerService.getAllCustomers(req.query);
+  res.status(200).json({ data: rows, pagination: paginationMeta(req.query, total) });
 };
 
 const singleCustomer = async (req, res) => {

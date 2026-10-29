@@ -11,7 +11,7 @@ const { authorize } = require("../middlewares/auth.middleware");
 // authentication is applied to every route in routes/index.js
 router.post('/api/employee', authorize("employees:write"), validate(schemas.createEmployee), employeeController.addEmployee);
 
-router.get('/api/employee', authorize("employees:read"), validate(schemas.none), employeeController.getAllEmployees);
+router.get('/api/employee', authorize("employees:read"), validate(schemas.listEmployees), employeeController.getAllEmployees);
 
 router.get("/api/employee/:id", authorize("employees:read"), validate(schemas.byId), employeeController.getSingleEmployee);
 

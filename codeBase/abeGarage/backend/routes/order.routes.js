@@ -13,7 +13,7 @@ router.post("/api/order", authorize("orders:create"), validate(schemas.createOrd
 
 router.put("/api/order/:id", authorize("orders:update"), validate(schemas.updateOrder), orderController.updateOrder);
 
-router.get("/api/orders", authorize("orders:read"), validate(schemas.none), orderController.getAllOrders);
+router.get("/api/orders", authorize("orders:read"), validate(schemas.listOrders), orderController.getAllOrders);
 
 router.get("/api/order/:id", authorize("orders:read"), validate(schemas.byId), orderController.getOrderById);
 

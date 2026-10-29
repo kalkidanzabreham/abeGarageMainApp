@@ -3,6 +3,7 @@ const query = require("../config/db.config");
 const { withTransaction } = require("../config/db.config");
 const { v4: uuidv4 } = require("uuid");
 const { notFound, badRequest } = require("../utils/AppError");
+const { limitOffset, likePattern, whereClause } = require("../utils/pagination");
 
 // Look up catalog prices for the given service ids and return the order
 // total. The total is ALWAYS computed here from the catalog; a total sent
@@ -118,7 +119,37 @@ const updateOrder = async (id, order) => {
 // the employee who created it. The order list used to fetch customer,
 // vehicle and employee separately for every row (3 requests per order), and
 // the employee lookup needs employees:read, which Mechanics don't have.
-const getAllOrders = async () => {
+// Paginated, newest first. filters: status, customer_id, q (customer name,
+// customer email or vehicle tag contains).
+// The detail query has one row per service, so a LIMIT on it would cut
+// orders apart: page over order ids first, then load those orders.
+const getAllOrders = async (filters) => {
+  const like = filters.q && likePattern(filters.q);
+  const where = whereClause([
+    filters.status !== undefined && ["order_status.order_status = ?", [filters.status]],
+    filters.customer_id !== undefined && ["orders.customer_id = ?", [filters.customer_id]],
+    like && [
+      `customer_identifier.customer_email LIKE ? ESCAPE '\\\\'
+       OR CONCAT(customer_info.customer_first_name, ' ', customer_info.customer_last_name) LIKE ? ESCAPE '\\\\'
+       OR customer_vehicle_info.vehicle_tag LIKE ? ESCAPE '\\\\'`,
+      [like, like, like],
+    ],
+  ]);
+  const from = `FROM orders
+    JOIN order_status ON orders.order_id = order_status.order_id
+    JOIN customer_info ON orders.customer_id = customer_info.customer_id
+    JOIN customer_identifier ON orders.customer_id = customer_identifier.customer_id
+    JOIN customer_vehicle_info ON orders.vehicle_id = customer_vehicle_info.vehicle_id
+    ${where.sql}`;
+  const [{ total }] = await query(`SELECT COUNT(*) AS total ${from}`, where.params);
+  const { limit, offset } = limitOffset(filters);
+  const page = await query(
+    `SELECT orders.order_id ${from} ORDER BY orders.order_id DESC LIMIT ? OFFSET ?`,
+    [...where.params, limit, offset]
+  );
+  if (page.length === 0) {
+    return { status: "success", data: [], total };
+  }
   const sql = `
     SELECT 
       orders.order_id,
@@ -152,9 +183,10 @@ const getAllOrders = async () => {
     JOIN customer_vehicle_info ON orders.vehicle_id = customer_vehicle_info.vehicle_id
     LEFT JOIN employee_info ON orders.employee_id = employee_info.employee_id
     LEFT JOIN order_services ON orders.order_id = order_services.order_id
+    WHERE orders.order_id IN (?)
     ORDER BY orders.order_id DESC
   `;
-  const rows = await query(sql);
+  const rows = await query(sql, [page.map((r) => r.order_id)]);
   // group the one-row-per-service result into one object per order
   // (Map keeps insertion order, so the ORDER BY is preserved)
   const byId = new Map();
@@ -174,7 +206,7 @@ const getAllOrders = async () => {
       });
     }
   }
-  return { status: "success", data: [...byId.values()] };
+  return { status: "success", data: [...byId.values()], total };
 };
 
 const getOrderById = async (id) => {

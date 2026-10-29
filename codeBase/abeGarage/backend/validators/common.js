@@ -25,4 +25,16 @@ const optionalDate = z.preprocess(
   z.coerce.date().nullable()
 );
 
-module.exports = { z, id, idParam, email, requiredText, optionalText, flag, roleId, optionalDate };
+// ?page=&page_size=&q= plus endpoint-specific filters. Strict: unknown
+// query parameters are still rejected.
+const listQuery = (filters = {}) =>
+  z
+    .object({
+      page: z.coerce.number().int().min(1).default(1),
+      page_size: z.coerce.number().int().min(1).max(100).default(20),
+      q: z.string().trim().min(1).max(100).optional(),
+      ...filters,
+    })
+    .strict();
+
+module.exports = { z, id, idParam, listQuery, email, requiredText, optionalText, flag, roleId, optionalDate };

@@ -1,4 +1,4 @@
-import { apiFetch } from "./api";
+import { apiFetch, withQuery } from "./api";
 
 // Callers still pass a token argument; it is ignored because apiFetch
 // adds the stored token itself.
@@ -14,8 +14,9 @@ const createEmployee = async (data) => {
   }
 };
 
-const getAllEmployees = async () => {
-  const response = await apiFetch("/employee", { method: "GET" });
+// params: { page, page_size, q, role, active } (paginated on the server)
+const getAllEmployees = async (params) => {
+  const response = await apiFetch(withQuery("/employee", params), { method: "GET" });
   return response.json();
 };
 

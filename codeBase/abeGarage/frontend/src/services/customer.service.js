@@ -1,4 +1,4 @@
-import { apiFetch } from "./api";
+import { apiFetch, withQuery } from "./api";
 
 const addCustomers = async (formData) => {
   try {
@@ -10,8 +10,9 @@ const addCustomers = async (formData) => {
     console.log(error);
   }
 };
-const getCustomer = async () => {
-  return apiFetch("/customers", { method: "GET" });
+// params: { page, page_size, q, active } (paginated on the server)
+const getCustomer = async (params) => {
+  return apiFetch(withQuery("/customers", params), { method: "GET" });
 };
 const singleCustomer = async (id) => {
   const response = await apiFetch(`/customers/${id}`, { method: "GET" });
