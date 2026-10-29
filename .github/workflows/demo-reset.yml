@@ -1,0 +1,43 @@
+name: Reset public demo data
+
+# Restores the seeded demo data on the deployed database once a day, so
+# changes made by visitors don't pile up. Off until the repository variable
+# DEMO_RESET_ENABLED is set to "true" (Settings -> Secrets and variables ->
+# Actions -> Variables). Needs the secrets listed under env below.
+on:
+  schedule:
+    # 03:17 UTC daily (GitHub can delay jobs at the top of the hour)
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  reset:
+    if: ${{ vars.DEMO_RESET_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: codeBase/abeGarage/backend
+    env:
+      NODE_ENV: production
+      SEED_ALLOW_PRODUCTION: "true"
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_SSL: "true"
+      DB_SSL_CA: ${{ secrets.DB_SSL_CA }}
+      SEED_DEMO_PASSWORD: ${{ secrets.SEED_DEMO_PASSWORD }}
+      SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
+      SEED_MANAGER_PASSWORD: ${{ secrets.SEED_MANAGER_PASSWORD }}
+      SEED_MECHANIC_PASSWORD: ${{ secrets.SEED_MECHANIC_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: codeBase/abeGarage/backend/package-lock.json
+      - run: npm ci --omit=dev
+      - name: Restore demo data
+        run: npm run demo:reset

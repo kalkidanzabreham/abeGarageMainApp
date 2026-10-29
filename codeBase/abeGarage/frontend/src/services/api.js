@@ -37,3 +37,10 @@ export const apiFetch = async (path, { auth = true, headers, ...options } = {}) 
   }
   return response;
 };
+
+// "/customers" + { page: 2, q: "" } -> "/customers?page=2" (empty values dropped)
+export const withQuery = (path, params = {}) => {
+  const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "");
+  const qs = new URLSearchParams(entries).toString();
+  return qs ? `${path}?${qs}` : path;
+};

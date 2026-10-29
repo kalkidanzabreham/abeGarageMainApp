@@ -6,6 +6,7 @@ const vehicleController = require("../controllers/vehicle.controller");
 const { authorize } = require("../middlewares/auth.middleware");
 
 // authentication is applied to every route in routes/index.js
+routes.get("/api/vehicles", authorize("vehicles:read"), validate(schemas.listVehicles), vehicleController.listVehicles);
 routes.post("/api/addvehicle/:customer_id", authorize("vehicles:write"), validate(schemas.createVehicle), vehicleController.addVehicle);
 routes.get("/api/addvehicle/:customer_id", authorize("vehicles:read"), validate(schemas.byCustomerId), vehicleController.singelVehicleInfo);
 routes.get("/api/getvehicle/:vehicle_id", authorize("vehicles:read"), validate(schemas.byVehicleId), vehicleController.eachVehicleInfo);

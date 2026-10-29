@@ -5,12 +5,18 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { getAllOrders } from "../../../services/order.service";
 import { formatPrice } from "../../../util/money";
-import { orderStatusMeta } from "../../../util/orderStatus";
+import { orderStatusMeta, ORDER_STATUS } from "../../../util/orderStatus";
+import MoreCustomers from "../../pages/MoreCustomers";
+
+const PAGE_SIZE = 10;
 import { FiExternalLink } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
 
 function ListAllOrder() {
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [status, setStatus] = useState(""); // "" = all statuses
   const [apiError, setApiError] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
   const { employee, token } = useAuth();
@@ -23,7 +29,7 @@ function ListAllOrder() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const allOrders = await getAllOrders(token);
+        const allOrders = await getAllOrders({ page, page_size: PAGE_SIZE, status });
 
         if (allOrders.status !== "success") {
           setApiError(true);
@@ -40,6 +46,7 @@ function ListAllOrder() {
         // customer, vehicle and creator come with each order from the API
         // (this used to be 3 extra requests per row)
         setOrders(allOrders.data);
+        setTotalPages(allOrders.pagination.total_pages);
       } catch (error) {
         setApiError(true);
         setApiErrorMessage("Failed to fetch orders. Please try again later.");
@@ -47,7 +54,7 @@ function ListAllOrder() {
     };
 
     fetchOrders();
-  }, [token]);
+  }, [token, page, status]);
 
   return (
     <>
@@ -65,6 +72,24 @@ function ListAllOrder() {
             <div className="auto-container">
               <div className="contact-title">
                 <h2>Orders</h2>
+              </div>
+              <div className="mb-3" style={{ maxWidth: 260 }}>
+                <select
+                  className="form-control"
+                  aria-label="Filter by status"
+                  value={status}
+                  onChange={(e) => {
+                    setStatus(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="">All statuses</option>
+                  {Object.values(ORDER_STATUS).map((value) => (
+                    <option key={value} value={value}>
+                      {orderStatusMeta({ order_status: value }).label}
+                    </option>
+                  ))}
+                </select>
               </div>
               <Table striped bordered hover className="table-responsive-mobile">
                 <thead>
@@ -139,6 +164,7 @@ function ListAllOrder() {
                   })}
                 </tbody>
               </Table>
+              <MoreCustomers currentPage={page} totalPages={totalPages} setCurrentPage={setPage} />
             </div>
           </section>
         </>

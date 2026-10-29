@@ -4,42 +4,62 @@ import { Table, Button } from "react-bootstrap";
 import MoreCustomers from '../../../pages/MoreCustomers'
 import { FaRegEdit, FaExternalLinkAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../../../Context/AuthContext";
+import customerService from "../../../../services/customer.service";
 import { PulseLoader } from "react-spinners";
 
+const PAGE_SIZE = 10;
+
 function AllCustomersList() {
-  const { customers, apiError, apiErrorMessage, loading, getAllCustomerList,isDemo } =
-    useAuth();
-
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // search text after a short pause
   const [currentPage, setCurrentPage] = useState(1);
-  const customersPerPage = 10;
+  const [currentCustomers, setCurrentCustomers] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  // the full-page spinner only shows before the first result; later
+  // searches keep the search box mounted (and focused)
+  const [loaded, setLoaded] = useState(false);
+  const [apiError, setApiError] = useState(false);
+  const [apiErrorMessage, setApiErrorMessage] = useState(null);
 
-  // Filter customers based on search input
-  const searchItems = customers.filter(
-    (item) =>
-      item.customer_first_name.toLowerCase().includes(search.toLowerCase()) ||
-      item.customer_last_name.toLowerCase().includes(search.toLowerCase()) ||
-      item.customer_email.toLowerCase().includes(search.toLowerCase()) ||
-      item.customer_phone_number.toLowerCase().includes(search.toLowerCase())
-  );
-  // which helps to fetch the datas again
+  // wait until typing pauses, then search from page 1
   useEffect(() => {
-    getAllCustomerList();
-  }, []);
- 
-  // Pagination logic
-  const indexOfLastCustomer = currentPage * customersPerPage;
-  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
-  const currentCustomers = searchItems.slice(
-    indexOfFirstCustomer,
-    indexOfLastCustomer
-  );
-  const totalPages = Math.ceil(searchItems.length / customersPerPage);
+    const timer = setTimeout(() => {
+      setQuery(search.trim());
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // search and paging happen on the server (was: load every customer and
+  // filter/slice in the browser)
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    customerService
+      .getCustomer({ page: currentPage, page_size: PAGE_SIZE, q: query })
+      .then(async (res) => {
+        const body = await res.json();
+        if (cancelled) return;
+        if (!res.ok) {
+          setApiError(true);
+          setApiErrorMessage(res.status === 403 ? "You are not authorized to view this page" : "Please try again later");
+          return;
+        }
+        setCurrentCustomers(body.data);
+        setTotalPages(body.pagination.total_pages);
+        setLoaded(true);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPage, query]);
 
   return (
     <>
-      {loading ? (
+      {loading && !loaded ? (
         <div className="center_loader">
           <PulseLoader size={10} color={"#123abc"} />
         </div>

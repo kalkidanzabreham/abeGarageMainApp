@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import customerService from "../services/customer.service";
 import { getAuth } from "../util/Auth";
 import { getToken } from "../services/api";
 import { ROLES, can as roleCan } from "../util/roles";
@@ -11,10 +10,6 @@ export const useAuth = () => {
 };
 
 export const Authprovider = ({ children }) => {
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [apiErrorMessage, setApiErrorMessage] = useState(null);
-  const [apiError, setApiError] = useState(false);
   const token = getToken();
 
   const [employee, setEmployee] = useState(null);
@@ -36,11 +31,6 @@ export const Authprovider = ({ children }) => {
     isAdmin,
     setIsLoggedIn,
     setIsAdmin,
-    customers,
-    getAllCustomerList,
-    loading,
-    apiError,
-    apiErrorMessage,
   };
 
   const fetch = () => {
@@ -59,43 +49,6 @@ export const Authprovider = ({ children }) => {
   useEffect(() => {
     fetch();
   }, [token]);
-
-  function getAllCustomerList() {
-    setLoading(true);
-    const allCustomers = customerService.getCustomer();
-    allCustomers
-      .then((res) => {
-        if (!res.ok) {
-          setApiError(true);
-          if (res.status === 401) {
-            setApiErrorMessage("Please login again");
-          } else if (res.status === 403) {
-            setApiErrorMessage("You are not authorized to view this page");
-          } else {
-            setApiErrorMessage("Please try again later");
-          }
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data.data && data.data.length !== 0) {
-          setCustomers(data.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
-
-  useEffect(() => {
-    // customer data needs a login; don't request it for anonymous visitors
-    if (token) {
-      getAllCustomerList();
-    }
-  }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

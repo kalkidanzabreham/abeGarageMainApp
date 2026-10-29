@@ -1,8 +1,15 @@
 const vehicleService = require("../services/vehicle.service");
 const { notFound } = require("../utils/AppError");
 const { wrapAll } = require("../utils/asyncHandler");
+const { paginationMeta } = require("../utils/pagination");
 
 // Errors are thrown and handled by middlewares/error.middleware.js
+
+// GET /api/vehicles: all vehicles, paginated and filterable
+const listVehicles = async (req, res) => {
+  const { rows, total } = await vehicleService.listVehicles(req.query);
+  res.status(200).json({ data: rows, pagination: paginationMeta(req.query, total) });
+};
 
 const addVehicle = async (req, res) => {
   const { customer_id } = req.params; // Get customer_id from URL params
@@ -49,6 +56,7 @@ const editVehicles = async (req, res) => {
 };
 
 module.exports = wrapAll({
+  listVehicles,
   addVehicle,
   singelVehicleInfo,
   eachVehicleInfo,

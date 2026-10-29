@@ -2,6 +2,7 @@
 // Application queries still go through mysql2 (config/db.config.js).
 // Reads the DB settings directly so migrations don't need app secrets.
 require("dotenv").config();
+const { dbSsl } = require("./config/dbSsl");
 
 module.exports = {
   client: "mysql2",
@@ -11,6 +12,7 @@ module.exports = {
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
+    ssl: dbSsl(),
   },
   migrations: { directory: "./db/migrations", tableName: "knex_migrations" },
   seeds: { directory: "./db/seeds" },

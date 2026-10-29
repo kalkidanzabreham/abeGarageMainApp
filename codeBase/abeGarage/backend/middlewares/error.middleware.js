@@ -43,7 +43,9 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (statusCode >= 500) {
-    console.error(err);
+    // full error with stack goes to the log (tagged with the request id),
+    // never to the client
+    req.log.error({ err }, "unhandled error");
   }
 
   const body = { status: "error", code, message };

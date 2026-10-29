@@ -6,6 +6,7 @@ const router = express.Router();
 // `npm run migrate`, instead of a public HTTP endpoint)
 
 // ---- public routes ----
+router.use(require("./health.routes"));
 router.use(require("./login.routes"));
 router.use(require("./tracking.routes"));
 

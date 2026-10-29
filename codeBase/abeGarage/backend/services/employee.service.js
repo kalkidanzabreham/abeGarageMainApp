@@ -1,6 +1,7 @@
 // import the query function from the database configuration file
 const query = require("../config/db.config");
 const { withTransaction } = require("../config/db.config");
+const { limitOffset, likePattern, whereClause } = require("../utils/pagination");
 // import the bcrypt module
 const bcrypt = require("bcrypt");
 
@@ -64,13 +65,35 @@ const getEmployeeByEmail = async (employee_email) => {
   return result[0];
 };
 
-// a functio to get all employees from the database
-
-const getAllEmployees = async () => {
-  const sql = "SELECT * FROM employee JOIN employee_info ON employee.employee_id = employee_info.employee_id JOIN employee_role ON employee.employee_id = employee_role.employee_id JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id ORDER BY employee.employee_id DESC LIMIT 10";
-  const result = await query(sql);
-  return result;
- 
+// Paginated employee list, newest first (was a hard-coded LIMIT 10).
+// filters: q (name or email contains), role (company_role_id), active (0/1)
+const getAllEmployees = async (filters) => {
+  const like = filters.q && likePattern(filters.q);
+  const where = whereClause([
+    like && [
+      `employee.employee_email LIKE ? ESCAPE '\\\\'
+       OR CONCAT(employee_info.employee_first_name, ' ', employee_info.employee_last_name) LIKE ? ESCAPE '\\\\'`,
+      [like, like],
+    ],
+    filters.role !== undefined && ["employee_role.company_role_id = ?", [filters.role]],
+    filters.active !== undefined && ["employee.active_employee = ?", [filters.active]],
+  ]);
+  const from = `FROM employee
+    JOIN employee_info ON employee.employee_id = employee_info.employee_id
+    JOIN employee_role ON employee.employee_id = employee_role.employee_id
+    JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id
+    ${where.sql}`;
+  const [{ total }] = await query(`SELECT COUNT(*) AS total ${from}`, where.params);
+  const { limit, offset } = limitOffset(filters);
+  // explicit columns: never select employee_pass here
+  const rows = await query(
+    `SELECT employee.employee_id, employee.employee_email, employee.active_employee, employee.added_date,
+            employee_info.employee_first_name, employee_info.employee_last_name, employee_info.employee_phone,
+            employee_role.company_role_id, company_roles.company_role_name
+     ${from} ORDER BY employee.employee_id DESC LIMIT ? OFFSET ?`,
+    [...where.params, limit, offset]
+  );
+  return { rows, total };
 };
 
 // A function to get Single employee

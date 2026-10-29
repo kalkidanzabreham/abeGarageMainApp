@@ -1,4 +1,5 @@
 const query = require("../config/db.config");
+const { limitOffset, likePattern, whereClause } = require("../utils/pagination");
 
 const addVehicleForCustomer = async (customer_id, vehicle) => {
   // Step 1: Get customer_id using customer_emai
@@ -51,10 +52,35 @@ const editVehicleInfo = async (vehicle_id, vehicle) => {
     vehicle.vehicle_color,
     vehicle_id,
   ]);
-  console.log(result);
   return result;
 };
+// Paginated list of all vehicles with their owner, newest first.
+// filters: q (make, model, tag or serial contains), customer_id
+const listVehicles = async (filters) => {
+  const like = filters.q && likePattern(filters.q);
+  const where = whereClause([
+    like && [
+      `CONCAT(v.vehicle_make, ' ', v.vehicle_model) LIKE ? ESCAPE '\\\\'
+       OR v.vehicle_tag LIKE ? ESCAPE '\\\\' OR v.vehicle_serial LIKE ? ESCAPE '\\\\'`,
+      [like, like, like],
+    ],
+    filters.customer_id !== undefined && ["v.customer_id = ?", [filters.customer_id]],
+  ]);
+  const from = `FROM customer_vehicle_info v
+    JOIN customer_info c ON v.customer_id = c.customer_id
+    ${where.sql}`;
+  const [{ total }] = await query(`SELECT COUNT(*) AS total ${from}`, where.params);
+  const { limit, offset } = limitOffset(filters);
+  const rows = await query(
+    `SELECT v.*, c.customer_first_name, c.customer_last_name
+     ${from} ORDER BY v.vehicle_id DESC LIMIT ? OFFSET ?`,
+    [...where.params, limit, offset]
+  );
+  return { rows, total };
+};
+
 module.exports = {
+  listVehicles,
   addVehicleForCustomer,
   customerVehicle,
   singleVehicle,

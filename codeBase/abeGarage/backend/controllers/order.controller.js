@@ -2,6 +2,7 @@
 const orderService = require("../services/order.service");
 const { notFound } = require("../utils/AppError");
 const { wrapAll } = require("../utils/asyncHandler");
+const { paginationMeta } = require("../utils/pagination");
 
 // Errors are thrown and handled by middlewares/error.middleware.js
 
@@ -19,8 +20,8 @@ const updateOrder = async (req, res) => {
 
 // a function to get all orders
 const getAllOrders = async (req, res) => {
-  const response = await orderService.getAllOrders();
-  res.status(200).send(response);
+  const { status, data, total } = await orderService.getAllOrders(req.query);
+  res.status(200).send({ status, data, pagination: paginationMeta(req.query, total) });
 };
 
 const getOrderById = async (req, res) => {

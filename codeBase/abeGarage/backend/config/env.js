@@ -15,6 +15,9 @@ const schema = z.object({
   DB_USER: z.string().min(1),
   DB_PASS: z.string(), // may be empty for a local root user, but must be set
   DB_NAME: z.string().min(1),
+  // TLS to the database (see config/dbSsl.js)
+  DB_SSL: z.enum(["true", "false"]).default("false"),
+  DB_SSL_CA: z.string().optional(),
   // HS256 secret: 32+ chars so it cannot be brute-forced from a captured token
   JWT_SECRET: z.string().min(32, "must be at least 32 characters"),
   JWT_EXPIRES_IN: z.string().default("8h"),
@@ -28,6 +31,9 @@ const schema = z.object({
   // failed login attempts allowed per IP per window
   LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default(
+    process.env.NODE_ENV === "test" ? "silent" : "info"
+  ),
 });
 
 const parsed = schema.safeParse(process.env);

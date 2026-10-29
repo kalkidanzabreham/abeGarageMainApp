@@ -28,6 +28,8 @@ function NewOrder() {
   const [services, setServices] = useState([]);
   const [estimatedCompletionDate, setEstimatedCompletionDate] = useState("");
   const [customers, setCustomers] = useState([]);
+  // the search text the current results belong to
+  const [searchedTerm, setSearchedTerm] = useState("");
   const { employee } = useAuth();
 
   let token = null;
@@ -35,21 +37,8 @@ function NewOrder() {
     token = employee.token;
   }
 
-  const filteredCustomers = customers.filter(
-    (customer) =>
-      customer.customer_first_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      customer.customer_last_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      customer.customer_email
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      customer.customer_phone_number
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-  );
+  // results of the server-side search below
+  const filteredCustomers = customers;
 
   const handleCustomerSelect = (customer) => {
     setSelectedCustomer(customer);
@@ -111,12 +100,32 @@ function NewOrder() {
 
   // send the data to addOrder function
 
+  // Search customers on the server once typing pauses (the list is
+  // paginated, so filtering a downloaded list would only search page 1).
   useEffect(() => {
-    Customers.getCustomer()
-      .then((res) => res.json())
-      .then((response) => {
-        setCustomers(response.data);
-      });
+    const term = searchTerm.trim();
+    if (!term) {
+      setCustomers([]);
+      setSearchedTerm("");
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      Customers.getCustomer({ q: term, page_size: 20 })
+        .then((res) => res.json())
+        .then((response) => {
+          if (cancelled) return;
+          setCustomers(response.data || []);
+          setSearchedTerm(term);
+        });
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
     getAllServices().then((response) => {
       setServices(response.data);
     });
@@ -180,7 +189,9 @@ function NewOrder() {
 
         {!selectedCustomer && searchTerm !== "" && (
           <div className="row clearfix">
-            {filteredCustomers.length != 0 ? (
+            {searchedTerm !== searchTerm.trim() ? (
+              <p className="text-muted">Searching...</p>
+            ) : filteredCustomers.length != 0 ? (
               <div className="form-column col-lg-12">
                 <Table
                   striped

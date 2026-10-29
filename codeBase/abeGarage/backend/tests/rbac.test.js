@@ -26,6 +26,7 @@ const MATRIX = [
   ["GET", (i) => `/api/customers/${i.customerId}`, ALL],
   ["POST", () => "/api/customers", AM],
   ["PUT", (i) => `/api/customers/${i.customerId}`, AM],
+  ["GET", () => "/api/vehicles", ALL],
   ["GET", (i) => `/api/addvehicle/${i.customerId}`, ALL],
   ["GET", (i) => `/api/getvehicle/${i.vehicleId}`, ALL],
   ["POST", (i) => `/api/addvehicle/${i.customerId}`, AM],

@@ -2,6 +2,7 @@
 const employeeService = require("../services/employee.service");
 const { notFound, conflict } = require("../utils/AppError");
 const { wrapAll } = require("../utils/asyncHandler");
+const { paginationMeta } = require("../utils/pagination");
 
 // Errors are thrown and handled by middlewares/error.middleware.js
 
@@ -22,10 +23,11 @@ const addEmployee = async (req, res) => {
 
 // a function to get all employees
 const getAllEmployees = async (req, res) => {
-  const employees = await employeeService.getAllEmployees();
+  const { rows, total } = await employeeService.getAllEmployees(req.query);
   return res.status(200).json({
     success: "true",
-    data: employees,
+    data: rows,
+    pagination: paginationMeta(req.query, total),
   });
 };
 
