@@ -28,3 +28,27 @@ test("after logging in, the user lands on the page they asked for", async ({ pag
   await expect(page).toHaveURL(/\/admin\/orders$/);
   await expect(page.getByText("Welcome : Ada")).toBeVisible();
 });
+
+test("a slow login (sleeping free-tier API) shows the wake-up message, then logs in", async ({ page }) => {
+  // hold the login request for 6 s, as a cold-starting server would
+  await page.route("**/api/employee/login", async (route) => {
+    await new Promise((r) => setTimeout(r, 6000));
+    await route.continue();
+  });
+  await page.goto("/login");
+  await page.fill("input[name=employee_email]", "admin@garagehub.test");
+  await page.fill("input[name=employee_password]", PASSWORD);
+  await page.click("button:has-text('Login')");
+  await expect(page.getByRole("button", { name: "Login" })).toBeDisabled();
+  await expect(page.getByText("Waking up the demo server, this can take up to a minute")).toBeVisible({ timeout: 7000 });
+  await expect(page).toHaveURL(/\/admin/, { timeout: 15000 });
+});
+
+test("a fast login does not show the wake-up message", async ({ page }) => {
+  await page.goto("/login");
+  await page.fill("input[name=employee_email]", "admin@garagehub.test");
+  await page.fill("input[name=employee_password]", PASSWORD);
+  await page.click("button:has-text('Login')");
+  await expect(page).toHaveURL(/\/admin/);
+  await expect(page.getByText("Waking up the demo server")).toHaveCount(0);
+});
