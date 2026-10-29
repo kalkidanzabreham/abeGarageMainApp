@@ -12,7 +12,7 @@ import { FaEdit, FaTrash } from "react-icons/fa"; // Font Awesome icons
 
 function EmployeeList() {
   const navigate = useNavigate();
-  const { token, isGuest } = useAuth();
+  const { token, isDemo } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState("");
@@ -39,8 +39,8 @@ function EmployeeList() {
   };
 
   const handleDelete = async (employee_id) => {
-    if (isGuest) {
-      Swal.fire("Access Denied", "Guests cannot delete employees.", "warning");
+    if (isDemo) {
+      Swal.fire("Access Denied", "The demo account cannot delete employees.", "warning");
       return;
     }
 

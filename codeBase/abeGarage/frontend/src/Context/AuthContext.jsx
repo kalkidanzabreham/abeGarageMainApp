@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import customerService from "../services/customer.service";
 import { getAuth } from "../util/Auth";
+import { getToken } from "../services/api";
+import { ROLES, can as roleCan } from "../util/roles";
 
 const AuthContext = React.createContext();
 
@@ -13,22 +15,27 @@ export const Authprovider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
   const [apiError, setApiError] = useState(false);
-  const token = JSON.parse(localStorage.getItem("Our-token"));
+  const token = getToken();
 
   const [employee, setEmployee] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isGuest, setIsGuest] = useState(false); 
+  const roleId = employee ? employee.employee_role_id : null;
+  // read-only demo account (replaces the removed guest login)
+  const isDemo = roleId === ROLES.DEMO;
+  // UI hint only; the API enforces permissions (see util/roles.js)
+  const can = (permission) => roleCan(roleId, permission);
 
   const value = {
     token,
     isLoggedIn,
-    isGuest, 
+    isDemo,
     employee,
+    roleId,
+    can,
     isAdmin,
     setIsLoggedIn,
     setIsAdmin,
-    setIsGuest, 
     customers,
     getAllCustomerList,
     loading,
@@ -41,13 +48,9 @@ export const Authprovider = ({ children }) => {
     auth.then((response) => {
       if (response) {
         setIsLoggedIn(true);
-
-        if (response.employee_role_id === 3) {
+        if (response.employee_role_id === ROLES.ADMIN) {
           setIsAdmin(true);
-        } else if (response.employee_role_id === "guest") {
-          setIsGuest(true); 
         }
-
         setEmployee(response);
       }
     });
@@ -75,7 +78,7 @@ export const Authprovider = ({ children }) => {
         return res.json();
       })
       .then((data) => {
-        if (data.data.length !== 0) {
+        if (data.data && data.data.length !== 0) {
           setCustomers(data.data);
         }
       })
@@ -88,7 +91,10 @@ export const Authprovider = ({ children }) => {
   }
 
   useEffect(() => {
-    getAllCustomerList();
+    // customer data needs a login; don't request it for anonymous visitors
+    if (token) {
+      getAllCustomerList();
+    }
   }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

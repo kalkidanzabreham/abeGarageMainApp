@@ -8,7 +8,7 @@ import { useAuth } from "../../../../Context/AuthContext";
 import { PulseLoader } from "react-spinners";
 
 function AllCustomersList() {
-  const { customers, apiError, apiErrorMessage, loading, getAllCustomerList,isGuest } =
+  const { customers, apiError, apiErrorMessage, loading, getAllCustomerList,isDemo } =
     useAuth();
 
   const [search, setSearch] = useState("");

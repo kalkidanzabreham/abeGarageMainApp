@@ -1,37 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { login } from "../../../services/login.service"; // Ensure this service has a guest login method
+import { useLocation } from "react-router-dom";
+import { login } from "../../../services/login.service";
 
 function LoginForm() {
   const [email_error, set_email] = useState("");
   const [server_error, set_server_error] = useState("");
   const [password_error, set_password] = useState("");
   const [succes_message, set_succes_message] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
-  const redirect = location.redirect?.from || "/";
-
-  // **Handle Guest Login**
-  const handleGuestLogin = async () => {
-    try {
-      const response = await login({ role: "guest" }); // Modify your backend to handle this
-      if (response.status === "success") {
-        localStorage.setItem("Our-token", JSON.stringify(response.token));
-        navigate("/admin");
-         if (location.pathname === "/login") {
-           window.location.replace("/admin");
-         } else {
-           window.location.reload();
-         }
-      } 
-      
-      else {
-        set_server_error(response.message);
-      }
-    } catch (error) {
-      set_server_error("Guest login failed. Please try again.");
-    }
-  };
+  // ProtectedRoute sends users here with state.from = the page they wanted
+  const redirect = location.state?.from?.pathname || "/admin";
 
   // **Handle Normal Login**
   const handleSubmit = async (e) => {
@@ -69,14 +47,8 @@ function LoginForm() {
       if (response.status === "success") {
         set_succes_message(true);
         localStorage.setItem("Our-token", JSON.stringify(response.token));
-        setTimeout(() => {
-          navigate(redirect);
-        }, 2000);
-         if (location.pathname === "/login") {
-           window.location.replace("/admin");
-         } else {
-          window.location.reload();
-        }
+        // full reload so AuthContext re-reads the new token
+        window.location.replace(redirect);
       } else {
         set_server_error(response.message);
       }
@@ -142,15 +114,6 @@ function LoginForm() {
                           type="submit"
                         >
                           Login
-                        </button>
-                      </div>
-                      <div className="form-group col-md-12 d-flex">
-                        <button
-                          className="theme-btn btn-style-one w-80"
-                          type="button"
-                          onClick={handleGuestLogin} 
-                        >
-                          Login As A Guest
                         </button>
                       </div>
                     </div>

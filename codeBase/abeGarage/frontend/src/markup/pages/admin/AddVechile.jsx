@@ -16,7 +16,7 @@ function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
   const [vehicle_color, setVehicle_color] = useState("");
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { isAdmin } = useAuth();
+  const { can } = useAuth();
 
   const navigate = useNavigate();
 
@@ -47,8 +47,8 @@ function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isAdmin) {
-      toast.error("Only admin can add/edit vehicles");
+    if (!can("vehicles:write")) {
+      toast.error("Only admins and managers can add/edit vehicles");
       return;
     }
 
@@ -75,8 +75,8 @@ function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
     response
       .then((res) => res.json())
       .then((data) => {
-        if (data.error) {
-          setServerError(data.error);
+        if (data.status === "error") {
+          setServerError(data.message);
         } else {
           setvehicle_serial_number("");
           setVehicle_color("");

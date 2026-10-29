@@ -10,6 +10,7 @@ import Vehicles from "../../../services/vehicle.service";
 import { getAllServices } from "../../../services/service.service";
 import { addOrder } from "../../../services/order.service";
 import { useNavigate } from "react-router-dom";
+import { formatPrice } from "../../../util/money";
 // Reusable MdCancel Component
 const MdCancel = ({ onClick, size = 24, fill = "red" }) => (
   <button className="theme-btn" onClick={onClick}>
@@ -78,6 +79,12 @@ function NewOrder() {
       setSelectedServices([...selectedServices, serviceId]);
     }
   };
+
+  // live estimate for the person creating the order; the API computes and
+  // stores the real total from the same catalog prices
+  const estimatedTotal = services
+    .filter((service) => selectedServices.includes(service.service_id))
+    .reduce((sum, service) => sum + Number(service.service_price), 0);
 
   const handleSubmitOrder = () => {
     const orderData = {
@@ -229,12 +236,12 @@ function NewOrder() {
                 </div>
                 <div>
                   <strong>Active Customer:</strong>{" "}
-                  {selectedCustomer.active ? "Yes" : "No"}
+                  {selectedCustomer.active_customer_status === 1 ? "Yes" : "No"}
                 </div>
                 <div>
                   <strong>Edit Customer:</strong>{" "}
                   <span className="">
-                    <Link to={`/admin/customer_edit/${selectedCustomer.id}`}>
+                    <Link to={`/admin/customer_edit/${selectedCustomer.customer_id}`}>
                       <FaEdit
                         color="red"
                         style={{ cursor: "pointer", marginRight: "5px" }}
@@ -277,7 +284,7 @@ function NewOrder() {
                   </thead>
                   <tbody>
                     {vehicles.map((vehicle) => (
-                      <tr key={vehicle.id}>
+                      <tr key={vehicle.vehicle_id}>
                         <td>{vehicle.vehicle_year}</td>
                         <td>{vehicle.vehicle_make}</td>
                         <td>{vehicle.vehicle_model}</td>
@@ -344,7 +351,7 @@ function NewOrder() {
                 <div>
                   <strong>Edit vehicle info:</strong>{" "}
                   <span className="">
-                    <Link to={`/admin/edit-customer/${selectedCustomer.id}`}>
+                    <Link to={`/admin/edit_vehicle/${selectedVehicle.vehicle_id}`}>
                       <FaEdit
                         color="red"
                         style={{ cursor: "pointer", marginRight: "5px" }}
@@ -375,6 +382,7 @@ function NewOrder() {
                         {service.service_name}
                       </h4>
                       <div>{service.service_description}</div>
+                      <strong>{formatPrice(service.service_price)}</strong>
                     </div>
                     <div className="checkbox-holder col-3 text-right  ">
                       <Form.Check
@@ -390,6 +398,15 @@ function NewOrder() {
               </div>
             </div>
           </>
+        )}
+
+        {selectedVehicle && (
+          <div className="row clearfix selected-customer">
+            <div className="form-column col-lg-12 d-flex justify-content-between">
+              <h3>Estimated total</h3>
+              <h3 data-testid="estimated-total">{formatPrice(estimatedTotal)}</h3>
+            </div>
+          </div>
         )}
 
         {/* Order Details Section */}

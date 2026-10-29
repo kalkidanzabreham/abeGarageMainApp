@@ -1,5 +1,7 @@
 # 🚗 Abe GarageHub – Smart Garage Management System
 
+[![CI](https://github.com/kalkidanzabreham/abeGarageMainApp/actions/workflows/ci.yml/badge.svg?branch=phase-1-security)](https://github.com/kalkidanzabreham/abeGarageMainApp/actions/workflows/ci.yml?query=branch%3Aphase-1-security)
+
 GarageHub is a full-stack Garage Management System built to simplify and automate day-to-day garage operations.
 It enables garage owners to efficiently manage customers, vehicles, employees, and billing — all through an intuitive web interface.
 

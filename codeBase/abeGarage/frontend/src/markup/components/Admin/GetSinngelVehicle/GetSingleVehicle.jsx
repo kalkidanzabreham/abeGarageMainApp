@@ -9,10 +9,13 @@ function GetSingleVehicle({ customer_id, vehicleData, showBtn = true }) {
   const [vehicleInfo, setVehicleInfo] = useState([]);
 
   const fetchSingleVehicle = () => {
+    if (!customer_id) return;
     const vehiclesInfo = vehicles.CustomerVehicle(customer_id);
     vehiclesInfo.then((data) => {
-      setVehicleInfo(data.data);
-      vehicleData(data.data);
+      // an error response has no data array; show an empty list, not a crash
+      const list = data?.data ?? [];
+      setVehicleInfo(list);
+      if (vehicleData) vehicleData(list);
     });
   };
 

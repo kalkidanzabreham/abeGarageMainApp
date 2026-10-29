@@ -24,7 +24,7 @@ function EmployeeEditForm() {
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
   const [serverError, setServerError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const { employee,isGuest } = useAuth();
+  const { employee,isDemo } = useAuth();
   const token = employee ? employee.token : null;
 
 
@@ -72,8 +72,8 @@ function EmployeeEditForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isGuest) {
-      Swal.fire("Access Denied", "Guests cannot edit employees.", "warning");
+    if (isDemo) {
+      Swal.fire("Access Denied", "The demo account cannot edit employees.", "warning");
       return;
     }
 
@@ -81,8 +81,8 @@ function EmployeeEditForm() {
       const res = await updateEmployee(employee_id, employeeValue, token);
       const data = await res.json();
 
-      if (data.error) {
-        setServerError(data.error);
+      if (data.status === "error") {
+        setServerError(data.message);
       } else {
         setUpdateSuccess(true);
         setServerError("");
@@ -163,9 +163,10 @@ function EmployeeEditForm() {
                         }
                         className="custom-select-box"
                       >
-                        <option value="1">Employee</option>
+                        <option value="1">Mechanic</option>
                         <option value="2">Manager</option>
                         <option value="3">Admin</option>
+                        <option value="4">Demo (read-only)</option>
                       </select>
                     </div>
 

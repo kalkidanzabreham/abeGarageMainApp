@@ -9,8 +9,9 @@ import { useAuth } from "../../../../Context/AuthContext";
 function ServicePage() {
   const [services, setServices] = useState([]);
   const [serviceToEdit, setServiceToEdit] = useState(null);
-  const [newService, setNewService] = useState({ name: "", description: "" });
-  const {isGuest} = useAuth()
+  const EMPTY_SERVICE = { service_name: "", service_description: "", service_price: "" };
+  const [newService, setNewService] = useState(EMPTY_SERVICE);
+  const {isDemo} = useAuth()
 
   useEffect(() => {
     fetchServices();
@@ -26,14 +27,14 @@ function ServicePage() {
     }
   };
   const addService = async () => {
-    if (isGuest) {
-              Swal.fire("Access Denied", "Guests cannot add Services.", "warning");
+    if (isDemo) {
+              Swal.fire("Access Denied", "The demo account cannot add Services.", "warning");
               return;
             }
-    if (!newService.service_name || !newService.service_description) return;
+    if (!newService.service_name || newService.service_price === "") return;
     try {
       const response = await addServiceService(newService);
-      console.log(response);
+      if (showApiError(response)) return;
       resetForm();
       fetchServices();
     } catch (error) {
@@ -42,18 +43,19 @@ function ServicePage() {
   };
 
   const updateService = async () => {
-    if (isGuest) {
-              Swal.fire("Access Denied", "Guests cannot update Services.", "warning");
+    if (isDemo) {
+              Swal.fire("Access Denied", "The demo account cannot update Services.", "warning");
               return;
             }
     if (
       !serviceToEdit ||
       !newService.service_name ||
-      !newService.service_description
+      newService.service_price === ""
     )
       return;
     try {
       const response = await updateServiceService(newService,serviceToEdit);
+      if (showApiError(response)) return;
       resetForm();
       fetchServices();
     } catch (error) {
@@ -62,36 +64,49 @@ function ServicePage() {
   };
 
   const deleteService = async (id) => {
-    if (isGuest) {
-              Swal.fire("Access Denied", "Guests cannot delete Services.", "warning");
+    if (isDemo) {
+              Swal.fire("Access Denied", "The demo account cannot delete Services.", "warning");
               return;
             }
     try {
       const response = await deleteServiceService(id)
+      if (showApiError(response)) return;
       fetchServices();
     } catch (error) {
       console.error("Error deleting service:", error);
     }
   };
 
-  const handleSubmit = () => {
+  // API errors ({ status: "error", message }) were silently ignored
+  const showApiError = (response) => {
+    if (response && response.status === "error") {
+      Swal.fire("Error", response.message, "error");
+      return true;
+    }
+    return false;
+  };
+
+  const handleSubmit = (e) => {
+    // without this the browser reloads the page and can cancel the request
+    e.preventDefault();
     serviceToEdit ? updateService() : addService();
   };
 
   const editService = (service) => {
-    if (isGuest) {
-      Swal.fire("Access Denied", "Guests cannot edit Services.", "warning");
+    if (isDemo) {
+      Swal.fire("Access Denied", "The demo account cannot edit Services.", "warning");
       return;
     }
     setNewService({
       service_name: service.service_name,
       service_description: service.service_description,
+      service_price: service.service_price,
     });
     setServiceToEdit(service);
   };
 
   const resetForm = () => {
-    setNewService({ service_name: "", service_description: "" });
+    setNewService(EMPTY_SERVICE);
     setServiceToEdit(null);
   };
 
@@ -117,6 +132,7 @@ function ServicePage() {
           >
             <div>
               <h3>{service.service_name}</h3>
+              <strong>${Number(service.service_price).toFixed(2)}</strong>
               <p style={{ maxWidth: "900px", wordWrap: "break-word" }}>
                 {service.service_description}
               </p>
@@ -157,6 +173,23 @@ function ServicePage() {
                           setNewService({
                             ...newService,
                             service_name: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div class="form-group col-md-12">
+                      <input
+                        type="number"
+                        name="service_price"
+                        placeholder="Price"
+                        min="0"
+                        step="0.01"
+                        value={newService.service_price}
+                        onChange={(e) =>
+                          setNewService({
+                            ...newService,
+                            service_price: e.target.value,
                           })
                         }
                       />

@@ -1,37 +1,23 @@
-// import express 
+// import express
 const express = require('express');
+const { validate } = require("../middlewares/validate.middleware");
+const schemas = require("../validators/schemas");
 // create a router
 const router = express.Router();
 // import the employee controller
 const employeeController = require('../controllers/employee.controller');
-// import middlewaare fuction to validate the employee data
-const {verifyToken} = require("../middlewares/auth.middleware");
-const {verifyAdmin }= require('../middlewares/auth.middleware');
-// define the routes
-router.post('/api/employee',[verifyAdmin],employeeController.addEmployee);
-// create a get route to get all employees
+const { authorize } = require("../middlewares/auth.middleware");
 
-router.get('/api/employee', employeeController.getAllEmployees);
+// authentication is applied to every route in routes/index.js
+router.post('/api/employee', authorize("employees:write"), validate(schemas.createEmployee), employeeController.addEmployee);
 
-// Create a route to handle the get single employee request on get
-router.get(
-	"/api/employee/:id",
-	
-	employeeController.getSingleEmployee
-);
+router.get('/api/employee', authorize("employees:read"), validate(schemas.none), employeeController.getAllEmployees);
 
-// Updateroutes for employee
-router.put(
-	"/api/employee/:id",
-	[verifyToken,verifyAdmin],
-	employeeController.updateEmployee
-);
-router.delete(
-  "/api/employee/:id",
-  [verifyToken, verifyAdmin],
-  employeeController.deleteEmployee
-);
+router.get("/api/employee/:id", authorize("employees:read"), validate(schemas.byId), employeeController.getSingleEmployee);
 
+router.put("/api/employee/:id", authorize("employees:write"), validate(schemas.updateEmployee), employeeController.updateEmployee);
+
+router.delete("/api/employee/:id", authorize("employees:write"), validate(schemas.byId), employeeController.deleteEmployee);
 
 // export the router
 module.exports = router;

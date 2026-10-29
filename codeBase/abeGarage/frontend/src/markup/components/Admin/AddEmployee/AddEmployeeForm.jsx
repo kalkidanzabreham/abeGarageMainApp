@@ -60,8 +60,9 @@ function AddEmployeeForm() {
     valid = false
   };
   // check if the password is less than 6 characters
-  if(data.employee_password.length < 6){
-    set_password("Password must be at least 6 characters")
+  // matches the API rule (validators/schemas.js)
+  if(data.employee_password.length < 8){
+    set_password("Password must be at least 8 characters")
     valid = false
   };
   // if the form is valid
@@ -161,9 +162,10 @@ try {
                         name="company_role_id"
                         className="custom-select-box"
                       >
-                        <option value="1">Employee</option>
+                        <option value="1">Mechanic</option>
                         <option value="2">Manager</option>
                         <option value="3">Admin</option>
+                        <option value="4">Demo (read-only)</option>
                       </select>
                     </div>
 

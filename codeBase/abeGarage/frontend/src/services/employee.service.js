@@ -1,109 +1,55 @@
-// import apiurl from env
-const apiurl = import.meta.env.VITE_API_URL;
-console.log(apiurl)
-// create create employee function to send the data to the server
-console.log(apiurl);
-const createEmployee = async (data, token) => {
-  console.log(token);
+import { apiFetch } from "./api";
 
+// Callers still pass a token argument; it is ignored because apiFetch
+// adds the stored token itself.
+const createEmployee = async (data) => {
   try {
-    const response = await fetch(
-      `
-    ${apiurl}/employee`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": token,
-        },
-        body: JSON.stringify(data),
-      }
-    );
-
-    const responseData = await response.json();
-    console.log(responseData);
-    return responseData;
+    const response = await apiFetch("/employee", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return await response.json();
   } catch (error) {
     console.error(error);
   }
 };
-//  a function to send a get request to the server to get all employees
 
-const getAllEmployees = async (token) => {
-  const response = await fetch(`${apiurl}/employee`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-access-token": token,
-    },
-  });
-
-  const responseData = await response.json();
-  console.log(responseData);
-  return responseData;
+const getAllEmployees = async () => {
+  const response = await apiFetch("/employee", { method: "GET" });
+  return response.json();
 };
 
 // A function to send get request to get employee
 const getEmployee = async (employee_id) => {
-	try {
-		const response = await fetch(
-			`${apiurl}/employee/${employee_id}`,
-			{
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json"
-			
-		},
-	}
-)
-console.log(response);
-		// console.log('employee: response==',response);
-		return response;
-	} catch (error) {
-		console.error("Error fetching employee:", error);
-		throw error;
-	}
+  try {
+    return await apiFetch(`/employee/${employee_id}`, { method: "GET" });
+  } catch (error) {
+    console.error("Error fetching employee:", error);
+    throw error;
+  }
 };
 
 // Afunction to send put request to update employee data
-const updateEmployee = async (employeeId, formData, loggedInEmployeeToken) => {
-	const requestOptions = {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json",
-			"x-access-token": loggedInEmployeeToken,
-		},
-		body: JSON.stringify(formData),
-	};
-
-	const response = await fetch(
-		`${apiurl}/employee/${employeeId}`,
-		requestOptions
-	);
-	return response;
+const updateEmployee = async (employeeId, formData) => {
+  return apiFetch(`/employee/${employeeId}`, {
+    method: "PUT",
+    body: JSON.stringify(formData),
+  });
 };
 
-const deleteEmployee = async (employee_id, token) => {
+const deleteEmployee = async (employee_id) => {
   try {
-    const response = await fetch(`${apiurl}/employee/${employee_id}`, {
+    const response = await apiFetch(`/employee/${employee_id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "x-access-token": token,
-      },
     });
-
     if (!response.ok) {
-      return { success: false, message: "Failed to delete employee" };
+      const data = await response.json().catch(() => ({}));
+      return { success: false, message: data.message || "Failed to delete employee" };
     }
-
     return { success: true };
   } catch (error) {
     return { success: false, message: error.message };
   }
 };
-// export the create employee function
 
-
-export { createEmployee, getAllEmployees,getEmployee,updateEmployee,deleteEmployee };
-
+export { createEmployee, getAllEmployees, getEmployee, updateEmployee, deleteEmployee };

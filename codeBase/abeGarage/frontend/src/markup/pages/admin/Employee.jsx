@@ -5,9 +5,9 @@ import Unauthorized from '../Unauthorized';
 import AdminMenu from '../../components/Admin/AdminMenu/AdminMenu';
 import EmployeeList from '../../components/EmployeeList/EmployeeList';
 function Employee() {
-  const {isLoggedIn,isAdmin,isGuest} = useAuth()
+  const {isLoggedIn,can} = useAuth()
   if (isLoggedIn){
-    if(isAdmin || isGuest){
+    if(can("employees:read")){
    return (
       <div>
         <div className="container-fluid admin-pages">

@@ -1,6 +1,6 @@
 import "./App.css";
 // import routes and route from react-router-dom
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 // import components
 import Home from "./markup/pages/Home";
 import About from "./markup/pages/About";
@@ -43,74 +43,124 @@ import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
 
 import AdminPage from "./markup/pages/admin/AdminPage";
 
-import { MdOutlineAirlineSeatLegroomReduced } from "react-icons/md";
 
 import EditOrder from "./markup/components/OrderEdit/OrderEdit";
+import { ALL_ROLES, PERMISSIONS, PAGE_ROLES } from "./util/roles";
+import ErrorBoundary from "./markup/components/ErrorBoundary/ErrorBoundary";
 
 
 
 function App() {
+  const location = useLocation();
   return (
     <>
       <Header />
+      {/* keyed by path: a crash on one page is cleared by navigating away */}
+      <ErrorBoundary key={location.pathname}>
       <Routes>
+        {/* public pages */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/customer_order/:order_hash" element={<CustomerOrder />} />
+        <Route path="/customer_info" element={<CarStatusInfo />} />
+        {/* staff pages: roles mirror backend/config/permissions.js;
+            the API enforces them, this only avoids showing pages that
+            would fail */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin"]}>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/employee"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin/employee"]}>
+              <Employee />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/addEmployee"
           element={
-            <ProtectedRoute roles={[3,"guest"]}>
+            <ProtectedRoute roles={PERMISSIONS["employees:write"]}>
               <AddEmploye />
             </ProtectedRoute>
           }
         />
         <Route
-          path="/admin/edit_vehicle/:vehicle_id"
-          element={<EditVehicles />}
+          path="/admin/add-employee"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin/add-employee"]}>
+              <AddEmploye />
+            </ProtectedRoute>
+          }
         />
         <Route
-          path="/admin/customer_edit/:customer_id"
-          element={<EditCustomer />}
+          path="/admin/employees/edit/:employee_id"
+          element={
+            <ProtectedRoute roles={PERMISSIONS["employees:write"]}>
+              <EmployeeEdit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/all_customers"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin/all_customers"]}>
+              <CustomersList />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/admin/add_customers"
           element={
-            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/add_customers"]}>
               <AddCustomers />
             </ProtectedRoute>
           }
         />
-        <Route path="/admin/all_customers" element={<CustomersList />} />
-
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/admin/employee" element={<Employee />} />
-
-        <Route path="/customer_order/:order_hash" element={<CustomerOrder />} />
-        <Route path="/customer_info" element={<CarStatusInfo />} />
-
-
-        <Route path="/admin/service" element={<AdminService />} />
-
-        <Route path="/admin/add-employee" element={<AddEmploye/>} />
-
-
-
         <Route
-          path="/admin/employees/edit/:employee_id"
-          element={<EmployeeEdit />}
+          path="/admin/customer_edit/:customer_id"
+          element={
+            <ProtectedRoute roles={PERMISSIONS["customers:write"]}>
+              <EditCustomer />
+            </ProtectedRoute>
+          }
         />
-
         <Route
           path="/admin/customer_profile/:customer_id"
-          element={<CustomerProfileLists />}
+          element={
+            <ProtectedRoute roles={ALL_ROLES}>
+              <CustomerProfileLists />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit_vehicle/:vehicle_id"
+          element={
+            <ProtectedRoute roles={PERMISSIONS["vehicles:write"]}>
+              <EditVehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/service"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin/service"]}>
+              <AdminService />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/admin/new-order"
           element={
-            <ProtectedRoute roles={[3,"guest"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/new-order"]}>
               <Orders />
             </ProtectedRoute>
           }
@@ -118,31 +168,31 @@ function App() {
         <Route
           path="/admin/orders"
           element={
-            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
+            <ProtectedRoute roles={PAGE_ROLES["/admin/orders"]}>
               <OrderList />
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/admin/orders/:order_id"
           element={
-            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
-              <ViewOrder/>
+            <ProtectedRoute roles={ALL_ROLES}>
+              <ViewOrder />
             </ProtectedRoute>
           }
         />
         <Route
           path="/admin/edit-order/:id"
           element={
-            <ProtectedRoute roles={[1, 2, 3,"guest"]}>
+            <ProtectedRoute roles={PERMISSIONS["orders:update"]}>
               <EditOrder />
             </ProtectedRoute>
           }
         />
-
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </ErrorBoundary>
       <Footer />
     </>
   );

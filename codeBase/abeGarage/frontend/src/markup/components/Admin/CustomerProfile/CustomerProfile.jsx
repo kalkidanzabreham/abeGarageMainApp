@@ -70,8 +70,10 @@ function CustomerProfile() {
             <h3 className="bold mb-3">
               Vehicle of {customerData?.customer_first_name}
             </h3>
+            {/* the id comes from the URL; customerData is still empty on the
+                first render, which made these children fetch ".../undefined" */}
             <GetSingleVehicle
-              customer_id={customerData?.customer_id}
+              customer_id={customer_id}
               vehicleData={(data) => setVehicleData(data)}
               showBtn={false}
             />
@@ -128,7 +130,7 @@ function CustomerProfile() {
             <h3 className="bold">
               Orders of {customerData?.customer_first_name}
             </h3>
-            <CustomerOfAllOrder  customer_id={customerData?.customer_id} />
+            <CustomerOfAllOrder customer_id={customer_id} />
           </div>
         </div>
       </div>

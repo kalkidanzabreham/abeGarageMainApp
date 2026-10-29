@@ -14,7 +14,7 @@ function AddCustomer() {
   const [customer_phone_number, setPhoneNumber] = useState("");
   const [active_customer_status, setActive_customer] = useState(1);
   const [loading, setLoading] = useState(false);
-  const { isAdmin,isGuest } = useAuth();
+  const { can, isDemo } = useAuth();
   const navigate = useNavigate();
 
   // Errors
@@ -24,11 +24,11 @@ function AddCustomer() {
   const [serverError, setServerError] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-     if (isGuest) {
-          Swal.fire("Access Denied", "Guests cannot add customers.", "warning");
+     if (isDemo) {
+          Swal.fire("Access Denied", "The demo account cannot add customers.", "warning");
           return;
         }
-    if (!isAdmin) {
+    if (!can("customers:write")) {
       toast.error("Unauthorized Access");
       return;
     }
@@ -72,8 +72,8 @@ function AddCustomer() {
       const response = await customers.addCustomers(formData);
       const data = await response.json();
 
-      if (data.error) {
-        return setServerError(data.error);
+      if (data.status === "error") {
+        return setServerError(data.message);
       }
       setSuccess(true);
       setServerError("");

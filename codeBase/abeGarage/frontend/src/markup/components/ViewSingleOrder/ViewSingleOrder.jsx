@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { orderStatusMeta } from "../../../util/orderStatus";
 import { useParams } from "react-router-dom";
 import { getOrderById } from "../../../services/order.service";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../Context/AuthContext";
+import { formatPrice } from "../../../util/money";
 function ViewSingleOrder() {
   const [singleOrderData, setSingleOrderData] = useState([]);
   const { order_id } = useParams();
@@ -13,9 +15,9 @@ function ViewSingleOrder() {
       const singleOrder = getOrderById(order_id, token);
 
       singleOrder.then((data) => {
-        if (data.error) {
-          console.log(data.error);
-          toast.error(data.error);
+        if (data.status === "error") {
+          console.log(data.message);
+          toast.error(data.message);
           return;
         }
         setSingleOrderData(data[0]);
@@ -68,21 +70,9 @@ function ViewSingleOrder() {
                         </p>
                       </div>
                       <span className="">
-                        {singleOrderData?.order_status === 0 ? (
-                          <span className="bg-warning round text-white px-2 d-inline-block text-center status-badge">
-                            Received
+                        <span className={`${orderStatusMeta(singleOrderData).badge} round text-white px-2 d-inline-block text-center status-badge`}>
+                            {orderStatusMeta(singleOrderData).label}
                           </span>
-                        ) : singleOrderData?.order_status === 1 ? (
-                          <span className="bg-primary round text-white px-2 d-inline-block text-center status-badge">
-                            In Progress
-                          </span>
-                        ) : (
-                          singleOrderData?.order_status === 2 && (
-                            <span className="bg-success round text-white px-2 d-inline-block text-center status-badge">
-                              Completed
-                            </span>
-                          )
-                        )}
                       </span>
                     </div>
                   </div>
@@ -113,7 +103,7 @@ function ViewSingleOrder() {
                           </span>
                         </p>
                         <p>
-                          <strong>Active-Employee:</strong>{" "}
+                          <strong>Active customer:</strong>{" "}
                           <span className="text-muted">
                             {singleOrderData?.active_customer_status === 1
                               ? "Yes"
@@ -188,6 +178,9 @@ function ViewSingleOrder() {
                                       <p className="text-muted">
                                         {service.service_description}
                                       </p>
+                                      <strong>
+                                        {formatPrice(service.service_price)}
+                                      </strong>
                                     </div>
 
                                     {/* Right Side - Status Indicator */}
@@ -211,6 +204,14 @@ function ViewSingleOrder() {
                           <p>No services found.</p>
                         )}
                       </div>
+                    </div>
+
+                    {/* order total: computed by the API from catalog prices */}
+                    <div className="d-flex justify-content-between border-top pt-3 mt-3">
+                      <h4 className="mb-0">Total</h4>
+                      <h4 className="mb-0" data-testid="order-total">
+                        {formatPrice(singleOrderData?.order_total_price)}
+                      </h4>
                     </div>
 
                     {/* Additional Order Section */}

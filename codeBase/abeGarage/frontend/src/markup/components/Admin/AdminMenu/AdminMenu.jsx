@@ -1,36 +1,32 @@
 import React from 'react'
+import { useAuth } from '../../../../Context/AuthContext';
+import { canVisit } from '../../../../util/roles';
+
+const ITEMS = [
+  ["/admin", "Dashboard"],
+  ["/admin/orders", "Orders"],
+  ["/admin/new-order", "New order"],
+  ["/admin/add-employee", "Add employee"],
+  ["/admin/employee", "Employees"],
+  ["/admin/add_customers", "Add customer"],
+  ["/admin/all_customers", "Customers"],
+  ["/admin/service", "Services"],
+];
 
 function AdminMenu() {
+  const { roleId } = useAuth();
   return (
     <div>
       <div className="admin-menu">
         <h2>Admin Menu</h2>
       </div>
       <div className="list-group">
-        <a href="/admin" className="list-group-item">
-          Dashboard
-        </a>
-        <a href="/admin/orders" className="list-group-item">
-          Orders
-        </a>
-        <a href="/admin/new-order" className="list-group-item">
-          New order
-        </a>
-        <a href="/admin/add-employee" className="list-group-item">
-          Add employee
-        </a>
-        <a href="/admin/employee" className="list-group-item">
-          Employees
-        </a>
-        <a href="/admin/add_customers" className="list-group-item">
-          Add customer
-        </a>
-        <a href="/admin/all_customers" className="list-group-item">
-          Customers
-        </a>
-        <a href="/admin/service" className="list-group-item">
-          Services
-        </a>
+        {/* only pages this role can open (util/roles.js PAGE_ROLES) */}
+        {ITEMS.filter(([path]) => canVisit(roleId, path)).map(([path, label]) => (
+          <a key={path} href={path} className="list-group-item">
+            {label}
+          </a>
+        ))}
       </div>
     </div>
   );

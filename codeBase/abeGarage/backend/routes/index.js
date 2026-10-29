@@ -1,41 +1,22 @@
 // import routes
 const express = require("express");
-// import install route
-const installRoute = require("./install.routes");
-// use install route
+const { authenticate, denyDemoWrites } = require("../middlewares/auth.middleware");
 const router = express.Router();
-router.use(installRoute);
-// import employee route
-const employeeRoute = require("./employee.routes");
-// use employee route
-router.use(employeeRoute);
-// import service route
-const serviceRoute  = require('./service.routes')
-// use service route
-router.use(serviceRoute)
-// import login route
-const loginRoute = require("./login.routes");
-// use login route
-router.use(loginRoute);
+// (GET /install was removed: the schema is managed by Knex migrations,
+// `npm run migrate`, instead of a public HTTP endpoint)
 
+// ---- public routes ----
+router.use(require("./login.routes"));
+router.use(require("./tracking.routes"));
 
-
-
-// import the order router
-const orderRouter = require("./order.routes");
-// add the order router to the main router
-router.use(orderRouter);
-
-
-// import customer route
-const customerRoute = require("./customer.routes");
-// use customer route
-router.use(customerRoute);
-//  import vehicle route
-const vehicleRoute = require("./vehicle.routes");
-// use vehicle route
-router.use(vehicleRoute);
+// ---- everything below requires a valid token (secure by default: a new
+// route cannot be accidentally left public) ----
+router.use(authenticate, denyDemoWrites);
+router.use(require("./employee.routes"));
+router.use(require("./service.routes"));
+router.use(require("./order.routes"));
+router.use(require("./customer.routes"));
+router.use(require("./vehicle.routes"));
 
 // export router
-
 module.exports = router;
