@@ -18,7 +18,8 @@ COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node . .
 USER node
 EXPOSE 5000
-# busybox wget is part of the alpine image
+# busybox wget is part of the alpine image. Uses $PORT because hosts such
+# as Render set their own port; 5000 is the default (and compose's port).
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=5 \
-  CMD wget -qO- http://127.0.0.1:5000/api/health > /dev/null || exit 1
+  CMD wget -qO- "http://127.0.0.1:${PORT:-5000}/api/health" > /dev/null || exit 1
 CMD ["node", "app.js"]
