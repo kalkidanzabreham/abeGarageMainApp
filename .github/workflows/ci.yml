@@ -101,7 +101,9 @@ jobs:
       CORS_ORIGINS: http://localhost:4173
       # the e2e global setup re-seeds before the run
       SEED_ALLOW_PRODUCTION: "true"
-      DEMO_PASSWORD: GarageHub-demo-1
+      # the only password allowed to be public; staff passwords are
+      # generated per run below
+      SEED_DEMO_PASSWORD: GarageHub-demo-1
       VITE_API_URL: http://localhost:5000/api
     steps:
       - uses: actions/checkout@v7
@@ -110,11 +112,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: codeBase/abeGarage/*/package-lock.json
-      - name: Generate a throwaway JWT secret for this run
+      - name: Generate throwaway secrets for this run (JWT, staff passwords)
         run: |
-          secret=$(openssl rand -hex 32)
-          echo "::add-mask::$secret"
-          echo "JWT_SECRET=$secret" >> "$GITHUB_ENV"
+          for name in JWT_SECRET SEED_ADMIN_PASSWORD SEED_MANAGER_PASSWORD SEED_MECHANIC_PASSWORD; do
+            value=$(openssl rand -hex 24)
+            echo "::add-mask::$value"
+            echo "$name=$value" >> "$GITHUB_ENV"
+          done
       - run: npm ci --prefix backend
       - run: npm ci --prefix frontend
       - run: npm ci --prefix e2e

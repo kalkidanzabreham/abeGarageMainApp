@@ -2,11 +2,15 @@
 const { expect } = require("@playwright/test");
 
 const API = process.env.E2E_API_URL || "http://localhost:5000/api";
-const PASSWORD = "GarageHub-demo-1";
+// Same variables the seed uses (SEED_<ROLE>_PASSWORD); locally they are
+// usually unset and the seed's local default applies.
+const LOCAL_DEFAULT = "GarageHub-demo-1";
+const passwordFor = (role) => process.env[`SEED_${role.toUpperCase()}_PASSWORD`] || LOCAL_DEFAULT;
+const PASSWORD = passwordFor("admin");
 
 const apiLogin = async (request, role) => {
   const res = await request.post(`${API}/employee/login`, {
-    data: { employee_email: `${role}@garagehub.test`, employee_password: PASSWORD },
+    data: { employee_email: `${role}@garagehub.test`, employee_password: passwordFor(role) },
   });
   expect(res.status()).toBe(200);
   return (await res.json()).token;
@@ -23,7 +27,7 @@ const apiAs = (request, token) => ({
 const loginUI = async (page, role) => {
   await page.goto("/login");
   await page.fill("input[name=employee_email]", `${role}@garagehub.test`);
-  await page.fill("input[name=employee_password]", PASSWORD);
+  await page.fill("input[name=employee_password]", passwordFor(role));
   await page.click("button:has-text('Login')");
   await page.waitForURL(/\/admin/);
 };
@@ -67,4 +71,4 @@ const collectPageErrors = (page) => {
   return errors;
 };
 
-module.exports = { API, PASSWORD, apiLogin, apiAs, loginUI, loginAs, createCustomerWithVehicle, servicePrices, collectPageErrors };
+module.exports = { API, PASSWORD, passwordFor, apiLogin, apiAs, loginUI, loginAs, createCustomerWithVehicle, servicePrices, collectPageErrors };

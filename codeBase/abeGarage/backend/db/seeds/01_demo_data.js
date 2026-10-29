@@ -4,20 +4,21 @@
 //
 // This REPLACES all application data, so it refuses to run with
 // NODE_ENV=production unless SEED_ALLOW_PRODUCTION=true (e.g. for a public
-// demo deploy). In production DEMO_PASSWORD must be set explicitly.
+// demo deploy). Passwords come from SEED_*_PASSWORD env vars; see
+// db/seedPasswords.js (only the Demo account's password may be public).
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const { randomUUID } = require("crypto");
 const { ROLES } = require("../../config/roles");
+const { seedPasswords } = require("../seedPasswords");
 
 const isProduction = process.env.NODE_ENV === "production";
-const DEFAULT_LOCAL_PASSWORD = "GarageHub-demo-1";
 
 const ACCOUNTS = [
-  { email: "admin@garagehub.test", first: "Ada", last: "Admin", role: ROLES.ADMIN },
-  { email: "manager@garagehub.test", first: "Maya", last: "Manager", role: ROLES.MANAGER },
-  { email: "mechanic@garagehub.test", first: "Mo", last: "Mechanic", role: ROLES.MECHANIC },
-  { email: "demo@garagehub.test", first: "Dee", last: "Demo", role: ROLES.DEMO },
+  { key: "admin", email: "admin@garagehub.test", first: "Ada", last: "Admin", role: ROLES.ADMIN },
+  { key: "manager", email: "manager@garagehub.test", first: "Maya", last: "Manager", role: ROLES.MANAGER },
+  { key: "mechanic", email: "mechanic@garagehub.test", first: "Mo", last: "Mechanic", role: ROLES.MECHANIC },
+  { key: "demo", email: "demo@garagehub.test", first: "Dee", last: "Demo", role: ROLES.DEMO },
 ];
 
 const SERVICES = [
@@ -71,11 +72,10 @@ exports.seed = async (knex) => {
   if (isProduction && process.env.SEED_ALLOW_PRODUCTION !== "true") {
     throw new Error("Refusing to seed with NODE_ENV=production (set SEED_ALLOW_PRODUCTION=true to override)");
   }
-  const password = process.env.DEMO_PASSWORD || (isProduction ? null : DEFAULT_LOCAL_PASSWORD);
-  if (!password) {
-    throw new Error("DEMO_PASSWORD is required when seeding in production");
-  }
-  const passwordHash = await bcrypt.hash(password, 10);
+  // throws before touching any data if a password is missing or weak
+  const passwords = seedPasswords();
+  const hashes = {};
+  for (const a of ACCOUNTS) hashes[a.key] = await bcrypt.hash(passwords[a.key], 10);
 
   await knex.transaction(async (trx) => {
     for (const table of TABLES) {
@@ -89,7 +89,7 @@ exports.seed = async (knex) => {
       await trx("employee_info").insert({
         employee_id: id, employee_first_name: a.first, employee_last_name: a.last, employee_phone: "555-0100",
       });
-      await trx("employee_pass").insert({ employee_id: id, employee_password_hashed: passwordHash });
+      await trx("employee_pass").insert({ employee_id: id, employee_password_hashed: hashes[a.key] });
       await trx("employee_role").insert({ employee_id: id, company_role_id: a.role });
     }
 

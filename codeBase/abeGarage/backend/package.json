@@ -11,7 +11,8 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
     "test:coverage": "jest --runInBand --coverage",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "demo:reset": "node scripts/reset-demo.js"
   },
   "author": "Hamerochu",
   "license": "ISC",
