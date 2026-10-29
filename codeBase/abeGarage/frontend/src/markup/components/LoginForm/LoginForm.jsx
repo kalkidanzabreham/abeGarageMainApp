@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { login } from "../../../services/login.service";
 
+const WAKE_MESSAGE_AFTER_MS = 5000;
+
 function LoginForm() {
   const [email_error, set_email] = useState("");
   const [server_error, set_server_error] = useState("");
   const [password_error, set_password] = useState("");
   const [succes_message, set_succes_message] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  // shown when the API is slow to answer: a free-tier host that went to
+  // sleep can take about a minute to start again
+  const [waking, setWaking] = useState(false);
   const location = useLocation();
   // ProtectedRoute sends users here with state.from = the page they wanted
   const redirect = location.state?.from?.pathname || "/admin";
@@ -42,6 +48,8 @@ function LoginForm() {
 
     if (!valid) return;
 
+    setSubmitting(true);
+    const wakeTimer = setTimeout(() => setWaking(true), WAKE_MESSAGE_AFTER_MS);
     try {
       const response = await login(data);
       if (response.status === "success") {
@@ -54,6 +62,10 @@ function LoginForm() {
       }
     } catch (error) {
       set_server_error("Login failed. Please try again.");
+    } finally {
+      clearTimeout(wakeTimer);
+      setWaking(false);
+      setSubmitting(false);
     }
   };
 
@@ -112,6 +124,7 @@ function LoginForm() {
                         <button
                           className="theme-btn btn-style-one w-100"
                           type="submit"
+                          disabled={submitting}
                         >
                           Login
                         </button>
@@ -119,6 +132,11 @@ function LoginForm() {
                     </div>
                   </div>
                 </form>
+                {waking && (
+                  <div className="text-muted mt-2" role="status">
+                    Waking up the demo server, this can take up to a minute
+                  </div>
+                )}
                 {succes_message && (
                   <div className="success_message">
                     Employee logged in successfully!
