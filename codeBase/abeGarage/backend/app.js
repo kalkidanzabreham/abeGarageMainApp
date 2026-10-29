@@ -26,6 +26,13 @@ app.use(cors({
 // use express.json (explicit body size cap)
 app.use(express.json({ limit: '100kb' }));
 
+// API docs (public): raw OpenAPI document and Swagger UI
+const swaggerUi = require('swagger-ui-express');
+const { buildSpec } = require('./docs/openapi');
+const openApiSpec = buildSpec();
+app.get('/api/openapi.json', (req, res) => res.json(openApiSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, { customSiteTitle: 'GarageHub API docs' }));
+
 // use routes
 app.use(routes);
 // unknown routes -> JSON 404; every error -> one JSON shape (see middleware)
