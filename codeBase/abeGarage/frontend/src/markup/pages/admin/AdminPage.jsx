@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../../Context/AuthContext';
 import { canVisit } from '../../../util/roles';
 function AdminPage() {
-  const { roleId } = useAuth();
+  const { roleId, can } = useAuth();
+  // everyone may view the catalog; only roles with services:write may add
+  const canEditServices = can("services:write");
   return (
     <div>
       <div className="container-fluid admin-pages">
@@ -116,9 +118,9 @@ function AdminPage() {
                     <div className="col-lg-4 service-block-one">
                       <div className="inner-box hvr-float-shadow">
                         <h5>SERVICE AND REPAIRS</h5>
-                        <h2>Add Services</h2>
+                        <h2>{canEditServices ? "Add Services" : "Services"}</h2>
                         <Link to="/admin/service" className="read-more">
-                          ADD SERVICE +
+                          {canEditServices ? "ADD SERVICE +" : "VIEW SERVICES +"}
                         </Link>
                         <div className="icon">
                           <span className="flaticon-spray-gun"></span>
