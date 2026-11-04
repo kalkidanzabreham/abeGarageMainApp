@@ -43,6 +43,7 @@ const RULES = [
 const keywordProvider = () => ({
   name: "fake",
   model: "keyword-rules",
+  external: false,
   async generate({ messages, system }) {
     const complaint = messages[0].content;
     const catalog = [...system.matchAll(/^(\d+): ([^-\n]+)/gm)].map((m) => ({ id: Number(m[1]), name: m[2].trim() }));

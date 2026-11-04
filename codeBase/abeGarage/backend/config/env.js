@@ -33,8 +33,14 @@ const schema = z.object({
   LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
   // Smart job intake (AI drafts a job card; see ai/). Off unless enabled.
   AI_ENABLED: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
-  AI_PROVIDER: z.enum(["fake"]).default("fake"),
+  // fake: no model, for tests; gemini: hosted (needs GEMINI_API_KEY);
+  // ollama: a local model at OLLAMA_URL
+  AI_PROVIDER: z.enum(["fake", "gemini", "ollama"]).default("fake"),
+  // empty: the provider's default (gemini-2.5-flash-lite, gemma3:4b)
   AI_MODEL: z.string().optional(),
+  // server-side only: never sent to the browser or written to logs
+  GEMINI_API_KEY: z.string().optional(),
+  OLLAMA_URL: z.string().url().default("http://localhost:11434"),
   AI_TIMEOUT_MS: z.coerce.number().int().min(1000).max(300000).default(20000),
   AI_MAX_INPUT_CHARS: z.coerce.number().int().min(50).max(5000).default(1000),
   // all users together, per UTC day; when reached the feature pauses
@@ -42,9 +48,16 @@ const schema = z.object({
   // per user: AI_USER_LIMIT requests per AI_USER_WINDOW_MIN minutes
   AI_USER_LIMIT: z.coerce.number().int().positive().default(10),
   AI_USER_WINDOW_MIN: z.coerce.number().int().positive().default(10),
+  // all users together, per minute; 7 intakes = at most 14 model calls,
+  // under Gemini free tier's 15/minute (see .env.example)
+  AI_GLOBAL_RPM: z.coerce.number().int().positive().default(7),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default(
     process.env.NODE_ENV === "test" ? "silent" : "info"
   ),
+}).superRefine((c, ctx) => {
+  if (c.AI_ENABLED && c.AI_PROVIDER === "gemini" && !c.GEMINI_API_KEY) {
+    ctx.addIssue({ code: "custom", path: ["GEMINI_API_KEY"], message: "is required when AI_PROVIDER=gemini" });
+  }
 });
 
 const parsed = schema.safeParse(process.env);
