@@ -95,3 +95,25 @@ test("capInput counts characters, not bytes, and never splits an Amharic charact
   expect(text).not.toMatch(/�/);
   expect(capInput("short", 50)).toEqual({ text: "short", truncated: false, inputChars: 5 });
 });
+
+test("provider rate limit (429): no retry, reason PROVIDER_RATE_LIMITED", async () => {
+  const busy = Object.assign(new Error("HTTP 429: Quota exceeded"), { code: "PROVIDER_RATE_LIMITED" });
+  const provider = scriptedProvider([busy, GOOD]);
+  const result = await run(provider);
+  expect(result).toMatchObject({ ok: false, reason: "PROVIDER_RATE_LIMITED" });
+  expect(result.meta.attempts).toBe(1);
+  expect(provider.calls).toHaveLength(1);
+});
+
+test("logs carry reason codes only, never the complaint (even when the model repeats it)", async () => {
+  const marker = "MY-PLATE-AB123";
+  const lines = [];
+  const log = { info: (obj) => lines.push(obj), warn: (obj) => lines.push(obj) };
+  // INVALID_JSON: JSON.parse's message quotes the start of the output
+  const bad = `{"echo": ${marker}}`;
+  expect(() => JSON.parse(bad)).toThrow(marker.slice(0, 5)); // the parse error quotes it
+  const result = await run(scriptedProvider([bad, bad]), `brakes grind ${marker}`, { log });
+  expect(result.reason).toBe("INVALID_JSON");
+  expect(lines.map((l) => l.reason)).toEqual(["INVALID_JSON", "INVALID_JSON"]);
+  expect(JSON.stringify(lines)).not.toContain(marker.slice(0, 5));
+});

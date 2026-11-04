@@ -23,6 +23,7 @@ const applyTestEnv = () => {
     AI_MAX_INPUT_CHARS: "1000",
     AI_DAILY_CAP: "1000",
     AI_USER_LIMIT: "1000",
+    AI_GLOBAL_RPM: "1000",
   };
   // safety net: the test setup drops and recreates this database
   if (!values.DB_NAME.endsWith("_test")) {

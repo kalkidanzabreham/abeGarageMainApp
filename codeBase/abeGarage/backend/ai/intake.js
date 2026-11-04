@@ -8,7 +8,8 @@ const { parseModelOutput } = require("./parse");
 const { mapServices } = require("./catalog");
 const { systemPrompt, userMessage, retryMessage, PROMPT_VERSION } = require("./prompt");
 
-const PROVIDER_FAILURE = Object.freeze({ TIMEOUT: "PROVIDER_TIMEOUT", ERROR: "PROVIDER_ERROR" });
+const { PROVIDER_ERROR } = require("./providers/errors");
+
 const MAX_ATTEMPTS = 2; // first try + one retry
 
 // Cap the complaint at maxChars characters (code points, so multi-byte
@@ -29,7 +30,7 @@ const withTimeout = async (fn, timeoutMs) => {
     timer = setTimeout(() => {
       controller.abort();
       const err = new Error(`no answer within ${timeoutMs} ms`);
-      err.code = PROVIDER_FAILURE.TIMEOUT;
+      err.code = PROVIDER_ERROR.TIMEOUT;
       reject(err);
     }, timeoutMs);
   });
@@ -57,9 +58,12 @@ const runIntake = async ({ complaint, provider, catalog, timeoutMs, maxChars, lo
       );
       raw = reply.text;
     } catch (err) {
-      const code = err.code === PROVIDER_FAILURE.TIMEOUT ? PROVIDER_FAILURE.TIMEOUT : PROVIDER_FAILURE.ERROR;
+      const code = Object.values(PROVIDER_ERROR).includes(err.code) ? err.code : PROVIDER_ERROR.ERROR;
       attempts.push({ n, ok: false, code, detail: String(err.message).slice(0, 200), ms: Date.now() - attemptStarted });
       log?.warn({ event: "ai_intake_attempt_failed", attempt: n, reason: code, provider: provider.name }, "provider call failed");
+      // the provider is over its quota: a retry now would only fail again
+      // and use up more of it, so give up and let the UI say "busy"
+      if (code === PROVIDER_ERROR.RATE_LIMITED) break;
       continue;
     }
 
@@ -90,7 +94,9 @@ const runIntake = async ({ complaint, provider, catalog, timeoutMs, maxChars, lo
         attempts,
       };
     }
-    log?.warn({ event: "ai_intake_attempt_failed", attempt: n, reason: parsed.code, detail: parsed.detail, provider: provider.name }, "model output unusable");
+    // reason code only: parsed.detail can quote the model's output, which may
+    // repeat the complaint, and complaint text is never logged
+    log?.warn({ event: "ai_intake_attempt_failed", attempt: n, reason: parsed.code, provider: provider.name }, "model output unusable");
     // show the model what went wrong, then try once more
     messages.push({ role: "assistant", content: raw }, { role: "user", content: retryMessage(parsed) });
   }
@@ -114,4 +120,4 @@ const runIntake = async ({ complaint, provider, catalog, timeoutMs, maxChars, lo
   };
 };
 
-module.exports = { runIntake, capInput, PROVIDER_FAILURE, MAX_ATTEMPTS };
+module.exports = { runIntake, capInput, MAX_ATTEMPTS };

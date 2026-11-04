@@ -53,7 +53,7 @@ describe("permissions and validation", () => {
 
   test("status shows the feature as available", async () => {
     const res = await api().get("/api/ai/status").set("x-access-token", tokens.demo);
-    expect(res.body).toMatchObject({ enabled: true, available: true, provider: "fake" });
+    expect(res.body).toMatchObject({ enabled: true, available: true, provider: "fake", external: false });
   });
 });
 
@@ -84,6 +84,9 @@ const isolatedApp = (env, providerOutputs) => {
     app = require("../app");
     pool = require("../config/db.config").pool;
   });
+  // doMock stays registered after isolateModules; remove it so the next
+  // isolated app gets the real providers
+  if (providerOutputs) jest.dontMock("../ai/providers");
   process.env = saved;
   return { app, close: () => pool.end() };
 };
@@ -142,6 +145,48 @@ describe("limits and switches", () => {
       expect(res.body.details).toEqual([{ reason: "INVALID_JSON" }]);
       const [row] = await db("SELECT outcome, reason_code, attempts FROM ai_intake_log ORDER BY id DESC LIMIT 1");
       expect(row).toEqual({ outcome: "failed", reason_code: "INVALID_JSON", attempts: 2 });
+    } finally {
+      await close();
+    }
+  });
+
+  test("the provider's own rate limit (429): 503 AI_BUSY, try again shortly, logged", async () => {
+    const busy = Object.assign(new Error("HTTP 429: Quota exceeded"), { code: "PROVIDER_RATE_LIMITED" });
+    const { app, close } = isolatedApp({}, [busy]);
+    try {
+      const res = await request(app).post("/api/ai/intake").set("x-access-token", tokens.manager).send({ complaint: "brakes" });
+      expect(res.status).toBe(503);
+      expect(res.headers["retry-after"]).toBe("60");
+      expect(res.body).toMatchObject({ code: "AI_BUSY", message: "Smart intake is busy right now. Please try again in a minute, or fill in the order manually." });
+      const [row] = await db("SELECT outcome, reason_code, attempts FROM ai_intake_log ORDER BY id DESC LIMIT 1");
+      expect(row).toEqual({ outcome: "failed", reason_code: "PROVIDER_RATE_LIMITED", attempts: 1 });
+    } finally {
+      await close();
+    }
+  });
+
+  test("AI_GLOBAL_RPM limits all users together per minute with AI_BUSY", async () => {
+    const { app, close } = isolatedApp({ AI_GLOBAL_RPM: "2" });
+    try {
+      const post = (role) => request(app).post("/api/ai/intake").set("x-access-token", tokens[role]).send({ complaint: "brakes" });
+      expect((await post("manager")).status).toBe(200);
+      expect((await post("admin")).status).toBe(200);
+      const busy = await post("demo");
+      expect(busy.status).toBe(503);
+      expect(busy.body.code).toBe("AI_BUSY");
+    } finally {
+      await close();
+    }
+  });
+
+  test("with Gemini configured, the key is never in a response", async () => {
+    const key = "AIza-test-key-must-not-leak";
+    const { app, close } = isolatedApp({ AI_PROVIDER: "gemini", GEMINI_API_KEY: key });
+    try {
+      const status = await request(app).get("/api/ai/status").set("x-access-token", tokens.manager);
+      expect(status.body).toMatchObject({ provider: "gemini", model: "gemini-2.5-flash-lite", external: true });
+      const docs = await request(app).get("/api/openapi.json");
+      for (const res of [status, docs]) expect(JSON.stringify(res.body)).not.toContain(key);
     } finally {
       await close();
     }

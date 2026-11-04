@@ -21,7 +21,18 @@ const perUserLimit = rateLimit({
     next(new AppError(429, "AI_RATE_LIMITED", `You can use smart intake ${env.AI_USER_LIMIT} times per ${env.AI_USER_WINDOW_MIN} minutes. Please wait a little.`)),
 });
 
+// all users together: AI_GLOBAL_RPM requests per minute, set below the
+// provider's own per-minute quota (Gemini free tier: see .env.example)
+const globalLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: env.AI_GLOBAL_RPM,
+  keyGenerator: () => "global",
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: (req, res, next) => next(new AppError(503, "AI_BUSY", ai.BUSY_MESSAGE)),
+});
+
 router.get("/api/ai/status", authorize("ai:intake"), validate(schemas.none), ai.status);
-router.post("/api/ai/intake", authorize("ai:intake"), perUserLimit, validate(schemas.aiIntake), ai.intake);
+router.post("/api/ai/intake", authorize("ai:intake"), perUserLimit, globalLimit, validate(schemas.aiIntake), ai.intake);
 
 module.exports = router;
