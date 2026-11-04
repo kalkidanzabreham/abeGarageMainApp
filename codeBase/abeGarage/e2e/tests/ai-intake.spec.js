@@ -46,6 +46,10 @@ test("Demo can try smart intake on its own page, with no way to save", async ({ 
   await loginAs(page, request, "demo");
   await page.goto("/admin");
   await page.getByRole("link", { name: "Smart intake (AI)" }).click();
+  // the fake provider is local: no third-party sentence, but the warning stays
+  await expect(page.getByTestId("ai-privacy-note")).toHaveText(
+    "Don't enter names, phone numbers or other personal details. The text itself is not stored."
+  );
   await page.locator("textarea[name=complaint]").fill("car shakes above 80");
   await page.getByRole("button", { name: "Draft job card" }).click();
   await expect(page.getByTestId("ai-draft")).toBeVisible();
@@ -90,4 +94,26 @@ test("AI_ENABLED=false (status 404): no menu item and no panel", async ({ page, 
   await expect(page.getByRole("link", { name: "Smart intake (AI)" })).toHaveCount(0);
   await page.goto("/admin/smart-intake");
   await expect(page.getByText("Smart intake is not available.")).toBeVisible();
+});
+
+test("hosted provider: the note says the text goes to a third-party AI service", async ({ page, request }) => {
+  await page.route("**/api/ai/status", (route) =>
+    route.fulfill({ json: { enabled: true, available: true, reason: null, provider: "gemini", model: "gemini-2.5-flash-lite", external: true, max_input_chars: 1000 } })
+  );
+  await loginAs(page, request, "demo");
+  await page.goto("/admin/smart-intake");
+  await expect(page.getByTestId("ai-privacy-note")).toContainText("sent to a third-party AI service (Google Gemini)");
+  await expect(page.getByTestId("ai-privacy-note")).toContainText("Don't enter names, phone numbers or other personal details.");
+});
+
+test("provider busy (AI_BUSY): a try-again message, and the panel stays usable", async ({ page, request }) => {
+  await page.route("**/api/ai/intake", (route) =>
+    route.fulfill({ status: 503, json: { status: "error", code: "AI_BUSY", message: "Smart intake is busy right now. Please try again in a minute, or fill in the order manually." } })
+  );
+  await loginAs(page, request, "demo");
+  await page.goto("/admin/smart-intake");
+  await page.locator("textarea[name=complaint]").fill("brakes");
+  await page.getByRole("button", { name: "Draft job card" }).click();
+  await expect(page.getByRole("alert")).toHaveText("Smart intake is busy right now. Please try again in a minute, or fill in the order manually.");
+  await expect(page.getByRole("button", { name: "Draft job card" })).toBeEnabled();
 });

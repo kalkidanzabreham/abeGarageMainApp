@@ -36,7 +36,8 @@ function SmartIntake({ onApply }) {
         setChecked(body.draft.suggested_services.map((s) => s.service_id));
       } else {
         setError(body.message || "Smart intake is not available right now. Please fill in the order manually.");
-        if (status === 503) refreshAiStatus();
+        // the daily cap pauses the panel; "busy" (AI_BUSY) is temporary
+        if (status === 503 && body.code === "AI_DAILY_CAP_REACHED") refreshAiStatus();
       }
     } catch {
       setError("Smart intake is not available right now. Please fill in the order manually.");
@@ -70,6 +71,12 @@ function SmartIntake({ onApply }) {
             />
             <Form.Text muted>
               {Array.from(complaint).length}/{maxChars} characters; longer text is shortened.
+            </Form.Text>
+            <Form.Text as="p" muted className="mb-0" data-testid="ai-privacy-note">
+              {aiStatus.external
+                ? "The complaint text is sent to a third-party AI service (Google Gemini) to draft the job card. "
+                : ""}
+              Don&apos;t enter names, phone numbers or other personal details. The text itself is not stored.
             </Form.Text>
           </Form.Group>
           <Button type="submit" disabled={busy || !complaint.trim()}>
