@@ -11,6 +11,7 @@ const { z } = require("zod");
 const schemas = require("../validators/schemas");
 const { PERMISSIONS } = require("../config/permissions");
 const { ROLES } = require("../config/roles");
+const env = require("../config/env");
 
 const ROLE_NAMES = Object.fromEntries(Object.entries(ROLES).map(([name, id]) => [id, name[0] + name.slice(1).toLowerCase()]));
 
@@ -49,6 +50,15 @@ const ROUTES = [
   ["put", "/api/services/{id}", "Service catalog", "Edit a service", "services:write", schemas.updateService, 200, "{ success, message }"],
   ["delete", "/api/services/{id}", "Service catalog", "Delete a service (409 if orders use it)", "services:write", schemas.byId, 200, "{ success, message }"],
 ];
+
+// Smart job intake: only present when AI_ENABLED=true
+if (env.AI_ENABLED) {
+  ROUTES.push(
+    ["get", "/api/ai/status", "Smart job intake", "Whether intake is available (or paused by the daily cap)", "ai:intake", schemas.none, 200, "{ enabled, available, reason, provider, model, max_input_chars }"],
+    ["post", "/api/ai/intake", "Smart job intake", "Draft a job card from a customer's complaint (nothing is saved)", "ai:intake", schemas.aiIntake, 200,
+      "{ draft: { suspected_systems, suggested_services (catalog only), urgency, questions_to_ask_customer, confidence }, meta: { outcome, attempts, repairs, truncated, dropped_services, ... } }; 502 AI_DRAFT_FAILED, 503 AI_DAILY_CAP_REACHED, 429 AI_RATE_LIMITED"]
+  );
+}
 
 const jsonSchema = (schema) => {
   const out = z.toJSONSchema(schema, { io: "input", unrepresentable: "any" });

@@ -31,6 +31,17 @@ const schema = z.object({
   // failed login attempts allowed per IP per window
   LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+  // Smart job intake (AI drafts a job card; see ai/). Off unless enabled.
+  AI_ENABLED: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
+  AI_PROVIDER: z.enum(["fake"]).default("fake"),
+  AI_MODEL: z.string().optional(),
+  AI_TIMEOUT_MS: z.coerce.number().int().min(1000).max(300000).default(20000),
+  AI_MAX_INPUT_CHARS: z.coerce.number().int().min(50).max(5000).default(1000),
+  // all users together, per UTC day; when reached the feature pauses
+  AI_DAILY_CAP: z.coerce.number().int().min(0).default(200),
+  // per user: AI_USER_LIMIT requests per AI_USER_WINDOW_MIN minutes
+  AI_USER_LIMIT: z.coerce.number().int().positive().default(10),
+  AI_USER_WINDOW_MIN: z.coerce.number().int().positive().default(10),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default(
     process.env.NODE_ENV === "test" ? "silent" : "info"
   ),

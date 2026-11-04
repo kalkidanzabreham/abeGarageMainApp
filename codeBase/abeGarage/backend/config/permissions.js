@@ -19,6 +19,8 @@ const PERMISSIONS = Object.freeze({
   "employees:write": [ADMIN],
   "services:read": EVERYONE,
   "services:write": [ADMIN],
+  // drafts a job card from a complaint; saves nothing. Demo may try it.
+  "ai:intake": [ADMIN, MANAGER, DEMO],
 });
 
 module.exports = { PERMISSIONS };
