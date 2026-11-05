@@ -9,7 +9,8 @@
         "Brake pad replacement"
       ],
       "acceptable_services": [
-        "Brake disc resurfacing"
+        "Brake disc resurfacing",
+        "Brake system inspection"
       ],
       "urgency": "high"
     }
@@ -25,7 +26,8 @@
       ],
       "acceptable_services": [
         "Wheel alignment",
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -40,7 +42,8 @@
         "Wheel alignment"
       ],
       "acceptable_services": [
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -65,9 +68,10 @@
     "complaint": "Engine cranks slowly in the morning and the battery is 5 years old.",
     "expected": {
       "services": [
-        "Battery replacement"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Battery replacement",
         "Diagnostic scan"
       ],
       "urgency": "medium"
@@ -77,15 +81,14 @@
     "id": "c06",
     "category": "clear",
     "split": "test",
-    "complaint": "Check engine light came on yesterday, car drives normally.",
+    "complaint": "The orange engine symbol on the dash has stayed lit since I filled up last week; it drives the same as before.",
     "expected": {
       "services": [
         "Diagnostic scan"
       ],
       "acceptable_services": [],
       "urgency": "medium"
-    },
-    "note": "close to a complaint used in the speed check before the eval existed (see README)"
+    }
   },
   {
     "id": "c07",
@@ -96,7 +99,9 @@
       "services": [
         "Suspension inspection"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Steering system inspection"
+      ],
       "urgency": "medium"
     }
   },
@@ -106,13 +111,15 @@
     "split": "test",
     "complaint": "Brake pedal feels soft and goes almost to the floor.",
     "expected": {
-      "services": [],
+      "services": [
+        "Brake system inspection"
+      ],
       "acceptable_services": [
-        "Brake pad replacement"
+        "Brake fluid flush"
       ],
       "urgency": "high"
     },
-    "note": "hydraulic problem; nothing in the catalog fits exactly, so no service is required"
+    "note": "likely air or fluid in the brake lines: inspect first; a fluid flush is acceptable"
   },
   {
     "id": "c09",
@@ -124,7 +131,9 @@
         "Brake pad replacement",
         "Brake disc resurfacing"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Brake system inspection"
+      ],
       "urgency": "high"
     }
   },
@@ -152,7 +161,9 @@
       "services": [
         "Diagnostic scan"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Spark plug replacement"
+      ],
       "urgency": "high"
     }
   },
@@ -163,9 +174,10 @@
     "complaint": "Battery warning light is on while driving and the headlights are dim.",
     "expected": {
       "services": [
-        "Diagnostic scan"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Diagnostic scan",
         "Battery replacement"
       ],
       "urgency": "medium"
@@ -182,9 +194,11 @@
       "acceptable_services": [
         "Diagnostic scan",
         "Suspension inspection",
-        "Brake pad replacement"
+        "Brake system inspection",
+        "Exhaust system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -197,9 +211,12 @@
       "acceptable_services": [
         "Diagnostic scan",
         "Suspension inspection",
-        "Wheel alignment"
+        "Wheel alignment",
+        "Steering system inspection",
+        "Brake system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -211,8 +228,11 @@
       "services": [
         "Diagnostic scan"
       ],
-      "acceptable_services": [],
-      "urgency": "medium"
+      "acceptable_services": [
+        "Spark plug replacement"
+      ],
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -225,9 +245,13 @@
       "acceptable_services": [
         "Oil change",
         "Diagnostic scan",
-        "Suspension inspection"
+        "Suspension inspection",
+        "Brake system inspection",
+        "Cooling system inspection",
+        "Battery and charging test"
       ],
-      "urgency": "low"
+      "urgency": "low",
+      "questions_required": true
     }
   },
   {
@@ -238,9 +262,13 @@
     "expected": {
       "services": [],
       "acceptable_services": [
-        "Diagnostic scan"
+        "Diagnostic scan",
+        "Exhaust system inspection",
+        "Cooling system inspection",
+        "Brake system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -252,9 +280,12 @@
       "services": [],
       "acceptable_services": [
         "Diagnostic scan",
+        "Brake system inspection",
+        "Cooling system inspection",
         "Brake pad replacement"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -266,9 +297,12 @@
       "services": [],
       "acceptable_services": [
         "Suspension inspection",
-        "Brake pad replacement"
+        "Brake system inspection",
+        "Brake pad replacement",
+        "Exhaust system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -277,12 +311,17 @@
     "split": "test",
     "complaint": "The car feels heavy and slow.",
     "expected": {
-      "services": [
-        "Diagnostic scan"
+      "services": [],
+      "acceptable_services": [
+        "Diagnostic scan",
+        "Spark plug replacement",
+        "Transmission fluid change",
+        "Brake system inspection"
       ],
-      "acceptable_services": [],
-      "urgency": "medium"
-    }
+      "urgency": "medium",
+      "questions_required": true
+    },
+    "note": "points at several systems (engine, transmission, brakes), so rule 5: nothing required"
   },
   {
     "id": "c21",
@@ -294,9 +333,10 @@
         "Diagnostic scan"
       ],
       "acceptable_services": [
-        "Battery replacement"
+        "Battery and charging test"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -311,7 +351,9 @@
       ],
       "acceptable_services": [
         "Brake disc resurfacing",
-        "Suspension inspection"
+        "Brake system inspection",
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "high"
     }
@@ -337,10 +379,11 @@
     "complaint": "Battery died twice this week and there's a squeak from the front suspension.",
     "expected": {
       "services": [
-        "Battery replacement",
+        "Battery and charging test",
         "Suspension inspection"
       ],
       "acceptable_services": [
+        "Battery replacement",
         "Diagnostic scan"
       ],
       "urgency": "medium"
@@ -358,6 +401,7 @@
       ],
       "acceptable_services": [
         "Brake disc resurfacing",
+        "Brake system inspection",
         "Wheel alignment",
         "Suspension inspection"
       ],
@@ -376,7 +420,8 @@
         "Wheel alignment"
       ],
       "acceptable_services": [
-        "Wheel balancing"
+        "Wheel balancing",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -387,14 +432,15 @@
     "split": "test",
     "complaint": "AC blows warm air and there's an oil leak under the engine.",
     "expected": {
-      "services": [],
+      "services": [
+        "AC service"
+      ],
       "acceptable_services": [
-        "Oil change",
-        "Diagnostic scan"
+        "Oil change"
       ],
       "urgency": "medium"
     },
-    "note": "neither problem is in the catalog"
+    "note": "AC service fits the first problem; there is no leak inspection in the catalog"
   },
   {
     "id": "c28",
@@ -406,7 +452,9 @@
         "Brake pad replacement",
         "Oil change"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Brake system inspection"
+      ],
       "urgency": "high"
     }
   },
@@ -420,7 +468,9 @@
         "Diagnostic scan"
       ],
       "acceptable_services": [
-        "Battery replacement"
+        "Battery and charging test",
+        "Battery replacement",
+        "Spark plug replacement"
       ],
       "urgency": "medium"
     }
@@ -437,7 +487,8 @@
       ],
       "acceptable_services": [
         "Wheel alignment",
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -452,7 +503,8 @@
         "Brake pad replacement"
       ],
       "acceptable_services": [
-        "Brake disc resurfacing"
+        "Brake disc resurfacing",
+        "Brake system inspection"
       ],
       "urgency": "high"
     }
@@ -464,9 +516,10 @@
     "complaint": "car wont strat, just clikcs",
     "expected": {
       "services": [
-        "Battery replacement"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Battery replacement",
         "Diagnostic scan"
       ],
       "urgency": "medium"
@@ -496,7 +549,8 @@
       ],
       "acceptable_services": [
         "Wheel alignment",
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -524,7 +578,8 @@
         "Wheel alignment"
       ],
       "acceptable_services": [
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     }
@@ -538,7 +593,9 @@
       "services": [
         "Suspension inspection"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Steering system inspection"
+      ],
       "urgency": "medium"
     }
   },
@@ -549,9 +606,10 @@
     "complaint": "batery light on and car died at the lights",
     "expected": {
       "services": [
-        "Diagnostic scan"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Diagnostic scan",
         "Battery replacement"
       ],
       "urgency": "high"
@@ -567,7 +625,9 @@
         "Brake pad replacement",
         "Brake disc resurfacing"
       ],
-      "acceptable_services": [],
+      "acceptable_services": [
+        "Brake system inspection"
+      ],
       "urgency": "high"
     }
   },
@@ -577,12 +637,16 @@
     "split": "dev",
     "complaint": "brakes",
     "expected": {
-      "services": [],
+      "services": [
+        "Brake system inspection"
+      ],
       "acceptable_services": [
         "Brake pad replacement",
-        "Brake disc resurfacing"
+        "Brake disc resurfacing",
+        "Brake fluid flush"
       ],
-      "urgency": "high"
+      "urgency": "high",
+      "questions_required": true
     },
     "note": "no symptom given; asking questions is the right answer"
   },
@@ -594,10 +658,13 @@
     "expected": {
       "services": [],
       "acceptable_services": [
+        "Battery and charging test",
         "Battery replacement",
-        "Diagnostic scan"
+        "Diagnostic scan",
+        "Spark plug replacement"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -623,9 +690,11 @@
       "acceptable_services": [
         "Diagnostic scan",
         "Suspension inspection",
-        "Brake pad replacement"
+        "Brake system inspection",
+        "Exhaust system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -651,7 +720,8 @@
         "Diagnostic scan"
       ],
       "acceptable_services": [],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -665,9 +735,12 @@
         "Wheel balancing",
         "Suspension inspection",
         "Diagnostic scan",
-        "Wheel alignment"
+        "Wheel alignment",
+        "Steering system inspection",
+        "Spark plug replacement"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -677,12 +750,14 @@
     "complaint": "dead battery",
     "expected": {
       "services": [
-        "Battery replacement"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Battery replacement",
         "Diagnostic scan"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -695,9 +770,11 @@
         "Wheel alignment"
       ],
       "acceptable_services": [
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
-      "urgency": "medium"
+      "urgency": "medium",
+      "questions_required": true
     }
   },
   {
@@ -777,7 +854,8 @@
         "Brake pad replacement"
       ],
       "acceptable_services": [
-        "Brake disc resurfacing"
+        "Brake disc resurfacing",
+        "Brake system inspection"
       ],
       "urgency": "high"
     },
@@ -787,23 +865,24 @@
     "id": "c56",
     "category": "amharic_mixed",
     "split": "test",
-    "complaint": "መኪናዬ ጠዋት አይነሳም, just clicks",
+    "complaint": "ባትሪው ደካማ ነው, the engine turns over very slowly",
     "expected": {
       "services": [
-        "Battery replacement"
+        "Battery and charging test"
       ],
       "acceptable_services": [
+        "Battery replacement",
         "Diagnostic scan"
       ],
       "urgency": "medium"
     },
-    "note": "my car won't start in the morning, just clicks"
+    "note": "the battery is weak, the engine turns over very slowly"
   },
   {
     "id": "c57",
     "category": "amharic_mixed",
     "split": "test",
-    "complaint": "check engine light በርቷል ከትላንት ጀምሮ",
+    "complaint": "ዳሽቦርዱ ላይ ቢጫ መብራት ታየ after the car wash",
     "expected": {
       "services": [
         "Diagnostic scan"
@@ -811,7 +890,7 @@
       "acceptable_services": [],
       "urgency": "medium"
     },
-    "note": "check engine light has been on since yesterday"
+    "note": "a yellow light appeared on the dashboard after the car wash"
   },
   {
     "id": "c58",
@@ -838,7 +917,8 @@
       ],
       "acceptable_services": [
         "Wheel alignment",
-        "Suspension inspection"
+        "Suspension inspection",
+        "Steering system inspection"
       ],
       "urgency": "medium"
     },
@@ -850,12 +930,15 @@
     "split": "test",
     "complaint": "ሞተሩ በጣም ይሞቃል and steam is coming from the hood",
     "expected": {
-      "services": [],
+      "services": [
+        "Cooling system inspection"
+      ],
       "acceptable_services": [
+        "Coolant flush",
         "Diagnostic scan"
       ],
       "urgency": "high"
     },
-    "note": "the engine gets very hot ...; cooling is not in the catalog"
+    "note": "the engine gets very hot and steam is coming from the hood"
   }
 ]
