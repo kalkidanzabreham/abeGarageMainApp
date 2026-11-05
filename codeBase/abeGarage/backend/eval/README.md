@@ -184,7 +184,7 @@ The keyword rules are the 7 regexes of the `fake` provider, written for
 the UI tests before these cases existed. They do well on dev (recall
 14/16) but fall to 19/37 on test, so dev is an easy split for keywords.
 
-What the test misses were (looked at only after the final run):
+Gemini's test misses (looked at only after the final run):
 
 - Urgency (6 misses): 3 starting/charging complaints (c12, c32, c41)
   marked high instead of medium; 2 vague complaints (c14, c18) marked low
