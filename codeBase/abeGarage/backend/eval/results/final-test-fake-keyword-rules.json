@@ -1,0 +1,1282 @@
+{
+  "run_at": "2026-11-05T13:13:19.205Z",
+  "split": "test",
+  "final": true,
+  "provider": "fake",
+  "model": "keyword-rules",
+  "prompt_version": "intake-v3",
+  "timeout_ms": 2000,
+  "catalog_size": 18,
+  "metrics": {
+    "cases": 40,
+    "first_attempt_strict": 40,
+    "first_attempt_repaired": 0,
+    "ok_after_retry": 0,
+    "failed": 0,
+    "failure_reasons": [],
+    "service_precision": {
+      "hit": 29,
+      "of": 31
+    },
+    "service_recall": {
+      "hit": 19,
+      "of": 37
+    },
+    "urgency_agreement": {
+      "hit": 16,
+      "of": 40
+    },
+    "urgency_baseline_always_medium": {
+      "hit": 27,
+      "of": 40
+    },
+    "questions_present": {
+      "hit": 10,
+      "of": 10
+    },
+    "latency_ms": {
+      "mean": 1,
+      "p95": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "c02",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 9,
+      "services": [
+        "Wheel balancing",
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "tires_wheels",
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c03",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c05",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Battery replacement"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "battery"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c06",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c08",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake system inspection"
+        ],
+        "acceptable_services": [
+          "Brake fluid flush"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c09",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c11",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Wheel balancing",
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "tires_wheels",
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Spark plug replacement"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c12",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Battery replacement",
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Battery replacement"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c14",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Wheel alignment",
+          "Steering system inspection",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c15",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c17",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Exhaust system inspection",
+          "Cooling system inspection",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c18",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Brake system inspection",
+          "Cooling system inspection",
+          "Brake pad replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c20",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Spark plug replacement",
+          "Transmission fluid change",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c21",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Battery and charging test"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c23",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Diagnostic scan",
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "electrical",
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change",
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c24",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Battery replacement",
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "battery",
+        "suspension"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test",
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c26",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2,
+      "services": [
+        "Wheel alignment",
+        "Suspension inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "steering",
+        "suspension"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection",
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Wheel balancing",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c27",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "AC service"
+        ],
+        "acceptable_services": [
+          "Oil change"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c29",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Battery and charging test",
+          "Battery replacement",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c30",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Wheel balancing",
+        "Wheel alignment",
+        "Oil change"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "tires_wheels",
+        "steering",
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing",
+          "Oil change"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c32",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c33",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c35",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c36",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c38",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Battery replacement"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c39",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c41",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Battery replacement"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "battery"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Battery and charging test",
+          "Battery replacement",
+          "Diagnostic scan",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c42",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c44",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c45",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "electrical"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c47",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Battery replacement"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "battery"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c48",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c50",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c51",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c53",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c54",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c56",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c57",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c59",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c60",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Cooling system inspection"
+        ],
+        "acceptable_services": [
+          "Coolant flush",
+          "Diagnostic scan"
+        ],
+        "urgency": "high"
+      }
+    }
+  ]
+}

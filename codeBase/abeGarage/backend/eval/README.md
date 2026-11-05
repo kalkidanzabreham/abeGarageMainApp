@@ -117,3 +117,61 @@ percentages (e.g. 37/40):
 
 Precision, recall and urgency are computed over the cases that produced a
 draft; failures count only in the failure rate.
+
+## Running it
+
+```
+node eval/run.js --provider gemini --split dev               # tuning loop
+node eval/run.js --provider ollama --split dev --timeout 300000
+node eval/run.js --provider gemini --split test --final      # once per model
+```
+
+Results are written to `eval/results/` (one JSON file per run, with every
+case's draft and the metrics). The catalog comes from the database in
+`backend/.env`, so seed it first (`npm run seed`).
+
+## Tuning log (dev only)
+
+Gemini 3.1 Flash-Lite, 20 dev cases. The prompt was frozen at v3 before
+the test split was run.
+
+| Prompt | Recall | Urgency | Precision | Change |
+|---|---|---|---|---|
+| intake-v1 | 13/16 | 17/20 | 26/26 | first version |
+| intake-v2 | 14/16 | 19/20 | 27/27 | part-specific symptom -> the repair (grinding brakes -> pads); any brake symptom is high; unexplained noise is medium |
+| intake-v3 | 15/16 | 20/20 | 25/25 | pad rule also inside multi-problem complaints; vibration at speed is medium |
+
+## Results: held-out test split (40 cases), run once on 2026-11-05
+
+| Metric | Gemini 3.1 Flash-Lite, prompt v3 | Keyword rules (no model) |
+|---|---|---|
+| Valid JSON on the first attempt | 39/40 (97.5%) | 40/40 |
+| Valid after repair | 0/40 | 0/40 |
+| Valid after the retry | 1/40 (2.5%) | 0/40 |
+| Final failure | 0/40 | 0/40 |
+| Service precision | 48/48 (100%) | 29/31 (93.5%) |
+| Service recall | 33/37 (89.2%) | 19/37 (51.4%) |
+| Urgency agreement | 34/40 (85.0%) | 16/40 (40.0%) |
+| Urgency baseline, always "medium" | 27/40 (67.5%) | 27/40 (67.5%) |
+| Asked a question where required | 10/10 | 10/10 (it always asks one) |
+| Latency mean / p95 | 2.5 s / 4.7 s | ~0 |
+
+The keyword rules are the 7 regexes of the `fake` provider, written for
+the UI tests before these cases existed. They do well on dev (recall
+14/16) but fall to 19/37 on test, so dev is an easy split for keywords.
+
+What the test misses were (looked at only after the final run):
+
+- Urgency (6 misses): 3 starting/charging complaints (c12, c32, c41)
+  marked high instead of medium; 2 vague complaints (c14, c18) marked low
+  instead of medium; "alignment" (c44) medium instead of low.
+- Recall (4 misses): c39 ("breaks squeek and petal pulses") got only the
+  brake inspection; c09 missed disc resurfacing; c15 ("isn't running
+  right") got no service where the label asks for a diagnostic scan.
+- The one retry (c41) was a 20 s timeout, recovered by the retry. Across
+  all Gemini runs (3 x 20 dev + 40 test = 100 cases) there were 3 such
+  timeouts, all recovered; the machine was heavily loaded by unrelated
+  services during the runs, so part of that may be local.
+
+Dev numbers after tuning (v3: urgency 20/20) are optimistic by
+construction; the test numbers above are the ones to quote.
