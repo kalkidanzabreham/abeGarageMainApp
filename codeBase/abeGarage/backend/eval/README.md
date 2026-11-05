@@ -143,18 +143,42 @@ the test split was run.
 
 ## Results: held-out test split (40 cases), run once on 2026-11-05
 
-| Metric | Gemini 3.1 Flash-Lite, prompt v3 | Keyword rules (no model) |
-|---|---|---|
-| Valid JSON on the first attempt | 39/40 (97.5%) | 40/40 |
-| Valid after repair | 0/40 | 0/40 |
-| Valid after the retry | 1/40 (2.5%) | 0/40 |
-| Final failure | 0/40 | 0/40 |
-| Service precision | 48/48 (100%) | 29/31 (93.5%) |
-| Service recall | 33/37 (89.2%) | 19/37 (51.4%) |
-| Urgency agreement | 34/40 (85.0%) | 16/40 (40.0%) |
-| Urgency baseline, always "medium" | 27/40 (67.5%) | 27/40 (67.5%) |
-| Asked a question where required | 10/10 | 10/10 (it always asks one) |
-| Latency mean / p95 | 2.5 s / 4.7 s | ~0 |
+**Scope, plainly:** these are 40 hand-labelled synthetic complaints
+(written for this eval, not from real customers), labelled against the
+written rules above with no second, independent labeller.
+Each model ran the test split once; the prompt was tuned on the 20 dev cases only, and
+the test split was run once at the end. Small numbers: one case is 2.5
+points. The repair step was not triggered by real model output in any
+run (0 repairs and 0 parse errors for Gemini and gemma, dev and test); it is exercised
+only by the unit tests in `tests/ai-parse.test.js`. Timeouts count as
+failures when the retry also fails; a timeout recovered by the retry is
+counted under "valid after the retry".
+
+| Metric | Gemini 3.1 Flash-Lite (hosted) | gemma3:4b (local, Ollama, CPU) | Keyword rules (no model) |
+|---|---|---|---|
+| Valid JSON on the first attempt | 39/40 (97.5%) | 40/40 (100%) | 40/40 |
+| Valid after repair | 0/40 | 0/40 | 0/40 |
+| Valid after the retry | 1/40 (2.5%) | 0/40 | 0/40 |
+| Final failure (incl. timeouts) | 0/40 | 0/40 | 0/40 |
+| Service precision | 48/48 (100%) | 37/40 (92.5%) | 29/31 (93.5%) |
+| Service recall | 33/37 (89.2%) | 22/37 (59.5%) | 19/37 (51.4%) |
+| Urgency agreement | 34/40 (85.0%) | 17/40 (42.5%) | 16/40 (40.0%) |
+| Urgency baseline, always "medium" | 27/40 (67.5%) | 27/40 (67.5%) | 27/40 (67.5%) |
+| Asked a question where required | 10/10 | 10/10 | 10/10 (it always asks one) |
+| Latency mean / p95 | 2.5 s / 4.7 s | 35.9 s / 44.1 s | ~0 |
+
+Same prompt (v3) for both models. Latency is per case, from this laptop
+(i7-1255U, 15 GB RAM, no GPU). The gemma dev run was partly measured
+under memory pressure (two cases took 289 s and 122 s, before unrelated
+containers were stopped); the gemma test run started after that and had
+no timeouts (27-48 s per case). Gemini latency includes the network.
+
+gemma3:4b scored 20/20 on dev urgency but 17/40 on test, below the
+always-medium baseline: it marked 20 of the 27 "medium" test cases as
+"high". The prompt was tuned on Gemini's dev outputs only, never on
+gemma's, and 20 dev cases did not reveal this; the held-out split did.
+On dev, gemma's recall was 7/16 and on test 22/37 (one service per draft
+on average, often the inspection rather than the repair).
 
 The keyword rules are the 7 regexes of the `fake` provider, written for
 the UI tests before these cases existed. They do well on dev (recall

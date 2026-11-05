@@ -1,0 +1,728 @@
+{
+  "run_at": "2026-11-05T13:31:10.165Z",
+  "split": "dev",
+  "final": false,
+  "provider": "ollama",
+  "model": "gemma3:4b",
+  "prompt_version": "intake-v3",
+  "timeout_ms": 300000,
+  "catalog_size": 18,
+  "metrics": {
+    "cases": 20,
+    "first_attempt_strict": 20,
+    "first_attempt_repaired": 0,
+    "ok_after_retry": 0,
+    "failed": 0,
+    "failure_reasons": [],
+    "service_precision": {
+      "hit": 14,
+      "of": 15
+    },
+    "service_recall": {
+      "hit": 7,
+      "of": 16
+    },
+    "urgency_agreement": {
+      "hit": 20,
+      "of": 20
+    },
+    "urgency_baseline_always_medium": {
+      "hit": 8,
+      "of": 20
+    },
+    "questions_present": {
+      "hit": 6,
+      "of": 6
+    },
+    "latency_ms": {
+      "mean": 53569,
+      "p95": 122067
+    }
+  },
+  "cases": [
+    {
+      "id": "c01",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 289318,
+      "services": [
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Can you describe the grinding noise in more detail? (e.g., when does it happen exactly?)"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c04",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 45658,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "low",
+      "questions": [
+        "What type of oil was last used?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c07",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 122067,
+      "services": [
+        "Suspension inspection",
+        "Brake system inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the clunking sound in more detail?",
+        "Does the clunking happen consistently, or only sometimes?",
+        "Have you noticed any changes in the vehicle's handling?"
+      ],
+      "systems": [
+        "suspension",
+        "other"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c10",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 41882,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "When did you first notice this bouncing?",
+        "Can you describe the feeling of 'floatiness' in more detail?"
+      ],
+      "systems": [
+        "suspension",
+        "other"
+      ],
+      "confidence": 0.7,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Wheel alignment"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c13",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 34990,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the noise in more detail?",
+        "When does the noise occur?",
+        "What kind of vehicle do you drive?"
+      ],
+      "systems": [
+        "engine",
+        "brakes"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c16",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 38207,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Can you describe any noises or unusual sensations you've noticed?",
+        "When was the last time you had a service performed?",
+        "Could you please provide your vehicle's make, model, and year?"
+      ],
+      "systems": [
+        "engine",
+        "brakes",
+        "suspension",
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Oil change",
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Cooling system inspection",
+          "Battery and charging test"
+        ],
+        "urgency": "low",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c19",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 38539,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the noise more specifically (e.g., clicking, clunking, grinding)?",
+        "When does the noise occur (e.g., braking, turning, accelerating)?",
+        "Does the noise change with speed?"
+      ],
+      "systems": [
+        "suspension",
+        "exhaust",
+        "other"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Brake system inspection",
+          "Brake pad replacement",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c22",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 42388,
+      "services": [
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Can you describe the grinding noise in more detail?",
+        "When did you first notice the pulling to the right?",
+        "Have you recently had any brake work done?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c25",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 38903,
+      "services": [
+        "Wheel alignment",
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "What type of tires are you currently running?",
+        "Can you describe the grinding noise in more detail?"
+      ],
+      "systems": [
+        "steering",
+        "brakes"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing",
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection",
+          "Wheel alignment",
+          "Suspension inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c28",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 34248,
+      "services": [
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did you last have an oil change?",
+        "Can you describe the squealing noise?",
+        "Is the headlight out on both sides?"
+      ],
+      "systems": [
+        "brakes",
+        "engine",
+        "electrical"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Oil change"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c31",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 46658,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Can you describe the grinding sound in more detail?",
+        "When does the grinding occur (e.g., only when braking hard, all the time)?",
+        "Have you noticed any changes in your braking feel?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c34",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 52470,
+      "services": [
+        "Steering system inspection",
+        "Wheel alignment"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the shaking motion?",
+        "Does the shaking change with speed or road conditions?",
+        "Have you recently had any work done on the vehicle?"
+      ],
+      "systems": [
+        "steering"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c37",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 37854,
+      "services": [
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the knocking sound more specifically?",
+        "When did you first notice the noise?",
+        "What type of roads are you typically driving on?"
+      ],
+      "systems": [
+        "suspension",
+        "other"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c40",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 32722,
+      "services": [
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "What type of noise are you hearing?",
+        "Can you describe the feel of the pedal?",
+        "When did this problem start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.8,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake system inspection"
+        ],
+        "acceptable_services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing",
+          "Brake fluid flush"
+        ],
+        "urgency": "high",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c43",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 31108,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the type of noise?",
+        "When does the noise occur (e.g., accelerating, braking, idling)?"
+      ],
+      "systems": [
+        "engine",
+        "exhaust",
+        "brakes"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c46",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 27777,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "When does the shaking occur? (e.g., at speed, braking, turning?)"
+      ],
+      "systems": [
+        "engine",
+        "suspension",
+        "steering"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Wheel balancing",
+          "Suspension inspection",
+          "Diagnostic scan",
+          "Wheel alignment",
+          "Steering system inspection",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c49",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 27640,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Can you describe the issue you're experiencing with your vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.05,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c52",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 26924,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Can you describe the issue you are experiencing with the vehicle?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c55",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 32296,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Can you describe the grinding noise in more detail? Does it happen when braking lightly or heavily?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c58",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 29729,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "low",
+      "questions": [
+        "What is the current mileage on the vehicle?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    }
+  ]
+}
