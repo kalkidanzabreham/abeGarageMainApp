@@ -61,9 +61,9 @@ const runIntake = async ({ complaint, provider, catalog, timeoutMs, maxChars, lo
       const code = Object.values(PROVIDER_ERROR).includes(err.code) ? err.code : PROVIDER_ERROR.ERROR;
       attempts.push({ n, ok: false, code, detail: String(err.message).slice(0, 200), ms: Date.now() - attemptStarted });
       log?.warn({ event: "ai_intake_attempt_failed", attempt: n, reason: code, provider: provider.name }, "provider call failed");
-      // the provider is over its quota: a retry now would only fail again
-      // and use up more of it, so give up and let the UI say "busy"
-      if (code === PROVIDER_ERROR.RATE_LIMITED) break;
+      // over quota (a retry would only use more of it) or misconfigured
+      // (bad key, retired model: a retry can't fix it): give up now
+      if (code === PROVIDER_ERROR.RATE_LIMITED || code === PROVIDER_ERROR.CONFIG) break;
       continue;
     }
 

@@ -117,3 +117,19 @@ test("logs carry reason codes only, never the complaint (even when the model rep
   expect(lines.map((l) => l.reason)).toEqual(["INVALID_JSON", "INVALID_JSON"]);
   expect(JSON.stringify(lines)).not.toContain(marker.slice(0, 5));
 });
+
+test("provider config error (bad key, retired model): no retry, reason PROVIDER_CONFIG_ERROR, logged", async () => {
+  const bad = Object.assign(new Error("HTTP 404: model not found"), { code: "PROVIDER_CONFIG_ERROR" });
+  const provider = scriptedProvider([bad, GOOD]);
+  const lines = [];
+  const result = await run(provider, "brakes", { log: { info: (o) => lines.push(o), warn: (o) => lines.push(o) } });
+  expect(result).toMatchObject({ ok: false, reason: "PROVIDER_CONFIG_ERROR" });
+  expect(provider.calls).toHaveLength(1);
+  expect(lines).toEqual([expect.objectContaining({ event: "ai_intake_attempt_failed", reason: "PROVIDER_CONFIG_ERROR" })]);
+});
+
+test("provider 5xx/network error: retried once", async () => {
+  const provider = scriptedProvider([new Error("socket hang up"), GOOD]);
+  const result = await run(provider);
+  expect(result.meta).toMatchObject({ outcome: "ok_retry", attempts: 2 });
+});

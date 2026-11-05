@@ -5,10 +5,11 @@
 //   ignores some keywords (string lengths, for example), so the pipeline
 //   still validates every answer with zod.
 // - temperature 0: the same complaint should give the same draft.
-const { PROVIDER_ERROR, providerError, errorDetail } = require("./errors");
+const { PROVIDER_ERROR, providerError, httpError } = require("./errors");
 
 const BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
-const DEFAULT_MODEL = "gemini-2.5-flash-lite";
+// 2.5 Flash-Lite is no longer offered to new API users (404 on 2026-11-05)
+const DEFAULT_MODEL = "gemini-3.1-flash-lite";
 
 const geminiProvider = ({ apiKey, model = DEFAULT_MODEL, baseUrl = BASE_URL, fetchImpl = fetch }) => {
   if (!apiKey) throw new Error("GEMINI_API_KEY is required for AI_PROVIDER=gemini");
@@ -26,17 +27,14 @@ const geminiProvider = ({ apiKey, model = DEFAULT_MODEL, baseUrl = BASE_URL, fet
           maxOutputTokens: 1024,
           responseMimeType: "application/json",
           responseJsonSchema: jsonSchema,
-          // Flash-Lite doesn't think by default; say so explicitly so a
-          // model change can't silently add thinking tokens (cost, latency)
+          // no thinking: explicit, so a model change can't silently add
+          // thinking tokens (cost, latency). Accepted by 3.1 Flash-Lite.
           thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     });
 
-    if (res.status === 429) {
-      throw providerError(PROVIDER_ERROR.RATE_LIMITED, await errorDetail(res), { retryAfter: res.headers.get("retry-after") });
-    }
-    if (!res.ok) throw providerError(PROVIDER_ERROR.ERROR, await errorDetail(res));
+    if (!res.ok) throw await httpError(res);
 
     const body = await res.json();
     const candidate = body.candidates?.[0];

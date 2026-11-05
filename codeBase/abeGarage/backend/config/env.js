@@ -36,7 +36,7 @@ const schema = z.object({
   // fake: no model, for tests; gemini: hosted (needs GEMINI_API_KEY);
   // ollama: a local model at OLLAMA_URL
   AI_PROVIDER: z.enum(["fake", "gemini", "ollama"]).default("fake"),
-  // empty: the provider's default (gemini-2.5-flash-lite, gemma3:4b)
+  // empty: the provider's default (gemini-3.1-flash-lite, gemma3:4b)
   AI_MODEL: z.string().optional(),
   // server-side only: never sent to the browser or written to logs
   GEMINI_API_KEY: z.string().optional(),

@@ -133,7 +133,7 @@ characters or equal to the Demo password.
    | `CORS_ORIGINS` | your Vercel URL (set it in step 6) |
    | `AI_ENABLED` | `true` to turn on smart intake, `false` (default) to hide it |
    | `AI_PROVIDER` | `gemini` |
-   | `GEMINI_API_KEY` | from https://aistudio.google.com/apikey (free tier, no card) |
+   | `GEMINI_API_KEY` | from https://aistudio.google.com/apikey (free tier, no card). Default model: `gemini-3.1-flash-lite` |
 
    `GEMINI_API_KEY` is read only by the API: never put it in Vercel or in
    any `VITE_` variable, which are built into the public JavaScript. The
@@ -211,3 +211,4 @@ comma-separate several). Save; Render redeploys.
 - GitHub Actions schedule event: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
 - GitHub Actions billing: https://docs.github.com/en/billing/concepts/product-billing/github-actions
 - Gemini rate limits (read 2026-11-04; live per-key numbers are only shown in AI Studio): https://ai.google.dev/gemini-api/docs/rate-limits
+- Gemini pricing (read 2026-11-05; 2.5 Flash-Lite returned 404 for a new key that day): https://aistudio.google.com/docs/pricing

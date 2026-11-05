@@ -37,9 +37,9 @@ describe("gemini", () => {
     const reply = await provider.generate(REQUEST);
 
     expect(reply.text).toBe('{"a":1}');
-    expect(provider).toMatchObject({ name: "gemini", model: "gemini-2.5-flash-lite", external: true });
+    expect(provider).toMatchObject({ name: "gemini", model: "gemini-3.1-flash-lite", external: true });
     const [call] = calls;
-    expect(call.url).toBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent");
+    expect(call.url).toBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent");
     expect(call.url).not.toContain(KEY);
     expect(call.init.headers["x-goog-api-key"]).toBe(KEY);
     expect(call.body.systemInstruction).toEqual({ parts: [{ text: "You draft job cards." }] });
@@ -59,12 +59,18 @@ describe("gemini", () => {
     expect(err.message).toBe("HTTP 429: Quota exceeded");
   });
 
-  test("other HTTP errors are PROVIDER_ERROR, and the message never contains the key", async () => {
+  test("other 4xx (bad key, retired model) are PROVIDER_CONFIG_ERROR, and the message never contains the key", async () => {
     const { fetchImpl } = stubFetch(400, { error: { message: "API key not valid. Please pass a valid API key." } });
     const err = await geminiProvider({ apiKey: KEY, fetchImpl }).generate(REQUEST).catch((e) => e);
-    expect(err.code).toBe("PROVIDER_ERROR");
+    expect(err.code).toBe("PROVIDER_CONFIG_ERROR");
     expect(err.message).toBe("HTTP 400: API key not valid. Please pass a valid API key.");
     expect(err.message).not.toContain(KEY);
+  });
+
+  test("5xx is PROVIDER_ERROR (may be temporary, so the pipeline retries)", async () => {
+    const { fetchImpl } = stubFetch(503, { error: { message: "The model is overloaded." } });
+    const err = await geminiProvider({ apiKey: KEY, fetchImpl }).generate(REQUEST).catch((e) => e);
+    expect(err).toMatchObject({ code: "PROVIDER_ERROR", status: 503 });
   });
 
   test("a blocked prompt (no candidates) is PROVIDER_ERROR with the block reason", async () => {
@@ -97,10 +103,10 @@ describe("ollama", () => {
     expect(call.body.messages.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"]);
   });
 
-  test("an error (e.g. model not pulled) is PROVIDER_ERROR with Ollama's message", async () => {
+  test("model not pulled (404) is PROVIDER_CONFIG_ERROR with Ollama's message", async () => {
     const { fetchImpl } = stubFetch(404, { error: 'model "gemma3:4b" not found, try pulling it first' });
     const err = await ollamaProvider({ fetchImpl }).generate(REQUEST).catch((e) => e);
-    expect(err).toMatchObject({ code: "PROVIDER_ERROR", message: 'HTTP 404: model "gemma3:4b" not found, try pulling it first' });
+    expect(err).toMatchObject({ code: "PROVIDER_CONFIG_ERROR", message: 'HTTP 404: model "gemma3:4b" not found, try pulling it first' });
   });
 });
 
@@ -127,7 +133,7 @@ describe("configuration", () => {
 
   test("createProvider picks the provider and model from config", () => {
     const { createProvider } = require("../ai/providers");
-    expect(createProvider({ AI_PROVIDER: "gemini", GEMINI_API_KEY: KEY })).toMatchObject({ name: "gemini", model: "gemini-2.5-flash-lite" });
+    expect(createProvider({ AI_PROVIDER: "gemini", GEMINI_API_KEY: KEY })).toMatchObject({ name: "gemini", model: "gemini-3.1-flash-lite" });
     expect(createProvider({ AI_PROVIDER: "ollama", OLLAMA_URL: "http://x:1", AI_MODEL: "llama3.2:3b" })).toMatchObject({ name: "ollama", model: "llama3.2:3b" });
   });
 });

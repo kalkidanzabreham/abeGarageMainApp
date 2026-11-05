@@ -184,7 +184,7 @@ describe("limits and switches", () => {
     const { app, close } = isolatedApp({ AI_PROVIDER: "gemini", GEMINI_API_KEY: key });
     try {
       const status = await request(app).get("/api/ai/status").set("x-access-token", tokens.manager);
-      expect(status.body).toMatchObject({ provider: "gemini", model: "gemini-2.5-flash-lite", external: true });
+      expect(status.body).toMatchObject({ provider: "gemini", model: "gemini-3.1-flash-lite", external: true });
       const docs = await request(app).get("/api/openapi.json");
       for (const res of [status, docs]) expect(JSON.stringify(res.body)).not.toContain(key);
     } finally {

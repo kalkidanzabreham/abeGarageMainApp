@@ -3,7 +3,7 @@
 // - temperature 0 for repeatable drafts.
 // On a laptop CPU a draft takes 30-70 s (measured with gemma3:4b), so set
 // AI_TIMEOUT_MS to about 90000 when using this provider.
-const { PROVIDER_ERROR, providerError, errorDetail } = require("./errors");
+const { httpError } = require("./errors");
 
 const DEFAULT_MODEL = "gemma3:4b";
 
@@ -21,7 +21,7 @@ const ollamaProvider = ({ baseUrl = "http://localhost:11434", model = DEFAULT_MO
         messages: [{ role: "system", content: system }, ...messages],
       }),
     });
-    if (!res.ok) throw providerError(PROVIDER_ERROR.ERROR, await errorDetail(res));
+    if (!res.ok) throw await httpError(res);
     const body = await res.json();
     return { text: body.message?.content ?? "", usage: { prompt_tokens: body.prompt_eval_count, output_tokens: body.eval_count } };
   };
