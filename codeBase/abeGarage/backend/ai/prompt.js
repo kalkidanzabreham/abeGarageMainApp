@@ -2,7 +2,12 @@
 // API use exactly the same instructions.
 const { SYSTEMS } = require("./schema");
 
-const PROMPT_VERSION = "intake-v1";
+// Tuned on the 20 dev eval cases only (never on the test cases):
+// v2: part-specific symptoms get the repair, not just an inspection;
+//     clearer urgency rules.
+// v3: the brake pad rule also applies inside multi-problem complaints;
+//     vibration at speed is medium, not high.
+const PROMPT_VERSION = "intake-v3";
 
 const systemPrompt = (catalog) => `You help a car repair garage turn a customer's complaint into a draft job card.
 A service writer will review your draft before anything is saved.
@@ -12,8 +17,14 @@ Reply with ONE JSON object and nothing else, with exactly these fields:
 - "suggested_services": services from the garage's catalog below that fit the complaint, as
   {"service_id": <id from the catalog>, "reason": "<short reason>"}. Use ONLY ids from the catalog.
   If nothing in the catalog fits, return an empty list. Never invent services.
-- "urgency": "high" if it may be unsafe to drive (brakes, steering, wheels, smoke, overheating,
-  warning lights flashing), "medium" if it should be looked at soon, "low" for maintenance or comfort.
+  When the symptom points to a specific part, suggest that repair (for example grinding or squealing
+  when braking means worn brake pads: suggest the brake pad replacement, also when the complaint
+  mentions other problems too); use an inspection when it points to a system but not to a part. If it is too vague to point anywhere, suggest nothing and ask.
+- "urgency": "high" if it may be unsafe to drive: ANY brake symptom (noise, grinding, squeal, soft
+  pedal), loss of steering control, smoke, overheating, a flashing warning light. A vibration or
+  shake at speed (usually wheel balance) is "medium". When a complaint
+  has several problems, use the most urgent one. "medium" if it should be looked at soon, including
+  any unexplained noise or symptom. "low" only for routine maintenance, comfort, or not a vehicle problem.
 - "questions_to_ask_customer": up to 3 short questions that would help diagnose the problem.
 - "confidence": a number from 0 to 1 for how confident you are in this draft.
 
