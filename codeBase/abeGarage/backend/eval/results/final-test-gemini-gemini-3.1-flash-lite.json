@@ -1,0 +1,1442 @@
+{
+  "run_at": "2026-11-05T11:48:01.214Z",
+  "split": "test",
+  "final": true,
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_version": "intake-v3",
+  "timeout_ms": 20000,
+  "catalog_size": 18,
+  "metrics": {
+    "cases": 40,
+    "first_attempt_strict": 39,
+    "first_attempt_repaired": 0,
+    "ok_after_retry": 1,
+    "failed": 0,
+    "failure_reasons": [],
+    "service_precision": {
+      "hit": 48,
+      "of": 48
+    },
+    "service_recall": {
+      "hit": 33,
+      "of": 37
+    },
+    "urgency_agreement": {
+      "hit": 34,
+      "of": 40
+    },
+    "urgency_baseline_always_medium": {
+      "hit": 27,
+      "of": 40
+    },
+    "questions_present": {
+      "hit": 10,
+      "of": 10
+    },
+    "latency_ms": {
+      "mean": 2549,
+      "p95": 4701
+    }
+  },
+  "cases": [
+    {
+      "id": "c02",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 3053,
+      "services": [
+        "Wheel balancing",
+        "Wheel alignment"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Have you recently hit any potholes or curbs?",
+        "Do you feel the vibration in the seat as well as the steering wheel?",
+        "Are there any uneven wear patterns visible on your tires?"
+      ],
+      "systems": [
+        "tires_wheels",
+        "steering"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c03",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2156,
+      "services": [
+        "Wheel alignment",
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Have you hit any large potholes or curbs recently?",
+        "Is there any vibration in the steering wheel while driving?",
+        "How many miles ago were the tires last rotated?"
+      ],
+      "systems": [
+        "steering",
+        "suspension",
+        "tires_wheels"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c05",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1841,
+      "services": [
+        "Battery replacement",
+        "Battery and charging test"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Does the engine start normally after it has been driven?",
+        "Have you noticed any warning lights on the dashboard?",
+        "Has the vehicle been jump-started recently?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c06",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1586,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Did you tighten the gas cap until it clicked after your last fill-up?",
+        "Have you noticed any changes in fuel economy?",
+        "Is the light flashing or solid?"
+      ],
+      "systems": [
+        "engine",
+        "fuel"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c08",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1815,
+      "services": [
+        "Brake system inspection",
+        "Brake fluid flush"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Have you noticed any brake fluid leaking under the vehicle?",
+        "Does the pedal feel firmer if you pump it several times?",
+        "Are there any warning lights illuminated on the dashboard?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake system inspection"
+        ],
+        "acceptable_services": [
+          "Brake fluid flush"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c09",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1551,
+      "services": [
+        "Brake pad replacement",
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Does the squealing happen every time you brake or only when cold?",
+        "Have you noticed any warning lights on the dashboard?",
+        "How long has the pedal been pulsing?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c11",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1481,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Does the shaking stop when you accelerate?",
+        "Have you noticed any loss of power while driving?",
+        "How long has the light been flashing?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Spark plug replacement"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c12",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 3568,
+      "services": [
+        "Battery and charging test"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Does the engine struggle to start?",
+        "How long has the battery light been illuminated?",
+        "Have you noticed any other electrical issues like flickering interior lights?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Battery replacement"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c14",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1761,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Can you describe what you mean by 'off'?",
+        "Does this happen at specific speeds or during braking/turning?",
+        "Are there any warning lights on the dashboard?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Wheel alignment",
+          "Steering system inspection",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c15",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 3301,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "Are there any warning lights on the dashboard?",
+        "Does the car feel sluggish, misfire, or stall?",
+        "When exactly does the car not run right (e.g., at idle, during acceleration)?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.2,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c17",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1776,
+      "services": [],
+      "urgency": "medium",
+      "questions": [
+        "Does the smell resemble burning rubber, oil, fuel, or something sweet?",
+        "Does the smell occur only when the heater or AC is on?",
+        "Is the smell coming from inside the cabin or from outside the vehicle?"
+      ],
+      "systems": [
+        "engine",
+        "exhaust",
+        "hvac",
+        "other"
+      ],
+      "confidence": 0.3,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Exhaust system inspection",
+          "Cooling system inspection",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c18",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2580,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Can you describe what feels weird?",
+        "Did you notice any specific noises or warning lights?",
+        "Does the issue happen at certain speeds or during braking?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Brake system inspection",
+          "Cooling system inspection",
+          "Brake pad replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c20",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2346,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Are there any warning lights illuminated on the dashboard?",
+        "Does the engine rev high without the car accelerating normally?",
+        "Do you notice any unusual smells or noises while driving?"
+      ],
+      "systems": [
+        "engine",
+        "transmission",
+        "tires_wheels",
+        "brakes"
+      ],
+      "confidence": 0.6,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Spark plug replacement",
+          "Transmission fluid change",
+          "Brake system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c21",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2084,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Which specific lights are illuminated on the dashboard?",
+        "Are the lights steady or flashing?",
+        "Have you noticed any changes in how the vehicle drives since the lights appeared?"
+      ],
+      "systems": [
+        "electrical",
+        "engine",
+        "brakes",
+        "battery"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Battery and charging test"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c23",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1421,
+      "services": [
+        "Oil change",
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Does the engine feel like it is running differently or losing power?",
+        "Is the check engine light flashing or solid?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change",
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c24",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1350,
+      "services": [
+        "Battery and charging test",
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Did you leave any lights or accessories on when the battery died?",
+        "Does the squeak happen when going over bumps or when turning the steering wheel?",
+        "How old is the battery currently in the vehicle?"
+      ],
+      "systems": [
+        "battery",
+        "electrical",
+        "suspension"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test",
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c26",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 5880,
+      "services": [
+        "Suspension inspection",
+        "Wheel alignment",
+        "Steering system inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Have you hit any large potholes or curbs recently?",
+        "Does the vehicle pull to one side while driving on a flat road?",
+        "How many miles ago was the last alignment performed?"
+      ],
+      "systems": [
+        "suspension",
+        "steering",
+        "tires_wheels"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection",
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Wheel balancing",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c27",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1653,
+      "services": [
+        "AC service"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Is the oil leak dripping onto the ground while parked?",
+        "Is the engine overheating or showing any warning lights?",
+        "How long has the AC been blowing warm air?"
+      ],
+      "systems": [
+        "hvac",
+        "engine"
+      ],
+      "confidence": 0.85,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "AC service"
+        ],
+        "acceptable_services": [
+          "Oil change"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c29",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 4701,
+      "services": [
+        "Diagnostic scan",
+        "Battery and charging test"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Does the engine crank slowly when you try to start it?",
+        "Is the check engine light flashing or solid when it appears?",
+        "How old is the battery currently in the vehicle?"
+      ],
+      "systems": [
+        "engine",
+        "battery",
+        "fuel"
+      ],
+      "confidence": 0.85,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [
+          "Battery and charging test",
+          "Battery replacement",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c30",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1678,
+      "services": [
+        "Wheel balancing",
+        "Wheel alignment",
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "At what speed does the vibration start?",
+        "Is the vibration felt in the steering wheel or the whole vehicle?",
+        "How many miles has it been since your last oil change?"
+      ],
+      "systems": [
+        "steering",
+        "tires_wheels",
+        "engine"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing",
+          "Oil change"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c32",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1303,
+      "services": [
+        "Battery and charging test"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Are the dashboard lights dim or flickering when you try to start the car?",
+        "Have you tried jump-starting the vehicle?",
+        "How old is the current battery?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c33",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1268,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Is the check engine light flashing or solid?",
+        "Have you noticed any changes in engine performance, such as stalling or loss of power?",
+        "When did the light first appear?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c35",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2264,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "low",
+      "questions": [
+        "What is the current mileage on your vehicle?",
+        "Do you have a preferred brand or type of oil?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c36",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1790,
+      "services": [
+        "Wheel alignment",
+        "Steering system inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Have you hit any large potholes or curbs recently?",
+        "Is the steering wheel centered when driving straight?",
+        "Are the tires wearing unevenly on the inside or outside edges?"
+      ],
+      "systems": [
+        "steering",
+        "tires_wheels",
+        "suspension"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c38",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2674,
+      "services": [
+        "Battery and charging test"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Did the car restart after it died?",
+        "Are there any other warning lights on the dashboard?",
+        "How old is the battery?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Battery replacement"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c39",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1258,
+      "services": [
+        "Brake system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Does the squeaking happen only when you apply the brakes?",
+        "Is the pedal pulsation felt through the entire pedal or just at the end of the travel?",
+        "Have you noticed any warning lights on the dashboard?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c41",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_retry",
+      "reason": null,
+      "attempts": 2,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 22840,
+      "services": [
+        "Battery and charging test"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Do you hear any clicking sounds when you turn the key or press the start button?",
+        "Are the dashboard lights turning on when you try to start the car?",
+        "Have you tried jump-starting the vehicle?"
+      ],
+      "systems": [
+        "battery",
+        "electrical",
+        "engine"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [
+        "PROVIDER_TIMEOUT"
+      ],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Battery and charging test",
+          "Battery replacement",
+          "Diagnostic scan",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c42",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1297,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "low",
+      "questions": [
+        "What is the current mileage on your vehicle?",
+        "Do you have a preferred brand of oil or filter?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c44",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1579,
+      "services": [
+        "Wheel alignment"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Is the vehicle pulling to one side while driving?",
+        "Is there uneven tire wear?",
+        "Did you hit a pothole or curb recently?"
+      ],
+      "systems": [
+        "steering",
+        "tires_wheels"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c45",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2505,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Is the check engine light flashing or solid?",
+        "Have you noticed any changes in engine performance, such as stalling or loss of power?",
+        "When did the light first appear?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c47",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1731,
+      "services": [
+        "Battery and charging test",
+        "Battery replacement"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "How old is the battery?",
+        "Did you leave any lights or accessories on?",
+        "Is the vehicle currently starting with a jump start?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c48",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1579,
+      "services": [
+        "Wheel alignment",
+        "Steering system inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Does the vehicle pull constantly or only when braking?",
+        "Have you hit any potholes or curbs recently?",
+        "Are the tires wearing unevenly?"
+      ],
+      "systems": [
+        "steering",
+        "suspension",
+        "tires_wheels"
+      ],
+      "confidence": 0.85,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c50",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1835,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Could you please describe the problem you are experiencing with your vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c51",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1243,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Could you please describe the specific problem you are experiencing with your vehicle?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c53",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1462,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Are you reporting a problem with your vehicle?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0.05,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c54",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1237,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "Could you please describe the problem you are experiencing with your vehicle?"
+      ],
+      "systems": [
+        "other"
+      ],
+      "confidence": 0.05,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c56",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1960,
+      "services": [
+        "Battery and charging test"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "How old is the battery?",
+        "Does the engine fail to start completely sometimes?",
+        "Have you noticed any warning lights on the dashboard?"
+      ],
+      "systems": [
+        "battery",
+        "electrical"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Battery and charging test"
+        ],
+        "acceptable_services": [
+          "Battery replacement",
+          "Diagnostic scan"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c57",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1246,
+      "services": [
+        "Diagnostic scan"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Can you describe the symbol or icon that is lit up?",
+        "Is the car driving normally or are there any performance issues?",
+        "Did you notice any water inside the vehicle or under the hood after the wash?"
+      ],
+      "systems": [
+        "electrical",
+        "engine"
+      ],
+      "confidence": 0.9,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Diagnostic scan"
+        ],
+        "acceptable_services": [],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c59",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1449,
+      "services": [
+        "Wheel balancing",
+        "Wheel alignment"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "Does the vibration happen only at 80 km/h or does it get worse at higher speeds?",
+        "Do you feel the vibration in the steering wheel, the seat, or the whole car?",
+        "Have you recently hit any potholes or curbs?"
+      ],
+      "systems": [
+        "tires_wheels",
+        "steering",
+        "suspension"
+      ],
+      "confidence": 0.85,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c60",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1862,
+      "services": [
+        "Cooling system inspection"
+      ],
+      "urgency": "high",
+      "questions": [
+        "Did you notice a temperature warning light on the dashboard?",
+        "Are you seeing any puddles of fluid under the vehicle?",
+        "How long has the vehicle been overheating?"
+      ],
+      "systems": [
+        "cooling",
+        "engine"
+      ],
+      "confidence": 0.95,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Cooling system inspection"
+        ],
+        "acceptable_services": [
+          "Coolant flush",
+          "Diagnostic scan"
+        ],
+        "urgency": "high"
+      }
+    }
+  ]
+}

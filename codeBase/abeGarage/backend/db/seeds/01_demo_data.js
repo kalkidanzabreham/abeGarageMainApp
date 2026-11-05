@@ -30,6 +30,17 @@ const SERVICES = [
   ["Battery replacement", "Test and replace 12V battery", 129.0],
   ["Diagnostic scan", "OBD-II fault code read and report", 59.0],
   ["Suspension inspection", "Shocks, struts, bushings and links", 69.0],
+  // added later; appended so ORDERS' indexes above stay valid
+  ["Brake system inspection", "Pads, discs, lines, fluid level and pedal feel", 39.0],
+  ["Brake fluid flush", "Replace brake fluid and bleed the system", 89.0],
+  ["Battery and charging test", "Battery load test, alternator and starter output", 29.0],
+  ["Cooling system inspection", "Coolant level, leaks, hoses, radiator, fan; pressure test", 59.0],
+  ["Coolant flush", "Drain, flush and refill engine coolant", 99.0],
+  ["AC service", "Leak check and refrigerant recharge", 119.0],
+  ["Exhaust system inspection", "Leaks, mounts, muffler and catalytic converter", 45.0],
+  ["Steering system inspection", "Rack, tie rods, play and power steering fluid", 59.0],
+  ["Spark plug replacement", "Replace spark plugs, 4-cylinder engine", 99.0],
+  ["Transmission fluid change", "Drain and refill transmission fluid", 129.0],
 ];
 
 const CUSTOMERS = [

@@ -16,6 +16,14 @@ const applyTestEnv = () => {
     // high so tests that log in a lot are not throttled; the rate-limit test
     // loads its own copy of the app with a low limit
     LOGIN_RATE_LIMIT_MAX: "1000",
+    // smart intake on, with the no-model fake provider (no real model in CI)
+    AI_ENABLED: "true",
+    AI_PROVIDER: "fake",
+    AI_TIMEOUT_MS: "2000",
+    AI_MAX_INPUT_CHARS: "1000",
+    AI_DAILY_CAP: "1000",
+    AI_USER_LIMIT: "1000",
+    AI_GLOBAL_RPM: "1000",
   };
   // safety net: the test setup drops and recreates this database
   if (!values.DB_NAME.endsWith("_test")) {

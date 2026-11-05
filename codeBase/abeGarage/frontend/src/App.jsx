@@ -40,6 +40,7 @@ import ViewOrder from "./markup/pages/admin/ViewOrder";
 
 import AdminService from "./markup/pages/admin/AdminService";
 import EmployeeEdit from "./markup/pages/admin/EmployeeEdit";
+import SmartIntakePage from "./markup/pages/admin/SmartIntakePage";
 
 import AdminPage from "./markup/pages/admin/AdminPage";
 
@@ -186,6 +187,14 @@ function App() {
           element={
             <ProtectedRoute roles={PERMISSIONS["orders:update"]}>
               <EditOrder />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/smart-intake"
+          element={
+            <ProtectedRoute roles={PAGE_ROLES["/admin/smart-intake"]}>
+              <SmartIntakePage />
             </ProtectedRoute>
           }
         />

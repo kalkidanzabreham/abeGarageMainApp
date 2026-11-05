@@ -1,0 +1,683 @@
+{
+  "run_at": "2026-11-05T13:13:18.794Z",
+  "split": "dev",
+  "final": false,
+  "provider": "fake",
+  "model": "keyword-rules",
+  "prompt_version": "intake-v3",
+  "timeout_ms": 2000,
+  "catalog_size": 18,
+  "metrics": {
+    "cases": 20,
+    "first_attempt_strict": 20,
+    "first_attempt_repaired": 0,
+    "ok_after_retry": 0,
+    "failed": 0,
+    "failure_reasons": [],
+    "service_precision": {
+      "hit": 16,
+      "of": 17
+    },
+    "service_recall": {
+      "hit": 14,
+      "of": 16
+    },
+    "urgency_agreement": {
+      "hit": 16,
+      "of": 20
+    },
+    "urgency_baseline_always_medium": {
+      "hit": 8,
+      "of": 20
+    },
+    "questions_present": {
+      "hit": 6,
+      "of": 6
+    },
+    "latency_ms": {
+      "mean": 1,
+      "p95": 2
+    }
+  },
+  "cases": [
+    {
+      "id": "c01",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 7,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c04",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Oil change"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c07",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "suspension"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c10",
+      "category": "clear",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "suspension"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Wheel alignment"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c13",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c16",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Oil change",
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Cooling system inspection",
+          "Battery and charging test"
+        ],
+        "urgency": "low",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c19",
+      "category": "vague",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Suspension inspection",
+          "Brake system inspection",
+          "Brake pad replacement",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c22",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Brake pad replacement",
+        "Wheel alignment"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes",
+        "steering"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Wheel alignment"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c25",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Brake pad replacement",
+        "Wheel balancing"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes",
+        "tires_wheels"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing",
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection",
+          "Wheel alignment",
+          "Suspension inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c28",
+      "category": "multi",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Brake pad replacement",
+        "Diagnostic scan",
+        "Oil change"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes",
+        "electrical",
+        "engine"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement",
+          "Oil change"
+        ],
+        "acceptable_services": [
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c31",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c34",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Wheel balancing"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "tires_wheels"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Wheel balancing"
+        ],
+        "acceptable_services": [
+          "Wheel alignment",
+          "Suspension inspection",
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c37",
+      "category": "typos",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Suspension inspection"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "suspension"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Suspension inspection"
+        ],
+        "acceptable_services": [
+          "Steering system inspection"
+        ],
+        "urgency": "medium"
+      }
+    },
+    {
+      "id": "c40",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake system inspection"
+        ],
+        "acceptable_services": [
+          "Brake pad replacement",
+          "Brake disc resurfacing",
+          "Brake fluid flush"
+        ],
+        "urgency": "high",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c43",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Diagnostic scan",
+          "Suspension inspection",
+          "Brake system inspection",
+          "Exhaust system inspection"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c46",
+      "category": "short",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [
+        "Wheel balancing"
+      ],
+      "urgency": "medium",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "tires_wheels"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [
+          "Wheel balancing",
+          "Suspension inspection",
+          "Diagnostic scan",
+          "Wheel alignment",
+          "Steering system inspection",
+          "Spark plug replacement"
+        ],
+        "urgency": "medium",
+        "questions_required": true
+      }
+    },
+    {
+      "id": "c49",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 2,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c52",
+      "category": "irrelevant",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 1,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    },
+    {
+      "id": "c55",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [
+        "Brake pad replacement"
+      ],
+      "urgency": "high",
+      "questions": [
+        "When did this start?"
+      ],
+      "systems": [
+        "brakes"
+      ],
+      "confidence": 0.5,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Brake pad replacement"
+        ],
+        "acceptable_services": [
+          "Brake disc resurfacing",
+          "Brake system inspection"
+        ],
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "c58",
+      "category": "amharic_mixed",
+      "ok": true,
+      "outcome": "ok_strict",
+      "reason": null,
+      "attempts": 1,
+      "repairs": [],
+      "dropped_services": [],
+      "latency_ms": 0,
+      "services": [],
+      "urgency": "low",
+      "questions": [
+        "What problem are you having with the vehicle?"
+      ],
+      "systems": [],
+      "confidence": 0.1,
+      "attempt_errors": [],
+      "expected": {
+        "services": [
+          "Oil change"
+        ],
+        "acceptable_services": [],
+        "urgency": "low"
+      }
+    }
+  ]
+}

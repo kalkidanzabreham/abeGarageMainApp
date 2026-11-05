@@ -26,6 +26,7 @@ export const PERMISSIONS = Object.freeze({
   "employees:read": [ADMIN, MANAGER, DEMO],
   "employees:write": [ADMIN],
   "services:write": [ADMIN],
+  "ai:intake": [ADMIN, MANAGER, DEMO],
 });
 
 export const can = (roleId, permission) =>
@@ -43,6 +44,7 @@ export const PAGE_ROLES = Object.freeze({
   "/admin/add_customers": PERMISSIONS["customers:write"],
   "/admin/all_customers": ALL_ROLES,
   "/admin/service": ALL_ROLES,
+  "/admin/smart-intake": PERMISSIONS["ai:intake"],
 });
 
 export const canVisit = (roleId, path) =>

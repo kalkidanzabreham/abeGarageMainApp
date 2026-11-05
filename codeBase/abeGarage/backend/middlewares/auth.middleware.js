@@ -41,8 +41,13 @@ const authenticate = (req, res, next) => {
 
 // Second line of defence for the Demo role: even if a write route were
 // added with a too-wide permission, Demo can never change data.
+// POST routes that change nothing (the AI intake only drafts a job card;
+// the person saves it through the normal, write-protected order routes).
+const DEMO_ALLOWED_POSTS = new Set(["/api/ai/intake"]);
+
 const denyDemoWrites = (req, res, next) => {
-  if (req.user.role_id === ROLES.DEMO && !READ_METHODS.includes(req.method)) {
+  const allowed = req.method === "POST" && DEMO_ALLOWED_POSTS.has(req.path);
+  if (req.user.role_id === ROLES.DEMO && !READ_METHODS.includes(req.method) && !allowed) {
     return next(new AppError(403, "FORBIDDEN", "The demo account is read-only"));
   }
   next();

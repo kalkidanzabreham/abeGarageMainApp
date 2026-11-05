@@ -131,6 +131,17 @@ characters or equal to the Demo password.
    | `JWT_SECRET` | from step 1 |
    | `TRUST_PROXY` | `1` (Render's proxy; rate limiting needs the client IP) |
    | `CORS_ORIGINS` | your Vercel URL (set it in step 6) |
+   | `AI_ENABLED` | `true` to turn on smart intake, `false` (default) to hide it |
+   | `AI_PROVIDER` | `gemini` |
+   | `GEMINI_API_KEY` | from https://aistudio.google.com/apikey (free tier, no card). Default model: `gemini-3.1-flash-lite` |
+
+   `GEMINI_API_KEY` is read only by the API: never put it in Vercel or in
+   any `VITE_` variable, which are built into the public JavaScript. The
+   default limits (`AI_DAILY_CAP=200`, `AI_GLOBAL_RPM=7`, `AI_USER_LIMIT=10`
+   per 10 minutes) stay under Gemini's free-tier quota; check your key's
+   actual limits in AI Studio and see `backend/.env.example`. On the free
+   tier Google may use the prompts to improve its products; the intake box
+   tells users not to enter personal details.
 
    Don't set `PORT` (Render provides it; default 10000) and don't put the
    seed passwords here; the API doesn't need them.
@@ -171,6 +182,8 @@ comma-separate several). Save; Render redeploys.
   password: lists load, every write shows "The demo account cannot ...".
 - Open an order's tracking link while logged out.
 - Open `https://<service>.onrender.com/api/docs`.
+- With AI on: as Demo, open **Smart intake (AI)**, type "brakes grind" and
+  click **Draft job card**; a draft appears within a few seconds.
 - Publish **only** the Demo login.
 
 ### Keeping it running
@@ -197,3 +210,5 @@ comma-separate several). Save; Render redeploys.
 - TiDB Cloud Starter: https://docs.pingcap.com/tidbcloud/select-cluster-tier/
 - GitHub Actions schedule event: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
 - GitHub Actions billing: https://docs.github.com/en/billing/concepts/product-billing/github-actions
+- Gemini rate limits (read 2026-11-04; live per-key numbers are only shown in AI Studio): https://ai.google.dev/gemini-api/docs/rate-limits
+- Gemini pricing (read 2026-11-05; 2.5 Flash-Lite returned 404 for a new key that day): https://aistudio.google.com/docs/pricing

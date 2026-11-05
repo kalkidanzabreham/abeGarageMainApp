@@ -42,19 +42,22 @@ test("every migration runs up and down on an empty database", async () => {
   await db.migrate.latest();
 });
 
+// by name, so later migrations don't change which one this test exercises
+const M005 = { name: "005_order_status_completed_is_2.js" };
+
 test("005 converts status 3 to 2, and down restores only the converted rows", async () => {
   await db.seed.run();
-  await db.migrate.down(); // undo 005
+  await db.migrate.down(M005); // undo 005
   const orderIds = Object.keys(await statuses()).map(Number);
   await db("order_status").where({ order_id: orderIds[0] }).update({ order_status: 3 });
   const before = await statuses();
 
-  await db.migrate.up(); // 005
+  await db.migrate.up(M005);
   const after = await statuses();
   expect(after[orderIds[0]]).toBe(2);
   expect(Object.values(after)).not.toContain(3);
 
-  await db.migrate.down();
+  await db.migrate.down(M005);
   expect(await statuses()).toEqual(before);
-  await db.migrate.up();
+  await db.migrate.up(M005);
 });

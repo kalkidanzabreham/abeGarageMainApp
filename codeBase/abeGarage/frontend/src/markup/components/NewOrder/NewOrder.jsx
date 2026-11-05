@@ -11,6 +11,7 @@ import { getAllServices } from "../../../services/service.service";
 import { addOrder } from "../../../services/order.service";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../../../util/money";
+import SmartIntake from "../SmartIntake/SmartIntake";
 // Reusable MdCancel Component
 const MdCancel = ({ onClick, size = 24, fill = "red" }) => (
   <button className="theme-btn" onClick={onClick}>
@@ -377,6 +378,15 @@ function NewOrder() {
               <MdCancel onClick={handleClearVehicleSelection} />
             </div>
           </div>
+        )}
+
+        {/* AI draft: suggestions only; the person ticks what to keep */}
+        {selectedVehicle && (
+          <SmartIntake
+            onApply={(serviceIds) =>
+              setSelectedServices((current) => [...new Set([...current, ...serviceIds])])
+            }
+          />
         )}
 
         {/* Services Section */}

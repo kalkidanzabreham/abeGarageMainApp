@@ -2,7 +2,7 @@
 // Walkthrough rows 18-38: what each role may and may not do in the UI, Demo's
 // read-only enforcement (UI and API), and the tampered-token logout.
 const { test, expect } = require("@playwright/test");
-const { apiAs, loginAs, loginUI, createCustomerWithVehicle } = require("./helpers");
+const { apiAs, apiLogin, loginAs, loginUI, createCustomerWithVehicle } = require("./helpers");
 
 const MENUS = {
   admin: ["Dashboard", "Orders", "New order", "Add employee", "Employees", "Add customer", "Customers", "Services"],
@@ -13,10 +13,13 @@ const MENUS = {
 const SERVICE_CARD = { admin: "Add Services", manager: "Services", mechanic: "Services", demo: "Services" };
 
 for (const [role, menu] of Object.entries(MENUS)) {
-  test(`bug 4: ${role} sees only their menu items and cards`, async ({ page }) => {
+  test(`bug 4: ${role} sees only their menu items and cards`, async ({ page, request }) => {
+    // the smart intake item exists only when the API has the feature on for this role
+    const aiStatus = await apiAs(request, await apiLogin(request, role)).get("/ai/status");
+    const expected = aiStatus.ok() ? [...menu, "Smart intake (AI)"] : menu;
     await loginUI(page, role);
     await page.goto("/admin");
-    await expect(page.locator(".list-group a")).toHaveText(menu);
+    await expect(page.locator(".list-group a")).toHaveText(expected);
     const cardLinks = await page.locator(".service-block-one a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
     for (const href of cardLinks) {
       const allowed = { "/admin/orderS": "Orders", "/admin/new-order": "New order", "/admin/employee": "Employees",

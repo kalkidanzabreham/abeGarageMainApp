@@ -112,6 +112,9 @@ const listVehicles = { query: listQuery({ customer_id: id.optional() }) };
 const listOrders = { query: listQuery({ status: orderStatus.optional(), customer_id: id.optional() }) };
 const listEmployees = { query: listQuery({ role: roleId.optional(), active: flag.optional() }) };
 
+// AI intake: longer text is accepted and truncated to AI_MAX_INPUT_CHARS
+const aiIntake = { body: z.object({ complaint: z.string().trim().min(1).max(5000) }) };
+
 const byId = { params: idParam() };
 const byCustomerId = { params: idParam("customer_id") };
 const byVehicleId = { params: idParam("vehicle_id") };
@@ -128,5 +131,6 @@ module.exports = {
   createVehicle, updateVehicle,
   createOrder, updateOrder,
   listCustomers, listVehicles, listOrders, listEmployees,
+  aiIntake,
   byId, byCustomerId, byVehicleId, byHash, none,
 };

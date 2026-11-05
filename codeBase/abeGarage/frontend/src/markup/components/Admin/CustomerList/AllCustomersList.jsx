@@ -22,14 +22,18 @@ function AllCustomersList() {
   const [apiError, setApiError] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
 
-  // wait until typing pauses, then search from page 1
+  // wait until typing pauses, then search from page 1. Only when the text
+  // really changed: this effect also runs on mount, and resetting the page
+  // there undid a "Next" click made in the first 300 ms.
   useEffect(() => {
+    const next = search.trim();
+    if (next === query) return;
     const timer = setTimeout(() => {
-      setQuery(search.trim());
+      setQuery(next);
       setCurrentPage(1);
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, query]);
 
   // search and paging happen on the server (was: load every customer and
   // filter/slice in the browser)

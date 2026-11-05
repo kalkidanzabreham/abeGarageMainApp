@@ -18,6 +18,8 @@ router.use(require("./service.routes"));
 router.use(require("./order.routes"));
 router.use(require("./customer.routes"));
 router.use(require("./vehicle.routes"));
+// smart job intake: absent entirely (404) unless AI_ENABLED=true
+if (require("../config/env").AI_ENABLED) router.use(require("./ai.routes"));
 
 // export router
 module.exports = router;
