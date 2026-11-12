@@ -35,4 +35,9 @@ export default [
       ],
     },
   },
+  // the Vite config runs in Node, not in the browser
+  {
+    files: ['vite.config.js'],
+    languageOptions: { globals: globals.node },
+  },
 ]
