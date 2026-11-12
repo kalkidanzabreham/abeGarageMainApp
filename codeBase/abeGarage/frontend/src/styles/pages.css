@@ -157,14 +157,15 @@
   font-size: 0.9rem;
   color: var(--gh-muted);
 }
-.gh-login-demo .btn-link {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--gh-accent-text);
-  text-decoration: none;
+.gh-login-demo {
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  gap: 0.6rem;
 }
-.gh-login-demo .btn-link:hover {
-  text-decoration: underline;
+.gh-login-or {
+  font-weight: 600;
+  color: var(--gh-text);
 }
 @media (max-width: 991.98px) {
   .gh-auth {

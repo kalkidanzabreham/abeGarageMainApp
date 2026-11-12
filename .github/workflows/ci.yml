@@ -105,6 +105,8 @@ jobs:
       # generated per run below
       SEED_DEMO_PASSWORD: GarageHub-demo-1
       VITE_API_URL: http://localhost:5000/api
+      # the login page's one-click demo button
+      DEMO_LOGIN_ENABLED: "true"
       # smart intake UI tests use the no-model fake provider
       AI_ENABLED: "true"
       AI_PROVIDER: fake
