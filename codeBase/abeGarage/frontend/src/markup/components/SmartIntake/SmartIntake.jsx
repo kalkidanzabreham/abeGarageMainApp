@@ -10,7 +10,6 @@ const URGENCY_STYLE = { high: "danger", medium: "warning", low: "secondary" };
 // The AI only suggests; a person reviews it, ticks the services to keep and
 // (in New Order) adds them to the order, which is saved by the normal
 // Submit button. With no onApply (the try-it page) nothing can be saved.
-// eslint-disable-next-line react/prop-types -- the codebase does not use PropTypes (see eslint-baseline.json)
 function SmartIntake({ onApply }) {
   const { aiStatus, refreshAiStatus } = useAuth();
   const [complaint, setComplaint] = useState("");

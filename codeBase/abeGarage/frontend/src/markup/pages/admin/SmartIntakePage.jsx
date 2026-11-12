@@ -1,4 +1,3 @@
-import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
 import SmartIntake from "../../components/SmartIntake/SmartIntake";
 import { useAuth } from "../../../Context/AuthContext";
 
@@ -7,12 +6,7 @@ import { useAuth } from "../../../Context/AuthContext";
 function SmartIntakePage() {
   const { aiStatus } = useAuth();
   return (
-    <div className="container-fluid admin-pages">
-      <div className="row">
-        <div className="col-md-3 admin-left-side">
-          <AdminMenu />
-        </div>
-        <div className="col-md-9 admin-right-side">
+    <>
           <section className="contact-section">
             <div className="auto-container">
               <div className="contact-title">
@@ -25,9 +19,7 @@ function SmartIntakePage() {
               )}
             </div>
           </section>
-        </div>
-      </div>
-    </div>
+      </>
   );
 }
 
