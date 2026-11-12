@@ -57,7 +57,7 @@ test("bug 3: the total is shown on the list, the order view, the edit page and t
 
   await page.goto(`/admin/orders/${orderId}`);
   await expect(page.getByTestId("order-total")).toHaveText(expected);
-  await expect(page.locator(".rounded.shadow-sm:has-text('Oil change')")).toContainText(money(prices["Oil change"].price));
+  await expect(page.getByRole("listitem").filter({ hasText: "Oil change" })).toContainText(money(prices["Oil change"].price));
 
   await page.goto(`/admin/edit-order/${orderId}`);
   await expect(page.getByTestId("estimated-total")).toHaveText(expected);

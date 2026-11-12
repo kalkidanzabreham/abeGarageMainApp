@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // layouts
 import PublicLayout from "./markup/layout/PublicLayout";
@@ -7,9 +7,6 @@ import ProtectedRoute from "./markup/components/Auth/ProtectedRoute";
 
 // public pages
 import Home from "./markup/pages/Home";
-import About from "./markup/pages/About";
-import Services from "./markup/pages/Services";
-import Contact from "./markup/pages/Contact";
 import Login from "./markup/pages/Login";
 import CustomerOrder from "./markup/pages/CustomerOrder";
 import CarStatusInfo from "./markup/pages/CarStatusInfo";
@@ -66,9 +63,11 @@ function App() {
       {/* public site */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
+        {/* the template's About/Services/Contact pages became sections of the
+            landing page; old links still land somewhere sensible */}
+        <Route path="/about" element={<Navigate to="/#how-it-works" replace />} />
+        <Route path="/services" element={<Navigate to="/#features" replace />} />
+        <Route path="/contact" element={<Navigate to="/" replace />} />
         <Route path="/customer_order/:order_hash" element={<CustomerOrder />} />
         <Route path="/customer_info" element={<CarStatusInfo />} />
         <Route path="/unauthorized" element={<Unauthorized />} />

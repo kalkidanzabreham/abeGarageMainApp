@@ -1,316 +1,193 @@
-import React from "react";
-import bannerImage from "../../assets/images/banner/bannerOrg.jpg";
-import vban1 from "../../assets/images/misc/vban1.jpg";
-import vban2 from "../../assets/images/misc/vban2.jpg";
-import quality from "../../assets/images/misc/quality.jpg";
-import additional from "../../assets/images/misc/additional.jpg";
-import background from "../../assets/images/misc/1920x516.jpg";
+import { Link } from "react-router-dom";
+import {
+  LuArrowRight,
+  LuCar,
+  LuCircleCheck,
+  LuClipboardList,
+  LuLink,
+  LuMessageSquareText,
+  LuMoon,
+  LuShieldCheck,
+  LuSparkles,
+  LuUserCheck,
+} from "react-icons/lu";
+import useReveal from "../../util/useReveal";
+
+const FEATURES = [
+  {
+    icon: LuSparkles,
+    title: "Smart job intake",
+    text: "Paste what the customer said. An AI drafts the job card: likely systems, services from your own catalog, urgency and questions to ask.",
+  },
+  {
+    icon: LuClipboardList,
+    title: "Orders from start to finish",
+    text: "Received, in progress, completed. Mechanics tick off services as they go; totals always come from catalog prices.",
+  },
+  {
+    icon: LuCar,
+    title: "Customers and their vehicles",
+    text: "Search by name, email or phone. Every vehicle and its order history on one profile.",
+  },
+  {
+    icon: LuLink,
+    title: "A tracking link for customers",
+    text: "Customers check their order's progress with a private link or their email or phone. No account needed.",
+  },
+  {
+    icon: LuShieldCheck,
+    title: "Access by role",
+    text: "Admins, managers and mechanics each see what their job needs. The API enforces the same rules.",
+  },
+  {
+    icon: LuMoon,
+    title: "Built for every screen",
+    text: "Works on a phone at the counter or a desktop in the office, in light or dark mode.",
+  },
+];
+
+const STEPS = [
+  {
+    icon: LuMessageSquareText,
+    title: "The customer explains",
+    text: "“Grinding noise when I brake, and the car shakes above 80.”",
+  },
+  {
+    icon: LuSparkles,
+    title: "GarageHub drafts the job card",
+    text: "Suggested services come only from your catalog, with an urgency level and questions for the customer.",
+  },
+  {
+    icon: LuUserCheck,
+    title: "A person confirms",
+    text: "Untick what doesn't fit, add it to the order and submit. Nothing is saved until someone decides.",
+  },
+];
+
+// A miniature of the real Smart intake draft, drawn with HTML and CSS
+// (no screenshot, so it follows the theme and needs no image download).
+function IntakePreview() {
+  return (
+    <div className="gh-hero-visual" aria-hidden="true">
+      <div className="gh-mock gh-mock-complaint">
+        <div className="gh-mock-label">Customer&apos;s complaint</div>
+        <p>Grinding noise when I brake, and the car shakes above 80.</p>
+      </div>
+      <div className="gh-mock gh-mock-draft">
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <div className="gh-mock-title">
+            <LuSparkles /> Draft job card
+          </div>
+          <span className="gh-pill gh-pill-red">high</span>
+        </div>
+        <div className="gh-mock-label">Suggested services</div>
+        <ul className="gh-mock-services">
+          <li>
+            <LuCircleCheck /> Brake pad replacement <span>$149.00</span>
+          </li>
+          <li>
+            <LuCircleCheck /> Wheel balancing <span>$39.00</span>
+          </li>
+        </ul>
+        <div className="gh-mock-label mt-3">Ask the customer</div>
+        <p className="gh-mock-question">Does the shaking come through the steering wheel?</p>
+        <div className="gh-mock-actions">
+          <span className="gh-mock-btn">Add to order</span>
+          <span className="gh-mock-btn gh-mock-btn-ghost">Discard</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Home() {
+  useReveal();
   return (
-    <div>
-      <section className="video-section">
-        <div data-parallax='{"y": 10}' class="sec-bg keep">
+    <>
+      <section className="gh-hero">
+        <div className="container gh-hero-grid">
+          <div className="gh-hero-copy gh-stagger">
+            <span className="gh-hero-badge">
+              <LuSparkles aria-hidden="true" /> Workshop management with an AI assistant
+            </span>
+            <h1>
+              Run your garage <span className="gh-gradient-text">without the paperwork.</span>
+            </h1>
+            <p className="gh-hero-lead">
+              GarageHub keeps customers, vehicles and orders in one place, and turns a customer&apos;s description of a
+              problem into a draft job card your team confirms.
+            </p>
+            <div className="d-flex flex-wrap gap-2">
+              <Link to="/login" className="btn btn-primary btn-lg d-inline-flex align-items-center gap-2">
+                Try the live demo <LuArrowRight aria-hidden="true" />
+              </Link>
+              <Link to="/customer_info" className="btn btn-outline-secondary btn-lg">
+                Track an order
+              </Link>
+            </div>
+            <p className="gh-hero-note">The demo uses fictional customers. First load can take a minute while the server wakes up.</p>
+          </div>
+          <IntakePreview />
         </div>
-        <div className="auto-container">
-          <h5>Working since 1992</h5>
-          <h2>
-            Turnup Your Car <br /> to Next Level
-          </h2>
-          <div className="video-box">
-            <div className="video-btn">
-              <a
-                href="https://www.youtube.com/watch?v=nfP5N9Yc72A&amp;t=28s"
-                className="overlay-link lightbox-image video-fancybox ripple"
-              >
-                <i className="flaticon-play"></i>
-              </a>
-            </div>
-            <div className="text">
-              Watch intro video <br /> Home
-            </div>
+      </section>
+
+      <section id="features" className="gh-section">
+        <div className="container">
+          <div className="gh-section-head">
+            <span className="gh-eyebrow">Features</span>
+            <h2>Everything the front desk and the workshop share</h2>
+            <p>One system from the moment a customer walks in to the moment they drive away.</p>
+          </div>
+          <div className="gh-feature-grid">
+            {FEATURES.map(({ icon: Icon, title, text }) => (
+              <article key={title} className="gh-card gh-card-hover gh-feature gh-reveal">
+                <span className="gh-icon-tile">
+                  <Icon aria-hidden="true" />
+                </span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="about-section">
-        <div className="auto-container">
-          <div className="row">
-            <div className="col-lg-5">
-              <div className="image-box">
-                <img src={vban1} alt="" />
-                <img src={vban2} alt="" />
-                <div className="year-experience" data-parallax='{"y": 30}'>
-                  <strong>24</strong> years <br /> Experience{" "}
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-7 pl-lg-5">
-              <div className="sec-title">
-                <h5>Welcome to Our workshop</h5>
-                <h2>We have 24 years experience</h2>
-                <div className="text">
-                  <p>
-                    Bring to the table win-win survival strategies to ensure
-                    proactive domination. At the end of the day, going forward,
-                    a new normal that has evolved from generation X is on the
-                    runway heading towards a streamlined cloud solution. User
-                    generated content in real-time will have multiple
-                    touchpoints for offshoring.
-                  </p>
-                  <p>
-                    Capitalize on low hanging fruit to identify a ballpark value
-                    added activity to beta test. Override the digital divide
-                    with additional clickthroughs from DevOps. Nanotechnology
-                    immersion along the information highway will close the loop
-                    on focusing.
-                  </p>
-                </div>
-                <div className="link-btn mt-40">
-                  <a
-                    href="./about"
-                    className="theme-btn btn-style-one style-two"
-                  >
-                    <span>
-                      About Us <i className="flaticon-right"></i>
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
+      <section id="how-it-works" className="gh-section gh-section-alt">
+        <div className="container">
+          <div className="gh-section-head">
+            <span className="gh-eyebrow">How it works</span>
+            <h2>From a complaint to a confirmed job card</h2>
+            <p>The AI suggests; your team decides. Every draft is checked by a person before it reaches an order.</p>
           </div>
+          <ol className="gh-steps">
+            {STEPS.map(({ icon: Icon, title, text }, i) => (
+              <li key={title} className="gh-step gh-reveal">
+                <span className="gh-step-num">{i + 1}</span>
+                <span className="gh-icon-tile">
+                  <Icon aria-hidden="true" />
+                </span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      <section className="services-section">
-        <div className="auto-container">
-          <div className="sec-title style-two">
-            <h2>Our Services</h2>
-            <div className="text">
-              Bring to the table win-win survival strategies to ensure proactive
-              domination. At the end of the day, going forward, a new normal
-              that has evolved from generation X is on the runway heading
-              towards a streamlined cloud solution.{" "}
+      <section className="gh-section">
+        <div className="container">
+          <div className="gh-cta">
+            <div>
+              <h2>See it with real screens</h2>
+              <p>Log in with the read-only demo account to look around and try Smart intake.</p>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Performance Upgrade</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-power"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Transmission Services</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-gearbox"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Break Repair & Service</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-brake-disc"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Engine Service & Repair</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-car-engine"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Tyre & Wheels</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-tire"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 service-block-one">
-              <div className="inner-box hvr-float-shadow">
-                <h5>Service and Repairs</h5>
-                <h2>Denting & Painting</h2>
-                <a href="#" className="read-more">
-                  read more +
-                </a>
-                <div className="icon">
-                  <span className="flaticon-spray-gun"></span>
-                </div>
-              </div>
-            </div>
+            <Link to="/login" className="btn btn-primary btn-lg d-inline-flex align-items-center gap-2">
+              Open the demo <LuArrowRight aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
-
-      <section className="features-section">
-        <div className="auto-container">
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="inner-container">
-                <h2>
-                  Quality Service And <br /> Customer Satisfaction !!
-                </h2>
-                <div className="text">
-                  We utilize the most recent symptomatic gear to ensure your
-                  vehicle is fixed or adjusted appropriately and in an opportune
-                  manner. We are an individual from Professional Auto Service, a
-                  first class execution arrange, where free assistance offices
-                  share shared objectives of being world-class car
-                  administration focuses.
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="image">
-                <img src={quality} alt="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="why-choose-us">
-        <div className="auto-container">
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="sec-title style-two">
-                <h2>Why Choose Us</h2>
-                <div className="text">
-                  Bring to the table win-win survival strategies to ensure
-                  proactive domination. At the end of the day, going forward, a
-                  new normal that has evolved from generation heading towards.
-                </div>
-              </div>
-              <div className="icon-box">
-                <div className="icon">
-                  <span className="flaticon-mechanic"></span>
-                </div>
-                <h4>Certified Expert Mechanics</h4>
-              </div>
-              <div className="icon-box">
-                <div className="icon">
-                  <span className="flaticon-wrench"></span>
-                </div>
-                <h4>Fast And Quality Service</h4>
-              </div>
-              <div className="icon-box">
-                <div className="icon">
-                  <span className="flaticon-price-tag-1"></span>
-                </div>
-                <h4>Best Prices in Town</h4>
-              </div>
-              <div className="icon-box">
-                <div className="icon">
-                  <span className="flaticon-trophy"></span>
-                </div>
-                <h4>Awarded Workshop</h4>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="sec-title style-two">
-                <h2>Addtional Services</h2>
-              </div>
-              <div className="row">
-                <div className="col-md-5">
-                  <div className="image">
-                    <img src={additional} alt="" />
-                  </div>
-                </div>
-                <div className="col-md-7">
-                  <ul className="list">
-                    <li>General Auto Repair & Maintenance</li>
-                    <li>Transmission Repair & Replacement</li>
-                    <li>Tire Repair and Replacement</li>
-                    <li>State Emissions Inspection</li>
-                    <li>Break Job / Break Services</li>
-                    <li>Electrical Diagnostics</li>
-                    <li>Fuel System Repairs</li>
-                    <li>Starting and Charging Repair</li>
-                    <li>Steering and Suspension Work</li>
-                    <li>Emission Repair Facility</li>
-                    <li>Wheel Alignment</li>
-                    <li>Computer Diagaonstic Testing</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="video-section">
-        <div data-parallax='{"y": 50}' className="sec-bg about_bg">
-          
-        </div>
-        <div className="auto-container pb-5">
-          <h5>Working since 1992</h5>
-          <h2 style={{ color: "white-grey" }}>
-            We are leader <br /> in Car Mechanical Work
-          </h2>
-          <div className="video-box">
-            <div className="video-btn">
-              <a
-                href="https://www.youtube.com/watch?v=nfP5N9Yc72A&amp;t=28s"
-                className="overlay-link lightbox-image video-fancybox ripple"
-              >
-                <i className="flaticon-play"></i>
-              </a>
-            </div>
-            <div className="text">
-              Watch intro video <br /> about us
-            </div>
-          </div>
-        </div>
-        <div className="cta-section style-two ">
-          <div className="auto-container">
-            <div className="wrapper-box">
-              <div className="left-column">
-                <h3>Schedule Your Appointment Today</h3>
-                <div className="text">
-                  Your Automotive Repair & Maintenance Service Specialist
-                </div>
-              </div>
-              <div className="right-column">
-                <div className="phone">1800.456.7890</div>
-                <div className="btn">
-                  <a href="#" className="theme-btn btn-style-one">
-                    <span>Appointment</span>
-                    <i className="flaticon-right"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+    </>
   );
 }
 
