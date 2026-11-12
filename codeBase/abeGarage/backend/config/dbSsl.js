@@ -1,5 +1,5 @@
-// TLS options for the MySQL connection (managed MySQL services such as
-// Aiven require encrypted connections).
+// TLS options for the MySQL connection (managed databases such as TiDB
+// Cloud require encrypted connections).
 //   DB_SSL=true     encrypt the connection and verify the server certificate
 //   DB_SSL_CA=...   the provider's CA certificate (PEM). Newlines may be
 //                   written as \n so it fits in one env var. Without it,
