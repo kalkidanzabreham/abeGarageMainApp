@@ -51,6 +51,12 @@ const ROUTES = [
   ["delete", "/api/services/{id}", "Service catalog", "Delete a service (409 if orders use it)", "services:write", schemas.byId, 200, "{ success, message }"],
 ];
 
+// One-click demo login: only present when DEMO_LOGIN_ENABLED=true
+if (env.DEMO_LOGIN_ENABLED) {
+  ROUTES.push(["post", "/api/employee/demo-login", "Auth", "Log in as the read-only Demo account (no password)", null, schemas.none, 200,
+    "{ token, status, message }; the token is for the Demo role only. 404 DEMO_UNAVAILABLE if there is no active Demo account; 429 after too many per IP"]);
+}
+
 // Smart job intake: only present when AI_ENABLED=true
 if (env.AI_ENABLED) {
   ROUTES.push(

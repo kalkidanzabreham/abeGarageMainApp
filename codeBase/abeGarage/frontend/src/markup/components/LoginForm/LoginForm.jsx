@@ -1,12 +1,11 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { LuArrowRight } from "react-icons/lu";
+import { LuArrowRight, LuPlay } from "react-icons/lu";
 import { GearSpinner } from "../ui/garage";
-import { login } from "../../../services/login.service";
+import { login, demoLogin } from "../../../services/login.service";
 import PasswordInput from "../ui/PasswordInput";
 
 const WAKE_MESSAGE_AFTER_MS = 5000;
-const DEMO_EMAIL = "demo@garagehub.test";
 
 function LoginForm() {
   const [emailError, setEmailError] = useState("");
@@ -16,8 +15,7 @@ function LoginForm() {
   // shown when the API is slow to answer: a free-tier host that went to
   // sleep can take about a minute to start again
   const [waking, setWaking] = useState(false);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const [demoBusy, setDemoBusy] = useState(false);
   const location = useLocation();
   // ProtectedRoute sends users here with state.from = the page they wanted
   const redirect = location.state?.from?.pathname || "/admin";
@@ -68,10 +66,24 @@ function LoginForm() {
     }
   };
 
-  const useDemo = () => {
-    emailRef.current.value = DEMO_EMAIL;
-    setEmailError("");
-    passwordRef.current.focus();
+  // one click, no password: the API signs in the read-only Demo account
+  const tryDemo = async () => {
+    setServerError("");
+    setDemoBusy(true);
+    const wakeTimer = setTimeout(() => setWaking(true), WAKE_MESSAGE_AFTER_MS);
+    try {
+      const response = await demoLogin();
+      if (response.status === "success") {
+        localStorage.setItem("Our-token", JSON.stringify(response.token));
+        window.location.replace("/admin");
+        return;
+      }
+      setServerError(response.message);
+    } finally {
+      clearTimeout(wakeTimer);
+      setWaking(false);
+      setDemoBusy(false);
+    }
   };
 
   return (
@@ -87,7 +99,6 @@ function LoginForm() {
           Email
         </label>
         <input
-          ref={emailRef}
           id="employee_email"
           type="email"
           name="employee_email"
@@ -109,7 +120,6 @@ function LoginForm() {
           Password
         </label>
         <PasswordInput
-          ref={passwordRef}
           id="employee_password"
           name="employee_password"
           autoComplete="current-password"
@@ -125,7 +135,7 @@ function LoginForm() {
         )}
       </div>
 
-      <button className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2" type="submit" disabled={submitting}>
+      <button className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2" type="submit" disabled={submitting || demoBusy}>
         {submitting ? <GearSpinner /> : null}
         Log in
         {!submitting && <LuArrowRight aria-hidden="true" />}
@@ -138,10 +148,17 @@ function LoginForm() {
       )}
 
       <div className="gh-login-demo">
-        <span>Exploring GarageHub?</span>
-        <button type="button" className="btn btn-link p-0" onClick={useDemo}>
-          Use the demo account
+        <span className="gh-login-or">Just looking around?</span>
+        <button
+          type="button"
+          className="btn gh-btn-demo w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2"
+          onClick={tryDemo}
+          disabled={submitting || demoBusy}
+        >
+          {demoBusy ? <GearSpinner /> : <LuPlay aria-hidden="true" />}
+          {demoBusy ? "Opening the demo..." : "Try the demo, no password needed"}
         </button>
+        <span className="gh-muted small">Read-only: look around and try Smart intake; nothing you do is saved.</span>
       </div>
     </form>
   );

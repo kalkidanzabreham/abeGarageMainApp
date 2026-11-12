@@ -52,3 +52,11 @@ test("a fast login does not show the wake-up message", async ({ page }) => {
   await expect(page).toHaveURL(/\/admin/);
   await expect(page.getByText("Waking up the demo server")).toHaveCount(0);
 });
+
+test("one-click demo: no password, lands in the read-only demo", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByRole("button", { name: "Try the demo, no password needed" }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page.getByRole("note")).toContainText("read-only demo account");
+  await expect(page.getByText("Welcome back, Dee")).toBeVisible();
+});

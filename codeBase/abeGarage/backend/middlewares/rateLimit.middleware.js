@@ -1,5 +1,5 @@
 const { rateLimit } = require("express-rate-limit");
-const { LOGIN_RATE_LIMIT_MAX, LOGIN_RATE_LIMIT_WINDOW_MIN } = require("../config/env");
+const { LOGIN_RATE_LIMIT_MAX, LOGIN_RATE_LIMIT_WINDOW_MIN, DEMO_LOGIN_RATE_LIMIT } = require("../config/env");
 const { AppError } = require("../utils/AppError");
 
 // Brute-force protection for POST /api/employee/login: at most
@@ -18,4 +18,15 @@ const loginLimiter = rateLimit({
     next(new AppError(429, "RATE_LIMITED", "Too many failed login attempts. Try again later.")),
 });
 
-module.exports = { loginLimiter };
+// POST /api/employee/demo-login: every request counts (they all succeed),
+// DEMO_LOGIN_RATE_LIMIT per IP per 15 minutes.
+const demoLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: DEMO_LOGIN_RATE_LIMIT,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: (req, res, next) =>
+    next(new AppError(429, "RATE_LIMITED", "Too many demo logins from this address. Try again later.")),
+});
+
+module.exports = { loginLimiter, demoLoginLimiter };

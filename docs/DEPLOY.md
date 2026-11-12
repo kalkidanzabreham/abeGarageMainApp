@@ -88,7 +88,8 @@ node -e "console.log(require('crypto').randomBytes(18).toString('base64url'))"
 ```
 
 Pick a Demo password (12+ characters, different from the staff
-passwords); it is the **only** one you will publish. Create a separate
+passwords). With the one-click demo login (step 4) visitors don't need
+it, so it doesn't have to be published either. Create a separate
 Gemini API key for production at https://aistudio.google.com/apikey, so
 it can be revoked without touching your local key. Store everything in a
 password manager.
@@ -162,6 +163,7 @@ means `DB_USER` lacks the `xxxxxxxx.` part.
    | `JWT_SECRET` | from step 1 |
    | `TRUST_PROXY` | `1` (Render's proxy; rate limiting needs the client IP) |
    | `CORS_ORIGINS` | `https://placeholder.invalid` for now; the real Vercel URL in step 6 (the API refuses to start without a value in production) |
+   | `DEMO_LOGIN_ENABLED` | `true`: the login page's "Try the demo" button signs visitors into the read-only Demo account, no password needed |
    | `AI_ENABLED` | `true` to turn on smart intake, `false` (default) to hide it |
    | `AI_PROVIDER` | `gemini` |
    | `GEMINI_API_KEY` | the production key from step 1 (free tier, no card). Default model: `gemini-3.1-flash-lite` |
@@ -219,14 +221,15 @@ safe default for a public demo.
 ### 8. Check the live demo
 
 - `https://<service>.onrender.com/api/health` returns `"db":"ok"`.
-- Open the Vercel URL, log in as `demo@garagehub.test` with the Demo
-  password: lists load, every write shows "The demo account cannot ...".
+- Open the Vercel URL and click **Try the demo, no password needed**:
+  lists load, every write shows "The demo account cannot ...".
 - As Demo, open **Smart intake (AI)**, type "brakes grind" and click
   **Draft job card**; a draft appears (about 9-10 s on the first live
   requests from Render on 2026-11-12).
 - Open an order's tracking link while logged out.
 - Open `https://<service>.onrender.com/api/docs`.
-- Publish **only** the Demo login.
+- Share the site link; visitors use the demo button. Never publish the
+  staff passwords.
 
 ### Keeping it running
 

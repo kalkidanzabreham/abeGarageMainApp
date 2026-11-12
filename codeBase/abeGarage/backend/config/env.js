@@ -31,6 +31,13 @@ const schema = z.object({
   // failed login attempts allowed per IP per window
   LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   LOGIN_RATE_LIMIT_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+  // One-click demo login (POST /api/employee/demo-login): signs visitors
+  // into the read-only Demo account without a password. Off unless enabled.
+  DEMO_LOGIN_ENABLED: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
+  // demo logins allowed per IP per 15 minutes
+  DEMO_LOGIN_RATE_LIMIT: z.coerce.number().int().positive().default(20),
+  // demo sessions are shorter than staff sessions
+  DEMO_TOKEN_EXPIRES_IN: z.string().default("2h"),
   // Smart job intake (AI drafts a job card; see ai/). Off unless enabled.
   AI_ENABLED: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
   // fake: no model, for tests; gemini: hosted (needs GEMINI_API_KEY);
