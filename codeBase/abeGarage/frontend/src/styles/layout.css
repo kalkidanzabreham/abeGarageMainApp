@@ -244,10 +244,10 @@
 @media (max-width: 991.98px) {
   .gh-sidebar {
     transform: translateX(-100%);
-    box-shadow: var(--gh-shadow-lg);
   }
   .gh-menu-open .gh-sidebar {
     transform: none;
+    box-shadow: var(--gh-shadow-lg);
   }
   .gh-sidebar-close,
   .gh-menu-btn {

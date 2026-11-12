@@ -59,7 +59,7 @@ test("Demo can try smart intake on its own page, with no way to save", async ({ 
 test("Mechanic has no smart intake menu item or page", async ({ page, request }) => {
   await loginAs(page, request, "mechanic");
   await page.goto("/admin");
-  await expect(page.locator(".list-group a").first()).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Admin" }).getByRole("link").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Smart intake (AI)" })).toHaveCount(0);
   await page.goto("/admin/smart-intake");
   await expect(page).toHaveURL(/\/unauthorized$/);
@@ -90,7 +90,7 @@ test("AI_ENABLED=false (status 404): no menu item and no panel", async ({ page, 
   await page.route("**/api/ai/status", (route) => route.fulfill({ status: 404, json: { status: "error", code: "NOT_FOUND" } }));
   await loginAs(page, request, "manager");
   await page.goto("/admin");
-  await expect(page.locator(".list-group a").first()).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Admin" }).getByRole("link").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Smart intake (AI)" })).toHaveCount(0);
   await page.goto("/admin/smart-intake");
   await expect(page.getByText("Smart intake is not available.")).toBeVisible();
