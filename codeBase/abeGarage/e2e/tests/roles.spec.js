@@ -52,12 +52,26 @@ for (const [role, paths] of Object.entries(FORBIDDEN_PAGES)) {
   });
 }
 
-test("Manager: deleting a service shows the API's 403 as an error dialog", async ({ page, request }) => {
+test("Manager: the service catalog is read-only (no edit or delete controls)", async ({ page, request }) => {
   await loginAs(page, request, "manager");
   await page.goto("/admin/service");
-  const del = page.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/services/"));
-  await page.locator("li:has-text('Suspension inspection') svg").nth(1).click();
-  expect((await del).status()).toBe(403);
+  await expect(page.locator("li:has-text('Suspension inspection')")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Delete Suspension inspection/ })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Add a new service" })).toHaveCount(0);
+});
+
+// Walkthrough bug: API errors on the services page were silently ignored.
+// The API is made to refuse the delete, as it would for a missing permission.
+test("an API error while deleting a service is shown as a dialog, and the service stays", async ({ page, request }) => {
+  await loginAs(page, request, "admin");
+  await page.route("**/api/services/*", (route) =>
+    route.request().method() === "DELETE"
+      ? route.fulfill({ status: 403, json: { status: "error", code: "FORBIDDEN", message: "You do not have permission to perform this action" } })
+      : route.continue()
+  );
+  await page.goto("/admin/service");
+  await page.getByRole("button", { name: "Delete Suspension inspection" }).click();
+  await page.locator(".swal2-confirm").click();
   await expect(page.locator(".swal2-popup")).toContainText("You do not have permission to perform this action");
   await expect(page.locator("li:has-text('Suspension inspection')")).toBeVisible();
 });
