@@ -42,6 +42,8 @@ services:
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-local-admin-password}
       SEED_MANAGER_PASSWORD: ${SEED_MANAGER_PASSWORD:-local-manager-password}
       SEED_MECHANIC_PASSWORD: ${SEED_MECHANIC_PASSWORD:-local-mechanic-password}
+      # the login page's one-click "Try the demo" button (read-only account)
+      DEMO_LOGIN_ENABLED: ${DEMO_LOGIN_ENABLED:-true}
       # smart intake: off unless set in the shell, e.g.
       # AI_ENABLED=true AI_PROVIDER=gemini GEMINI_API_KEY=... docker compose up
       AI_ENABLED: ${AI_ENABLED:-false}
