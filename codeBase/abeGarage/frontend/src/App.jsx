@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 // layouts
 import PublicLayout from "./markup/layout/PublicLayout";
@@ -56,6 +57,23 @@ const STAFF_ROUTES = [
 
 function App() {
   return (
+    <>
+      {/* toast() was called in several places, but nothing rendered the
+          toasts, so success messages never appeared */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "var(--gh-surface)",
+            color: "var(--gh-text)",
+            border: "1px solid var(--gh-border)",
+            borderRadius: "12px",
+            boxShadow: "var(--gh-shadow-lg)",
+            fontWeight: 500,
+          },
+          success: { iconTheme: { primary: "#15803d", secondary: "#fff" } },
+        }}
+      />
     <Routes>
       {/* login: its own full-screen layout */}
       <Route path="/login" element={<Login />} />
@@ -95,6 +113,7 @@ function App() {
         ))}
       </Route>
     </Routes>
+    </>
   );
 }
 
