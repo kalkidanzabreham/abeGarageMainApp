@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import vehicles from "../../../services/vehicle.service";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
-import { PulseLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+import { LuCarFront } from "react-icons/lu";
+import Field, { FormCard } from "../../components/ui/Field";
+import { GearSpinner } from "../../components/ui/garage";
 import { useAuth } from "../../../Context/AuthContext";
 
 function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
@@ -20,17 +22,7 @@ function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
 
   const navigate = useNavigate();
 
-  // const isEditing=Boolean(existingVehicle)
   const isEditing = !!existingVehicle;
-
-  // same as let isEditing;
-
-  // if (existingVehicle) {
-  //   isEditing = true;
-  // } else {
-  //   isEditing = false;
-  // }
-  // console.log(existingVehicle)
 
   useEffect(() => {
     if (isEditing) {
@@ -112,145 +104,38 @@ function AddVechile({ customer_id, onVehicleAdded, existingVehicle }) {
       });
   };
 
+  const fields = [
+    ["vehicle_year", "Year", vehicle_year, setVehicle_year, { inputMode: "numeric", placeholder: "2019" }],
+    ["vehicle_make", "Make", vehicle_make, setVehicle_make, { placeholder: "Toyota" }],
+    ["vehicle_model", "Model", vehicle_model, setVehicle_model, { placeholder: "Corolla" }],
+    ["vehicle_type", "Type", vehicle_type, setVehicle_type, { placeholder: "Sedan, SUV, pickup..." }],
+    ["vehicle_mileage", "Mileage", vehicle_mileage, setVehicle_mileage, { inputMode: "numeric", placeholder: "98000" }],
+    ["vehicle_tag", "Plate number", vehicle_tag, setVehicle_tag, { placeholder: "ABC-123" }],
+    ["vehicle_serial_number", "Serial / VIN", vehicle_serial, setvehicle_serial_number, { placeholder: "VIN or serial" }],
+    ["vehicle_color", "Color", vehicle_color, setVehicle_color, { placeholder: "White" }],
+  ];
+
   return (
-    <section className="contact-section">
-      <div className="auto-container">
-        <div className="contact-title">
-          <h2>{isEditing ? "Edit Vehicle" : "Add a new vehicle"}</h2>
+    <FormCard
+      onSubmit={handleSubmit}
+      className={isEditing ? "gh-form-narrow" : "gh-form-inline"}
+      footer={
+        <button className="btn btn-primary d-inline-flex align-items-center gap-2" type="submit" disabled={loading}>
+          {loading ? <GearSpinner /> : <LuCarFront aria-hidden="true" />}
+          {loading ? "Saving..." : isEditing ? "Update" : "Add Vehicle"}
+        </button>
+      }
+    >
+      <h2 className="h5 gh-span-2 m-0">{isEditing ? "Vehicle details" : "Add a new vehicle"}</h2>
+      {serverError && (
+        <div className="gh-alert gh-alert-danger gh-span-2" role="alert">
+          {serverError}
         </div>
-        <div className="row clearfix">
-          <div className="form-column col-lg-10">
-            <div className="inner-column">
-              <div className="contact-form">
-                <form onSubmit={handleSubmit}>
-                  <div className="row clearfix">
-                    <div className="form-group col-md-12">
-                      {serverError && (
-                        <div className="validation-error" role="alert">
-                          {serverError}
-                        </div>
-                      )}
-                      <input
-                        type="text"
-                        name="vehicle_year"
-                        value={vehicle_year}
-                        onChange={(event) =>
-                          setVehicle_year(event.target.value)
-                        }
-                        placeholder="vehicle_year"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_make"
-                        value={vehicle_make}
-                        onChange={(event) =>
-                          setVehicle_make(event.target.value)
-                        }
-                        placeholder="vehicle_make"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_model"
-                        value={vehicle_model}
-                        onChange={(event) =>
-                          setVehicle_model(event.target.value)
-                        }
-                        placeholder="vehicle_model"
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_type"
-                        value={vehicle_type}
-                        onChange={(event) =>
-                          setVehicle_type(event.target.value)
-                        }
-                        placeholder="vehicle_type"
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_mileage"
-                        value={vehicle_mileage}
-                        onChange={(event) =>
-                          setVehicle_mileage(event.target.value)
-                        }
-                        placeholder="vehicle_mileage"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_tag"
-                        value={vehicle_tag}
-                        onChange={(event) => setVehicle_tag(event.target.value)}
-                        placeholder="vehicle_tag"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_serial_number"
-                        value={vehicle_serial}
-                        onChange={(event) =>
-                          setvehicle_serial_number(event.target.value)
-                        }
-                        placeholder="vehicle_serial_number"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="vehicle_color"
-                        value={vehicle_color}
-                        onChange={(event) =>
-                          setVehicle_color(event.target.value)
-                        }
-                        placeholder="vehicle_color"
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <button
-                        className="theme-btn btn-style-one"
-                        type="submit"
-                        disabled={loading} // ✅ Disable button when loading
-                      >
-                        <span>
-                          {loading ? (
-                            <div>
-                              <span>please wait </span>
-                              <PulseLoader size={10} color={"#123abc"} />
-                            </div>
-                          ) : (
-                            <span>{isEditing ? "Update" : "Add Vehicle"}</span>
-                          )}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      )}
+      {fields.map(([name, label, value, setter, extra]) => (
+        <Field key={name} label={label} name={name} value={value} onChange={(e) => setter(e.target.value)} autoComplete="off" {...extra} />
+      ))}
+    </FormCard>
   );
 }
 

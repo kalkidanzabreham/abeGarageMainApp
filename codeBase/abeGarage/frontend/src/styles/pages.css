@@ -1014,3 +1014,131 @@
 .swal2-styled:focus {
   box-shadow: 0 0 0 4px var(--gh-accent-soft) !important;
 }
+
+/* ---------- forms ---------- */
+.gh-form-card {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+}
+.gh-form-narrow {
+  max-width: 760px;
+}
+.gh-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+}
+.gh-span-2 {
+  grid-column: 1 / -1;
+}
+.gh-field-switch {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0.5rem;
+}
+.form-switch .form-check-input {
+  width: 2.6em;
+  height: 1.4em;
+  cursor: pointer;
+}
+.form-check-label {
+  cursor: pointer;
+  font-weight: 500;
+}
+.gh-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--gh-border);
+}
+@media (max-width: 575.98px) {
+  .gh-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .gh-form-footer .btn {
+    flex: 1;
+  }
+}
+
+/* ---------- customer profile ---------- */
+.gh-profile-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+}
+.gh-profile-main {
+  flex: 1;
+  min-width: 220px;
+}
+.gh-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  font-size: 1.35rem;
+}
+.gh-profile-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin-top: 0.4rem;
+  color: var(--gh-muted);
+}
+.gh-profile-contacts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.gh-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+.gh-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.45rem;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  background: var(--gh-surface-2);
+  color: var(--gh-muted);
+  font-family: var(--gh-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.gh-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.gh-vehicle {
+  padding: 1.25rem;
+}
+.gh-vehicle-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0.75rem 0 0.9rem;
+  font-size: 0.85rem;
+}
+.gh-vehicle-specs dt {
+  font-weight: 500;
+  color: var(--gh-muted);
+  font-size: 0.75rem;
+}
+.gh-vehicle-specs dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.gh-form-inline {
+  border-color: color-mix(in srgb, var(--gh-accent) 45%, var(--gh-border));
+  box-shadow: 0 0 0 4px var(--gh-accent-soft);
+}

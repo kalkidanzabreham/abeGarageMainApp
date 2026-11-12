@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import customers from '../../../../services/customer.service'
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { PulseLoader } from "react-spinners";
+import { Link } from "react-router-dom";
+import { LuUserPlus } from "react-icons/lu";
+import PageHeader from "../../ui/PageHeader";
+import Field, { FormCard } from "../../ui/Field";
+import { GearSpinner } from "../../ui/garage";
 import { useAuth } from "../../../../Context/AuthContext";
 import Swal from "sweetalert2";
 
@@ -93,101 +97,63 @@ function AddCustomer() {
   };
 
   return (
-    <section className="contact-section">
-      <div className="auto-container">
-        <div className="contact-title">
-          <h2>Add a new customer</h2>
-        </div>
-        <div className="row clearfix">
-          <div className="form-column col-lg-7">
-            <div className="inner-column">
-              <div className="contact-form">
-                <form onSubmit={handleSubmit}>
-                  <div className="row clearfix">
-                    <div className="form-group col-md-12">
-                      {serverError && (
-                        <div className="validation-error" role="alert">
-                          {serverError}
-                        </div>
-                      )}
-                      <input
-                        type="email"
-                        name="customer_email"
-                        value={customer_email}
-                        onChange={(event) => setEmail(event.target.value)}
-                        placeholder="customer email"
-                      />
-                      {emailError && (
-                        <div className="validation-error" role="alert">
-                          {emailError}
-                        </div>
-                      )}
-                    </div>
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="customer_first_name"
-                        value={customer_first_name}
-                        onChange={(event) => setFirstName(event.target.value)}
-                        placeholder="customer first name"
-                      />
-                      {firstNameRequired && (
-                        <div className="validation-error" role="alert">
-                          {firstNameRequired}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="customer_last_name"
-                        value={customer_last_name}
-                        onChange={(event) => setLastName(event.target.value)}
-                        placeholder="customer last name"
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <input
-                        type="text"
-                        name="customer_phone"
-                        value={customer_phone_number}
-                        onChange={(event) => setPhoneNumber(event.target.value)}
-                        placeholder="customer phone (555-555-5555)"
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group col-md-12">
-                      <button
-                        className="theme-btn btn-style-one"
-                        type="submit"
-                        disabled={loading}
-                      >
-                        <span>
-                          {loading ? (
-                            <div>
-                              <span>please wait </span>
-                              <span>
-                                <PulseLoader size={10} color={"#123abc"} />
-                              </span>
-                            </div>
-                          ) : (
-                            "Add Customer"
-                          )}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
+    <>
+      <PageHeader title="Add a new customer" subtitle="Vehicles and orders can be added from the customer's profile." />
+      <FormCard
+        onSubmit={handleSubmit}
+        className="gh-form-narrow"
+        footer={
+          <>
+            <Link to="/admin/all_customers" className="btn btn-outline-secondary">
+              Cancel
+            </Link>
+            <button className="btn btn-primary d-inline-flex align-items-center gap-2" type="submit" disabled={loading}>
+              {loading ? <GearSpinner /> : <LuUserPlus aria-hidden="true" />}
+              {loading ? "Saving..." : "Add Customer"}
+            </button>
+          </>
+        }
+      >
+        {serverError && (
+          <div className="gh-alert gh-alert-danger gh-span-2" role="alert">
+            {serverError}
           </div>
-        </div>
-      </div>
-    </section>
+        )}
+        <Field
+          label="First name"
+          name="customer_first_name"
+          value={customer_first_name}
+          onChange={(event) => setFirstName(event.target.value)}
+          error={firstNameRequired}
+          autoComplete="off"
+        />
+        <Field
+          label="Last name"
+          name="customer_last_name"
+          value={customer_last_name}
+          onChange={(event) => setLastName(event.target.value)}
+          autoComplete="off"
+        />
+        <Field
+          label="Email"
+          type="email"
+          name="customer_email"
+          value={customer_email}
+          onChange={(event) => setEmail(event.target.value)}
+          error={emailError}
+          placeholder="name@example.com"
+          autoComplete="off"
+        />
+        <Field
+          label="Phone"
+          name="customer_phone"
+          value={customer_phone_number}
+          onChange={(event) => setPhoneNumber(event.target.value)}
+          placeholder="555-555-5555"
+          autoComplete="off"
+        />
+      </FormCard>
+    </>
   );
 }
 
