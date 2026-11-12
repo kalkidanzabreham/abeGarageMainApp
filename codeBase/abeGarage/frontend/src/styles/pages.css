@@ -1443,3 +1443,18 @@
 .gh-help-steps li + li {
   margin-top: 0.4rem;
 }
+
+/* the one-click demo button: secondary to "Log in", visible in both modes */
+.gh-btn-demo {
+  --bs-btn-color: var(--gh-accent-text);
+  --bs-btn-bg: var(--gh-accent-soft);
+  --bs-btn-border-color: color-mix(in srgb, var(--gh-accent) 55%, transparent);
+  --bs-btn-hover-color: var(--gh-on-accent);
+  --bs-btn-hover-bg: var(--gh-accent);
+  --bs-btn-hover-border-color: var(--gh-accent);
+  --bs-btn-active-color: var(--gh-on-accent);
+  --bs-btn-active-bg: var(--gh-accent-hover);
+  --bs-btn-disabled-color: var(--gh-accent-text);
+  --bs-btn-disabled-bg: var(--gh-accent-soft);
+  border-width: 1.5px;
+}

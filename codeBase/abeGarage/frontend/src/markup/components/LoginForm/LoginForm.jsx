@@ -151,7 +151,7 @@ function LoginForm() {
         <span className="gh-login-or">Just looking around?</span>
         <button
           type="button"
-          className="btn btn-dark w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2"
+          className="btn gh-btn-demo w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2"
           onClick={tryDemo}
           disabled={submitting || demoBusy}
         >
