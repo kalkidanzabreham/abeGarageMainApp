@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { Table, Button } from "react-bootstrap";
-import MoreCustomers from '../../../pages/MoreCustomers'
-import { FaRegEdit, FaExternalLinkAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import { LuEye, LuSearch, LuSquarePen, LuUserPlus, LuUsers } from "react-icons/lu";
 import customerService from "../../../../services/customer.service";
-import { PulseLoader } from "react-spinners";
+import { useAuth } from "../../../../Context/AuthContext";
+import { canVisit } from "../../../../util/roles";
+import PageHeader from "../../ui/PageHeader";
+import Pager from "../../ui/Pager";
 
 const PAGE_SIZE = 10;
+
+const initials = (c) => `${c.customer_first_name?.[0] ?? ""}${c.customer_last_name?.[0] ?? ""}`.toUpperCase() || "?";
 
 function AllCustomersList() {
   const [search, setSearch] = useState("");
@@ -15,12 +18,9 @@ function AllCustomersList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCustomers, setCurrentCustomers] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  // the full-page spinner only shows before the first result; later
-  // searches keep the search box mounted (and focused)
-  const [loaded, setLoaded] = useState(false);
-  const [apiError, setApiError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [apiErrorMessage, setApiErrorMessage] = useState(null);
+  const { roleId, can } = useAuth();
 
   // wait until typing pauses, then search from page 1. Only when the text
   // really changed: this effect also runs on mount, and resetting the page
@@ -46,13 +46,11 @@ function AllCustomersList() {
         const body = await res.json();
         if (cancelled) return;
         if (!res.ok) {
-          setApiError(true);
-          setApiErrorMessage(res.status === 403 ? "You are not authorized to view this page" : "Please try again later");
+          setApiErrorMessage(res.status === 403 ? "You are not authorized to view customers." : "Couldn't load customers. Please try again later.");
           return;
         }
         setCurrentCustomers(body.data);
         setTotalPages(body.pagination.total_pages);
-        setLoaded(true);
       })
       .catch((err) => console.error(err))
       .finally(() => !cancelled && setLoading(false));
@@ -63,116 +61,114 @@ function AllCustomersList() {
 
   return (
     <>
-      {loading && !loaded ? (
-        <div className="center_loader">
-          <PulseLoader size={10} color={"#123abc"} />
+      <PageHeader
+        title="Customers"
+        subtitle="Search by name, email or phone; open a profile to see vehicles and orders."
+        actions={
+          canVisit(roleId, "/admin/add_customers") && (
+            <Link to="/admin/add_customers" className="btn btn-primary d-inline-flex align-items-center gap-2">
+              <LuUserPlus aria-hidden="true" /> Add customer
+            </Link>
+          )
+        }
+      />
+
+      {apiErrorMessage ? (
+        <div className="gh-alert gh-alert-danger" role="alert">
+          {apiErrorMessage}
         </div>
       ) : (
         <>
-          {apiError ? (
-            <section className="contact-section">
-              <div className="auto-container">
-                <div className="contact-title">
-                  <h2>{apiErrorMessage}</h2>
-                </div>
+          <div className="gh-toolbar">
+            <div className="gh-search">
+              <LuSearch aria-hidden="true" />
+              <input
+                type="search"
+                className="form-control"
+                placeholder="Search by name, email, or phone number"
+                aria-label="Search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="gh-table-wrap">
+            <div className="table-responsive">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Added</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" className="text-end">
+                      <span className="visually-hidden">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className={loading ? "gh-loading-rows" : ""}>
+                  {currentCustomers.map((customer) => (
+                    <tr key={customer.customer_id}>
+                      <td className="gh-td-id">{customer.customer_id}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="gh-avatar gh-avatar-sm" aria-hidden="true">
+                            {initials(customer)}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="fw-semibold">
+                              {customer.customer_first_name} {customer.customer_last_name}
+                            </div>
+                            <div className="gh-muted small">{customer.customer_email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="text-nowrap">{customer.customer_phone_number}</td>
+                      <td className="text-nowrap gh-muted">{format(new Date(customer.customer_added_date), "d MMM yyyy")}</td>
+                      <td>
+                        {customer.active_customer_status ? (
+                          <span className="gh-pill gh-pill-green">Active</span>
+                        ) : (
+                          <span className="gh-pill">Inactive</span>
+                        )}
+                      </td>
+                      <td>
+                        <div className="gh-row-actions">
+                          <Link
+                            to={`/admin/customer_profile/${customer.customer_id}`}
+                            className="gh-icon-btn"
+                            aria-label={`Open ${customer.customer_first_name} ${customer.customer_last_name}'s profile`}
+                            title="Profile"
+                          >
+                            <LuEye />
+                          </Link>
+                          {can("customers:write") && (
+                            <Link
+                              to={`/admin/customer_edit/${customer.customer_id}`}
+                              className="gh-icon-btn"
+                              aria-label={`Edit ${customer.customer_first_name} ${customer.customer_last_name}`}
+                              title="Edit"
+                            >
+                              <LuSquarePen />
+                            </Link>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!loading && currentCustomers.length === 0 && (
+              <div className="gh-empty">
+                <LuUsers aria-hidden="true" />
+                <p>{query ? `No customers match “${query}”.` : "No customers yet."}</p>
               </div>
-            </section>
-          ) : (
-            <>
-              <section className="contact-section">
-                <div className="auto-container">
-                  <div className="contact-title">
-                    <h2>Customers</h2>
-                  </div>
-                  {/* Search input */}
-                  <div className="table-responsive mb-4">
-                    <input
-                      type="text"
-                      className="form-control search-input"
-                      placeholder="Search by name, email, or phone number"
-                      aria-label="Search"
-                      aria-describedby="basic-addon2"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </div>
-                  {/* Customers table */}
-                  <Table striped bordered hover className="table-responsive">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Added Date</th>
-                        <th>Active</th>
-                        <th>Edit/View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentCustomers.length > 0 ? (
-                        currentCustomers.map((customer) => (
-                          <tr key={customer.customer_id}>
-                            <td>{customer.customer_id}</td>
-                            <td>{customer.customer_first_name}</td>
-                            <td>{customer.customer_last_name}</td>
-                            <td>{customer.customer_email}</td>
-                            <td>{customer.customer_phone_number}</td>
-                            <td>
-                              {format(
-                                new Date(customer.customer_added_date),
-                                "MM - dd - yyyy | kk:mm"
-                              )}
-                            </td>
-                            <td>
-                              {customer.active_customer_status ? (
-                                <p className="text-success">Yes</p>
-                              ) : (
-                                <p className="text-danger">No</p>
-                              )}
-                            </td>
-                            <td>
-                              <div className="edit-link-icons">
-                                <span className="text-danger">
-                                  <Link 
-                                    to={`/admin/customer_edit/${customer.customer_id}`}
-                                  >
-                                    <FaRegEdit className="text-danger" />
-                                  </Link>
-                                </span>
-                                <Link 
-                                  to={`/admin/customer_profile/${customer.customer_id}`}
-                                >
-                                  <span className="text-primary">
-                                    <FaExternalLinkAlt />
-                                  </span>
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="8" className="text-center">
-                            <h1 className="text-center mt-4">
-                              No Result Found!
-                            </h1>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </Table>
-                </div>
-                {/* Pagination */}
-                <MoreCustomers
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  setCurrentPage={setCurrentPage}
-                />
-              </section>
-            </>
-          )}
+            )}
+          </div>
+          <Pager currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </>
       )}
     </>

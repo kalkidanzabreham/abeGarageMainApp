@@ -1,227 +1,80 @@
-import React, { useEffect, useState } from "react";
-import { orderStatusMeta } from "../../../util/orderStatus";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { LuArrowLeft, LuExternalLink, LuPencil, LuSearchX } from "react-icons/lu";
 import { getOrderById } from "../../../services/order.service";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../../Context/AuthContext";
-import { formatPrice } from "../../../util/money";
+import OrderDetails from "../OrderDetails/OrderDetails";
+
+// Staff view of one order: /admin/orders/:order_id
 function ViewSingleOrder() {
-  const [singleOrderData, setSingleOrderData] = useState([]);
   const { order_id } = useParams();
-  const { token } = useAuth();
-  const fetchSingelOrderList = () => {
-    try {
-      const singleOrder = getOrderById(order_id, token);
+  const { can } = useAuth();
+  const [state, setState] = useState({ loading: true, order: null });
 
-      singleOrder.then((data) => {
-        if (data.status === "error") {
-          console.log(data.message);
-          toast.error(data.message);
-          return;
-        }
-        setSingleOrderData(data[0]);
-        console.log(data[0]);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    fetchSingelOrderList();
-  }, []);
-  console.log(singleOrderData);
+    let cancelled = false;
+    getOrderById(order_id)
+      .then((data) => !cancelled && setState({ loading: false, order: Array.isArray(data) ? data[0] ?? null : null }))
+      .catch(() => !cancelled && setState({ loading: false, order: null }));
+    return () => {
+      cancelled = true;
+    };
+  }, [order_id]);
 
+  if (state.loading) {
+    return (
+      <div className="d-grid gap-3" aria-busy="true">
+        <div className="gh-skeleton" style={{ height: 200 }} />
+        <div className="gh-skeleton" style={{ height: 160 }} />
+      </div>
+    );
+  }
+
+  if (!state.order) {
+    return (
+      <div className="gh-card gh-lookup text-center mx-auto">
+        <span className="gh-icon-tile gh-icon-tile-lg mx-auto">
+          <LuSearchX aria-hidden="true" />
+        </span>
+        <h1>Order not found</h1>
+        <p className="gh-muted">It may have been removed, or the link is wrong.</p>
+        <Link to="/admin/orders" className="btn btn-primary">
+          Back to orders
+        </Link>
+      </div>
+    );
+  }
+
+  const order = state.order;
   return (
     <>
-      {singleOrderData === undefined || singleOrderData.length == 0 ? (
-        <>
-          <div className="container text-center m-5">
-            <h1 className="mb-2">Order Not Found</h1>
-
-            <Link to="/customer_info">
-              <button className="btn btn-danger">Check It Again</button>
-            </Link>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="customer_order">
-            <div className="container sub_order">
-              {/* Customer Info & Status */}
-              <div className="row justify-content-center">
-                <div className="col-md-10">
-                  <div
-                    className="card shadow-sm p-4"
-                    style={{ borderBottom: "2px solid red" }}
-                  >
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2 className="mb-3">
-                          {singleOrderData?.customer_first_name}
-                        </h2>
-                        <p className="text-muted">
-                          We will keep you updated on the progress of your
-                          service request. Below, you can find details about
-                          your order, including the status of each requested
-                          service, customer information, and vehicle details.
-                          Check back anytime for real-time updates on your
-                          order.
-                        </p>
-                      </div>
-                      <span className="">
-                        <span className={`${orderStatusMeta(singleOrderData).badge} round text-white px-2 d-inline-block text-center status-badge`}>
-                            {orderStatusMeta(singleOrderData).label}
-                          </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Services Section - Now using col-md-10 */}
-              <div className="row justify-content-center my-4 ">
-                <div className="col-md-10">
-                  <div className="row ">
-                    <div className="col-md-6  ">
-                      <div
-                        className="card shadow-sm py-4 px-5 "
-                        style={{ borderBottom: "2px solid red" }}
-                      >
-                        <small>CUSTOMER</small>
-                        <h2>{singleOrderData?.customer_first_name}</h2>
-                        <p>
-                          <strong>Email:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.customer_email}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>Customer-phone:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.customer_phone_number}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>Active customer:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.active_customer_status === 1
-                              ? "Yes"
-                              : "No"}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div
-                        className="card shadow-sm py-4 px-5 "
-                        style={{ borderBottom: "2px solid red" }}
-                      >
-                        <small>CAR IN SERVICE</small>
-                        <h2>
-                          {singleOrderData?.vehicle_model} (
-                          {singleOrderData?.vehicle_color})
-                        </h2>
-                        <p>
-                          <strong>Vehicle-tag:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_tag}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>vehicle_year:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_year}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>vehicle_mileage:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_mileage}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Request Service Box */}
-              <div className="row justify-content-center mb-4">
-                <div className="col-md-10">
-                  <div
-                    className="card shadow-sm p-4 mb-5"
-                    style={{ borderBottom: "2px solid red" }}
-                  >
-                    <div>
-                      <small className="text-uppercase text-muted">
-                        {singleOrderData?.vehicle_model}
-                      </small>
-                      <h3 className="fw-bold mt-2">Requested Service</h3>
-                    </div>
-                    <div className="border-top pt-3">
-                      <div>
-                        {singleOrderData?.order_services?.length > 0 ? (
-                          <div className="d-flex flex-column gap-3">
-                            {singleOrderData?.order_services.map(
-                              (service, index) => (
-                                <>
-                                  <div
-                                    key={index}
-                                    className="d-flex justify-content-between align-items-center p-3 rounded shadow-sm"
-                                  >
-                                    {/* Left Side - Service Name & Description */}
-                                    <div>
-                                      <h4 className="mb-1">
-                                        {service.service_name}
-                                      </h4>
-                                      <p className="text-muted">
-                                        {service.service_description}
-                                      </p>
-                                      <strong>
-                                        {formatPrice(service.service_price)}
-                                      </strong>
-                                    </div>
-
-                                    {/* Right Side - Status Indicator */}
-                                    <span className="px-3 py-2 rounded text-white text-center status-badge">
-                                      {service.service_completed === 0 ? (
-                                        <span className="bg-primary rounded text-white p-2 mr-2 d-inline-block text-center status-badge">
-                                          In Progress
-                                        </span>
-                                      ) : (
-                                        <span className="bg-success rounded text-white p-2 mr-3 d-inline-block text-center status-badge">
-                                          Completed
-                                        </span>
-                                      )}
-                                    </span>
-                                  </div>
-                                </>
-                              )
-                            )}
-                          </div>
-                        ) : (
-                          <p>No services found.</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* order total: computed by the API from catalog prices */}
-                    <div className="d-flex justify-content-between border-top pt-3 mt-3">
-                      <h4 className="mb-0">Total</h4>
-                      <h4 className="mb-0" data-testid="order-total">
-                        {formatPrice(singleOrderData?.order_total_price)}
-                      </h4>
-                    </div>
-
-                    {/* Additional Order Section */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      <Link to="/admin/orders" className="gh-back-link mb-3">
+        <LuArrowLeft aria-hidden="true" /> All orders
+      </Link>
+      <div className="mt-3">
+        <OrderDetails
+          order={order}
+          actions={
+            <>
+              {can("orders:update") && (
+                <Link to={`/admin/edit-order/${order.order_id}`} className="btn btn-primary d-inline-flex align-items-center gap-2">
+                  <LuPencil aria-hidden="true" /> Edit order
+                </Link>
+              )}
+              {order.order_hash && (
+                <Link
+                  to={`/customer_order/${order.order_hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+                >
+                  <LuExternalLink aria-hidden="true" /> Customer&apos;s tracking page
+                </Link>
+              )}
+            </>
+          }
+        />
+      </div>
     </>
   );
 }

@@ -1,51 +1,51 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { LuArrowRight } from "react-icons/lu";
+import { GearSpinner } from "../ui/garage";
 import { login } from "../../../services/login.service";
+import PasswordInput from "../ui/PasswordInput";
 
 const WAKE_MESSAGE_AFTER_MS = 5000;
+const DEMO_EMAIL = "demo@garagehub.test";
 
 function LoginForm() {
-  const [email_error, set_email] = useState("");
-  const [server_error, set_server_error] = useState("");
-  const [password_error, set_password] = useState("");
-  const [succes_message, set_succes_message] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   // shown when the API is slow to answer: a free-tier host that went to
   // sleep can take about a minute to start again
   const [waking, setWaking] = useState(false);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
   const location = useLocation();
   // ProtectedRoute sends users here with state.from = the page they wanted
   const redirect = location.state?.from?.pathname || "/admin";
 
-  // **Handle Normal Login**
   const handleSubmit = async (e) => {
     e.preventDefault();
-    set_email("");
-    set_server_error("");
-    set_password("");
+    setEmailError("");
+    setPasswordError("");
+    setServerError("");
 
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(new FormData(e.target).entries());
     let valid = true;
-
-    const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
     if (!data.employee_email) {
-      set_email("Email is required");
+      setEmailError("Email is required");
       valid = false;
-    } else if (!email_regex.test(data.employee_email)) {
-      set_email("Email is invalid");
+    } else if (!emailRegex.test(data.employee_email)) {
+      setEmailError("Email is invalid");
       valid = false;
     }
-
     if (!data.employee_password) {
-      set_password("Password is required");
+      setPasswordError("Password is required");
       valid = false;
     } else if (data.employee_password.length < 6) {
-      set_password("Password must be at least 6 characters");
+      setPasswordError("Password must be at least 6 characters");
       valid = false;
     }
-
     if (!valid) return;
 
     setSubmitting(true);
@@ -53,15 +53,14 @@ function LoginForm() {
     try {
       const response = await login(data);
       if (response.status === "success") {
-        set_succes_message(true);
         localStorage.setItem("Our-token", JSON.stringify(response.token));
         // full reload so AuthContext re-reads the new token
         window.location.replace(redirect);
-      } else {
-        set_server_error(response.message);
+        return;
       }
-    } catch (error) {
-      set_server_error("Login failed. Please try again.");
+      setServerError(response.message);
+    } catch {
+      setServerError("Login failed. Please try again.");
     } finally {
       clearTimeout(wakeTimer);
       setWaking(false);
@@ -69,85 +68,82 @@ function LoginForm() {
     }
   };
 
+  const useDemo = () => {
+    emailRef.current.value = DEMO_EMAIL;
+    setEmailError("");
+    passwordRef.current.focus();
+  };
+
   return (
-    <section className="contact-section">
-      <div className="auto-container">
-        <div className="contact-title">
-          <h2>Login to your account</h2>
+    <form onSubmit={handleSubmit} noValidate className="gh-login-form">
+      {serverError && (
+        <div className="gh-alert gh-alert-danger" role="alert">
+          {serverError}
         </div>
-        <div className="row clearfix">
-          <div className="form-column col-lg-7">
-            <div className="inner-column">
-              <div className="contact-form">
-                <form onSubmit={handleSubmit}>
-                  <div className="row clearfix">
-                    <div className="form-group col-md-12">
-                      {server_error && (
-                        <div
-                          className="validation_error"
-                          style={{ color: "red" }}
-                        >
-                          {server_error}
-                        </div>
-                      )}
-                      <input
-                        type="email"
-                        name="employee_email"
-                        placeholder="Email"
-                      />
-                      {email_error && (
-                        <div
-                          className="validation_error"
-                          style={{ color: "red" }}
-                        >
-                          {email_error}
-                        </div>
-                      )}
-                    </div>
-                    <div className="form-group col-md-12">
-                      <input
-                        type="password"
-                        name="employee_password"
-                        placeholder="Password"
-                      />
-                      {password_error && (
-                        <div
-                          className="validation_error"
-                          style={{ color: "red" }}
-                        >
-                          {password_error}
-                        </div>
-                      )}
-                    </div>
-                    <div className="d-flex">
-                      <div className="form-group col-md-12 d-flex">
-                        <button
-                          className="theme-btn btn-style-one w-100"
-                          type="submit"
-                          disabled={submitting}
-                        >
-                          Login
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                {waking && (
-                  <div className="text-muted mt-2" role="status">
-                    Waking up the demo server, this can take up to a minute
-                  </div>
-                )}
-                {succes_message && (
-                  <div className="success_message">
-                    Employee logged in successfully!
-                  </div>
-                )}
-              </div>
-            </div>
+      )}
+
+      <div className="mb-3">
+        <label htmlFor="employee_email" className="form-label">
+          Email
+        </label>
+        <input
+          ref={emailRef}
+          id="employee_email"
+          type="email"
+          name="employee_email"
+          autoComplete="username"
+          placeholder="you@garage.com"
+          className={`form-control ${emailError ? "is-invalid" : ""}`}
+          aria-invalid={Boolean(emailError)}
+          aria-describedby={emailError ? "email-error" : undefined}
+        />
+        {emailError && (
+          <div id="email-error" className="gh-field-error">
+            {emailError}
           </div>
-        </div>
+        )}
       </div>
-    </section>
+
+      <div className="mb-4">
+        <label htmlFor="employee_password" className="form-label">
+          Password
+        </label>
+        <PasswordInput
+          ref={passwordRef}
+          id="employee_password"
+          name="employee_password"
+          autoComplete="current-password"
+          placeholder="Your password"
+          invalid={Boolean(passwordError)}
+          aria-invalid={Boolean(passwordError)}
+          aria-describedby={passwordError ? "password-error" : undefined}
+        />
+        {passwordError && (
+          <div id="password-error" className="gh-field-error">
+            {passwordError}
+          </div>
+        )}
+      </div>
+
+      <button className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2" type="submit" disabled={submitting}>
+        {submitting ? <GearSpinner /> : null}
+        Log in
+        {!submitting && <LuArrowRight aria-hidden="true" />}
+      </button>
+
+      {waking && (
+        <div className="gh-muted small mt-3 text-center" role="status">
+          Waking up the demo server, this can take up to a minute
+        </div>
+      )}
+
+      <div className="gh-login-demo">
+        <span>Exploring GarageHub?</span>
+        <button type="button" className="btn btn-link p-0" onClick={useDemo}>
+          Use the demo account
+        </button>
+      </div>
+    </form>
   );
 }
 

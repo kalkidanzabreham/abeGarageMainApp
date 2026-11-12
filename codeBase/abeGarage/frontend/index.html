@@ -2,12 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Abe Garage</title>
+    <meta name="description" content="GarageHub: orders, customers, vehicles and AI-drafted job cards for a repair workshop." />
+    <meta name="theme-color" content="#1c1f24" />
+    <title>GarageHub</title>
+    <script>
+      // Set the color mode before the first paint, so a dark-mode user never
+      // sees a white flash. Same rule as src/Context/ThemeContext.jsx.
+      (function () {
+        var mode = "system";
+        try {
+          mode = localStorage.getItem("gh-theme") || "system";
+        } catch (e) {}
+        var dark = mode === "dark" || (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.setAttribute("data-bs-theme", dark ? "dark" : "light");
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
-<script type="module" src="./src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
-import { MdCancelPresentation } from "react-icons/md";
-
-import { useAuth } from "../../../Context/AuthContext";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { LuArrowLeft, LuCheck, LuPlus, LuX } from "react-icons/lu";
 import { getAllServices } from "../../../services/service.service";
 import { getOrderById, updateOrder } from "../../../services/order.service";
 import { formatPrice } from "../../../util/money";
 import { ORDER_STATUS } from "../../../util/orderStatus";
+import PageHeader from "../ui/PageHeader";
+import StatusPill from "../ui/StatusPill";
+import { GearSpinner, Plate } from "../ui/garage";
+
+// value for a datetime-local input, in local time
+const formatDateForInput = (dateString) => {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 
 function EditOrder() {
   const { id } = useParams();
@@ -17,255 +25,202 @@ function EditOrder() {
   const [services, setServices] = useState([]);
   const [estimatedCompletionDate, setEstimatedCompletionDate] = useState("");
   const [orderCompleted, setOrderCompleted] = useState(0);
-  const { employee } = useAuth();
-
-  let token = null;
-  if (employee) {
-    token = employee.token;
-  }
-
-  // Helper function to format the date for datetime-local input
-  const formatDateForInput = (dateString) => {
-    if (!dateString) return ""; // Handle empty dates
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
-    getOrderById(id, token).then((response) => {
+    getOrderById(id).then((response) => {
       const orderData = response[0];
-      console.log(orderData);
-      
       setOrder(orderData);
-      // Format the estimatedCompletionDate before setting it in the state
-      const formattedDate = formatDateForInput(
-        orderData.estimated_completion_date
-      );
-      setEstimatedCompletionDate(formattedDate);
-
+      setEstimatedCompletionDate(formatDateForInput(orderData.estimated_completion_date));
       setOrderCompleted(orderData.order_completed);
       setSelectedServices(orderData.order_services);
     });
-
-    getAllServices(token).then((response) => {
-      setServices(response.data);
-    });
-  }, [id, token]);
+    getAllServices().then((response) => setServices(response.data || []));
+  }, [id]);
 
   const handleServiceCompletion = (serviceId, completed) => {
-    const updatedServices = selectedServices.map((service) =>
-      service.service_id === serviceId
-        ? { ...service, service_completed: completed }
-        : service
-    );
-    setSelectedServices(updatedServices);
-
-    // Check if all services are completed and "Mark as In Progress" is checked
-    const allServicesCompleted = updatedServices.every(
-      (service) => service.service_completed === 1
-    );
-    if (allServicesCompleted && orderCompleted !== ORDER_STATUS.RECEIVED) {
-      // was 3, which the tracking page could not display
+    const updated = selectedServices.map((s) => (s.service_id === serviceId ? { ...s, service_completed: completed } : s));
+    setSelectedServices(updated);
+    // every service done while in progress: the order is completed
+    // (this used to write 3, which the tracking page could not display)
+    if (updated.every((s) => s.service_completed === 1) && orderCompleted !== ORDER_STATUS.RECEIVED) {
       setOrderCompleted(ORDER_STATUS.COMPLETED);
     }
   };
 
   const handleAddService = (serviceId) => {
-    if (!selectedServices.find((service) => service.service_id === serviceId)) {
-      setSelectedServices([
-        ...selectedServices,
-        { service_id: serviceId, service_completed: 0 },
-      ]);
+    if (!selectedServices.find((s) => s.service_id === serviceId)) {
+      setSelectedServices([...selectedServices, { service_id: serviceId, service_completed: 0 }]);
     }
   };
 
-  const handleRemoveService = (serviceId) => {
-    setSelectedServices(
-      selectedServices.filter((service) => service.service_id !== serviceId)
-    );
-  };
+  const handleRemoveService = (serviceId) => setSelectedServices(selectedServices.filter((s) => s.service_id !== serviceId));
 
-  const handleCheckboxChange = (e) => {
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      setOrderCompleted(ORDER_STATUS.IN_PROGRESS);
-    } else {
-      setOrderCompleted(ORDER_STATUS.RECEIVED);
-    }
-  };
+  const handleStartedChange = (e) => setOrderCompleted(e.target.checked ? ORDER_STATUS.IN_PROGRESS : ORDER_STATUS.RECEIVED);
 
-  const handleSubmitOrder = () => {
-    const orderData = {
-      order_id: order.order_id,
-      estimated_completion_date: estimatedCompletionDate,
-      order_completed: orderCompleted,
-      order_services: selectedServices,
-    };
-    console.log(orderData);
-
-    updateOrder(id, orderData, token).then((response) => {
+  const handleSubmitOrder = async () => {
+    setSaveError("");
+    setSaving(true);
+    try {
+      const response = await updateOrder(id, {
+        order_id: order.order_id,
+        estimated_completion_date: estimatedCompletionDate,
+        order_completed: orderCompleted,
+        order_services: selectedServices,
+      });
       if (response.status === "success") {
         navigate("/admin/orders");
+        return;
       }
-    });
+      setSaveError(response.message || "The order couldn't be saved.");
+    } catch {
+      setSaveError("The order couldn't be saved. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
-
-  // Check if all services are selected
-  const allServicesSelected = selectedServices.length === services.length;
 
   // catalog price of a service (services added during this edit carry no
   // price of their own); the API recomputes the stored total on save
-  const priceOf = (serviceId) =>
-    services.find((s) => s.service_id === serviceId)?.service_price;
-  const estimatedTotal = selectedServices.reduce(
-    (sum, service) => sum + Number(priceOf(service.service_id) || 0),
-    0
-  );
+  const serviceById = (serviceId) => services.find((s) => s.service_id === serviceId);
+  const estimatedTotal = selectedServices.reduce((sum, s) => sum + Number(serviceById(s.service_id)?.service_price || 0), 0);
+  const available = services.filter((service) => !selectedServices.find((s) => s.service_id === service.service_id));
+  const done = selectedServices.filter((s) => s.service_completed === 1).length;
+
+  if (!order) {
+    return <div className="gh-skeleton" style={{ height: 320 }} aria-busy="true" />;
+  }
 
   return (
-    <section className="contact-section">
-      <div className="auto-container">
-        <div className="contact-title">
-          <h2>Edit Order</h2>
-        </div>
+    <>
+      <Link to={`/admin/orders/${order.order_id}`} className="gh-back-link mb-3">
+        <LuArrowLeft aria-hidden="true" /> Order #{order.order_id}
+      </Link>
+      <PageHeader
+        eyebrow={`Edit order #${order.order_id}`}
+        title={`${order.vehicle_year ?? ""} ${order.vehicle_make ?? ""} ${order.vehicle_model ?? ""}`.trim() || "Edit order"}
+        subtitle={`for ${order.customer_first_name ?? ""} ${order.customer_last_name ?? ""}`}
+        actions={
+          <div className="d-flex align-items-center gap-2">
+            <Plate>{order.vehicle_tag}</Plate>
+            <StatusPill order={{ order_completed: orderCompleted }} />
+          </div>
+        }
+      />
 
-        {/* Order Details Section */}
-        <div className="row clearfix selected-customer">
-          <div className="form-column col-lg-12">
-            <h3>Order Details:</h3>
-            <Form>
-              {/* Mark as In Progress at the top with bold visualization */}
-              <Form.Group controlId="orderCompleted" className="mb-4">
-                <Form.Check
-                  type="checkbox"
-                  label={<strong>Mark as In Progress</strong>}
-                  checked={orderCompleted !== 0} // Checked if order_completed is 1, 2, or 3
-                  onChange={handleCheckboxChange}
-                />
-              </Form.Group>
-
-              {/* Estimated Completion Date at the bottom */}
-              <Form.Group controlId="estimatedCompletionDate">
-                <Form.Label>Estimated Completion Date</Form.Label>
-                <Form.Control
+      <div className="gh-split">
+        <div className="d-grid gap-3">
+          <section className="gh-card" aria-labelledby="progress-title">
+            <h2 id="progress-title" className="h5 mb-3">
+              Progress
+            </h2>
+            <div className="form-check form-switch mb-3">
+              <input className="form-check-input" type="checkbox" role="switch" id="orderCompleted" checked={orderCompleted !== 0} onChange={handleStartedChange} />
+              <label className="form-check-label" htmlFor="orderCompleted">
+                Work has started (in progress)
+              </label>
+            </div>
+            <div className="row g-3">
+              <div className="col-sm-6">
+                <label htmlFor="estimatedCompletionDate" className="form-label">
+                  Estimated completion
+                </label>
+                <input
+                  id="estimatedCompletionDate"
                   type="datetime-local"
+                  className="form-control"
                   value={estimatedCompletionDate}
                   onChange={(e) => setEstimatedCompletionDate(e.target.value)}
                 />
-              </Form.Group>
-            </Form>
-          </div>
-        </div>
-
-        {/* Services Section */}
-        <div className="row clearfix">
-          <div className="form-column col-lg-12 selected-customer">
-            <h3>Order Services</h3>
-            {selectedServices.map((service) => (
-              <div className="service-item row" key={service.service_id}>
-                <div className="col-9">
-                  <h4 style={{ fontWeight: "bold" }}>
-                    {
-                      services.find((s) => s.service_id === service.service_id)
-                        ?.service_name
-                    }
-                  </h4>
-                  <div>
-                    {
-                      services.find((s) => s.service_id === service.service_id)
-                        ?.service_description
-                    }
-                  </div>
-                  <strong>{formatPrice(priceOf(service.service_id))}</strong>
-                </div>
-                <div className="col-3 text-right">
-                  <Form.Control
-                    as="select"
-                    value={service.service_completed}
-                    onChange={(e) =>
-                      handleServiceCompletion(
-                        service.service_id,
-                        parseInt(e.target.value)
-                      )
-                    }
-                    disabled={orderCompleted !== ORDER_STATUS.IN_PROGRESS} // only while in progress
-                  >
-                    <option value={0}>In Progress</option>
-                    <option value={1}>Completed</option>
-                  </Form.Control>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleRemoveService(service.service_id)}
-                    className="mt-2 w-100"
-                  >
-                    Remove
-                  </Button>
-                </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Add Services Section */}
-        {!allServicesSelected && ( // Only show if not all services are selected
-          <div className="row clearfix">
-            <div className="form-column col-lg-12 selected-customer">
-              <h3>Add Services</h3>
-              {services
-                .filter(
-                  (service) =>
-                    !selectedServices.find(
-                      (s) => s.service_id === service.service_id
-                    )
-                )
-                .map((service) => (
-                  <div className="service-item row" key={service.service_id}>
-                    <div className="col-9">
-                      <h4 style={{ fontWeight: "bold" }}>
-                        {service.service_name}
-                      </h4>
-                      <div>{service.service_description}</div>
-                      <strong>{formatPrice(service.service_price)}</strong>
-                    </div>
-                    <div className="col-3 text-right">
-                      <Button
-                        variant="success"
-                        onClick={() => handleAddService(service.service_id)}
-                      >
-                        Add
-                      </Button>
-                    </div>
-                  </div>
-                ))}
             </div>
-          </div>
-        )}
+          </section>
 
-        <div className="row clearfix selected-customer">
-          <div className="form-column col-lg-12 d-flex justify-content-between">
-            <h3>Estimated total</h3>
-            <h3 data-testid="estimated-total">{formatPrice(estimatedTotal)}</h3>
-          </div>
+          <section className="gh-card p-0" aria-labelledby="services-title">
+            <div className="gh-card-head">
+              <h2 id="services-title" className="h5 m-0">
+                Services on this order
+              </h2>
+              <span className="gh-muted small">
+                {done} of {selectedServices.length} done
+              </span>
+            </div>
+            {orderCompleted === ORDER_STATUS.RECEIVED && selectedServices.length > 0 && (
+              <p className="gh-hint mx-3 mt-3 mb-0">Turn on “Work has started” to mark services as completed.</p>
+            )}
+            <ul className="gh-service-list">
+              {selectedServices.map((service) => {
+                const info = serviceById(service.service_id);
+                return (
+                  <li className="service-item gh-service-row gh-service-edit" key={service.service_id}>
+                    <span className="gh-service-main">
+                      <strong>{info?.service_name}</strong>
+                      <span className="gh-muted">{formatPrice(info?.service_price)}</span>
+                    </span>
+                    <select
+                      className="form-select form-select-sm"
+                      aria-label={`Status of ${info?.service_name ?? "service"}`}
+                      value={service.service_completed}
+                      onChange={(e) => handleServiceCompletion(service.service_id, parseInt(e.target.value, 10))}
+                      disabled={orderCompleted !== ORDER_STATUS.IN_PROGRESS} // only while in progress
+                    >
+                      <option value={0}>In Progress</option>
+                      <option value={1}>Completed</option>
+                    </select>
+                    <button
+                      type="button"
+                      className="gh-icon-btn gh-icon-btn-danger"
+                      onClick={() => handleRemoveService(service.service_id)}
+                      aria-label={`Remove ${info?.service_name ?? "service"}`}
+                      title="Remove"
+                    >
+                      <LuX />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+
+          {available.length > 0 && (
+            <section className="gh-card" aria-labelledby="add-services-title">
+              <h2 id="add-services-title" className="h5 mb-3">
+                Add services
+              </h2>
+              <div className="gh-pick-grid">
+                {available.map((service) => (
+                  <button key={service.service_id} type="button" className="gh-pick" onClick={() => handleAddService(service.service_id)}>
+                    <span className="gh-pick-main">
+                      <strong>{service.service_name}</strong>
+                      <span className="gh-muted small">{formatPrice(service.service_price)}</span>
+                    </span>
+                    <LuPlus aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        {/* Submit Button */}
-        <div className="row clearfix form-group">
-          <div className="form-column col-lg-12">
-            <Button
-              className="theme-btn btn-style-one"
-              onClick={handleSubmitOrder}
-            >
-              Update Order
-            </Button>
+        <aside className="gh-card gh-sticky" aria-label="Order total">
+          <div className="gh-muted small">Estimated total</div>
+          <div className="gh-checkout-total" data-testid="estimated-total">
+            {formatPrice(estimatedTotal)}
           </div>
-        </div>
+          <p className="gh-muted small">The saved total is recalculated from catalog prices.</p>
+          {saveError && (
+            <div className="gh-alert gh-alert-danger" role="alert">
+              {saveError}
+            </div>
+          )}
+          <button type="button" className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2" onClick={handleSubmitOrder} disabled={saving}>
+            {saving ? <GearSpinner /> : <LuCheck aria-hidden="true" />}
+            {saving ? "Saving..." : "Update Order"}
+          </button>
+        </aside>
       </div>
-    </section>
+    </>
   );
 }
 

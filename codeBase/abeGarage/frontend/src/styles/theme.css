@@ -1,0 +1,402 @@
+/* GarageHub design system: "Graphite + amber".
+   Tokens first (light, then dark), then Bootstrap 5.3 mapped onto them,
+   then the app's own building blocks. Components use the --gh-* tokens,
+   so light/dark is a single attribute: <html data-bs-theme="dark">. */
+
+/* ---------- tokens ---------- */
+:root,
+[data-bs-theme="light"] {
+  --gh-bg: #faf8f5;
+  --gh-surface: #ffffff;
+  --gh-surface-2: #f3f0ea;
+  --gh-border: #e7e2d9;
+  --gh-text: #1c1f24;
+  --gh-muted: #6b6f76;
+  --gh-accent: #f59e0b;
+  --gh-accent-hover: #d97706;
+  --gh-accent-soft: rgba(245, 158, 11, 0.14);
+  /* amber is too light for text on white; this shade passes WCAG AA */
+  --gh-accent-text: #b45309;
+  --gh-on-accent: #1c1f24;
+  --gh-sidebar: #1c1f24;
+  --gh-sidebar-2: #262a31;
+  --gh-sidebar-text: #c3c7cd;
+  --gh-success: #15803d;
+  --gh-success-soft: rgba(21, 128, 61, 0.12);
+  --gh-info: #1d4ed8;
+  --gh-info-soft: rgba(29, 78, 216, 0.1);
+  --gh-danger: #b91c1c;
+  --gh-danger-soft: rgba(185, 28, 28, 0.1);
+  --gh-shadow-sm: 0 1px 2px rgba(28, 31, 36, 0.06);
+  --gh-shadow: 0 1px 3px rgba(28, 31, 36, 0.06), 0 8px 24px rgba(28, 31, 36, 0.06);
+  --gh-shadow-lg: 0 12px 40px rgba(28, 31, 36, 0.14);
+  color-scheme: light;
+}
+
+[data-bs-theme="dark"] {
+  --gh-bg: #121417;
+  --gh-surface: #1a1d21;
+  --gh-surface-2: #22262b;
+  --gh-border: #2e333a;
+  --gh-text: #eceef0;
+  --gh-muted: #9aa0a7;
+  --gh-accent: #f59e0b;
+  --gh-accent-hover: #fbbf24;
+  --gh-accent-soft: rgba(245, 158, 11, 0.16);
+  --gh-accent-text: #fbbf24;
+  --gh-on-accent: #1c1f24;
+  --gh-sidebar: #0d0f12;
+  --gh-sidebar-2: #1a1d22;
+  --gh-sidebar-text: #b4b9c0;
+  --gh-success: #4ade80;
+  --gh-success-soft: rgba(74, 222, 128, 0.12);
+  --gh-info: #93c5fd;
+  --gh-info-soft: rgba(147, 197, 253, 0.12);
+  --gh-danger: #f87171;
+  --gh-danger-soft: rgba(248, 113, 113, 0.12);
+  --gh-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --gh-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.3);
+  --gh-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+:root {
+  --gh-radius-sm: 8px;
+  --gh-radius: 12px;
+  --gh-radius-lg: 18px;
+  --gh-font: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --gh-font-display: "Space Grotesk Variable", "Inter Variable", system-ui, sans-serif;
+  --gh-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --gh-sidebar-width: 264px;
+}
+
+/* ---------- Bootstrap mapped onto the tokens ---------- */
+:root,
+[data-bs-theme="light"],
+[data-bs-theme="dark"] {
+  --bs-body-bg: var(--gh-bg);
+  --bs-body-color: var(--gh-text);
+  --bs-emphasis-color: var(--gh-text);
+  --bs-secondary-color: var(--gh-muted);
+  --bs-tertiary-bg: var(--gh-surface-2);
+  --bs-border-color: var(--gh-border);
+  --bs-border-radius: var(--gh-radius-sm);
+  --bs-border-radius-lg: var(--gh-radius);
+  --bs-body-font-family: var(--gh-font);
+  --bs-link-color: var(--gh-accent-text);
+  --bs-link-color-rgb: 180, 83, 9;
+  --bs-link-hover-color: var(--gh-accent-hover);
+  --bs-primary: var(--gh-accent);
+  --bs-primary-rgb: 245, 158, 11;
+  --bs-focus-ring-color: rgba(245, 158, 11, 0.35);
+}
+[data-bs-theme="dark"] {
+  --bs-link-color-rgb: 251, 191, 36;
+}
+
+body {
+  background: var(--gh-bg);
+  color: var(--gh-text);
+  font-family: var(--gh-font);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, .gh-display {
+  font-family: var(--gh-font-display);
+  letter-spacing: -0.02em;
+  color: var(--gh-text);
+}
+
+::selection {
+  background: var(--gh-accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gh-accent);
+  outline-offset: 2px;
+}
+
+/* buttons */
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  transition: transform 0.12s var(--gh-ease), box-shadow 0.2s ease, background-color 0.2s ease,
+    border-color 0.2s ease, color 0.2s ease;
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+.btn-primary {
+  --bs-btn-bg: var(--gh-accent);
+  --bs-btn-border-color: var(--gh-accent);
+  --bs-btn-color: var(--gh-on-accent);
+  --bs-btn-hover-bg: var(--gh-accent-hover);
+  --bs-btn-hover-border-color: var(--gh-accent-hover);
+  --bs-btn-hover-color: var(--gh-on-accent);
+  --bs-btn-active-bg: var(--gh-accent-hover);
+  --bs-btn-active-border-color: var(--gh-accent-hover);
+  --bs-btn-active-color: var(--gh-on-accent);
+  --bs-btn-disabled-bg: var(--gh-accent);
+  --bs-btn-disabled-border-color: var(--gh-accent);
+  --bs-btn-disabled-color: var(--gh-on-accent);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28);
+}
+.btn-primary:hover {
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.36);
+}
+.btn-dark {
+  --bs-btn-bg: var(--gh-sidebar);
+  --bs-btn-border-color: var(--gh-sidebar);
+  --bs-btn-hover-bg: var(--gh-sidebar-2);
+  --bs-btn-hover-border-color: var(--gh-sidebar-2);
+}
+.btn-outline-secondary {
+  --bs-btn-color: var(--gh-text);
+  --bs-btn-border-color: var(--gh-border);
+  --bs-btn-hover-bg: var(--gh-surface-2);
+  --bs-btn-hover-border-color: var(--gh-border);
+  --bs-btn-hover-color: var(--gh-text);
+  --bs-btn-active-bg: var(--gh-surface-2);
+  --bs-btn-active-border-color: var(--gh-border);
+  --bs-btn-active-color: var(--gh-text);
+}
+.btn-success {
+  --bs-btn-bg: var(--gh-success);
+  --bs-btn-border-color: var(--gh-success);
+}
+
+/* forms */
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border-color: var(--gh-border);
+  background-color: var(--gh-surface);
+  color: var(--gh-text);
+  padding: 0.6rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.form-control::placeholder {
+  color: var(--gh-muted);
+  opacity: 0.8;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gh-accent);
+  box-shadow: 0 0 0 4px var(--gh-accent-soft);
+  background-color: var(--gh-surface);
+  color: var(--gh-text);
+}
+.form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.35rem;
+}
+.form-check-input:checked {
+  background-color: var(--gh-accent);
+  border-color: var(--gh-accent);
+}
+.form-check-input:focus {
+  border-color: var(--gh-accent);
+  box-shadow: 0 0 0 4px var(--gh-accent-soft);
+}
+.invalid-feedback,
+.gh-field-error {
+  color: var(--gh-danger);
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* tables: wrapped in a rounded card, airy rows, sticky-looking header */
+.gh-table-wrap {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius);
+  box-shadow: var(--gh-shadow-sm);
+  overflow: hidden;
+}
+.gh-table-wrap .table-responsive {
+  margin: 0;
+}
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--gh-text);
+  --bs-table-border-color: var(--gh-border);
+  --bs-table-hover-bg: var(--gh-surface-2);
+  --bs-table-hover-color: var(--gh-text);
+  --bs-table-striped-bg: transparent;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+.table > thead th {
+  background: var(--gh-surface-2);
+  color: var(--gh-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom-width: 1px;
+  padding: 0.8rem 1rem;
+  white-space: nowrap;
+}
+.table > tbody td {
+  padding: 0.85rem 1rem;
+}
+.table > tbody tr {
+  transition: background-color 0.15s ease;
+}
+.table > tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* pagination */
+.pagination {
+  --bs-pagination-color: var(--gh-text);
+  --bs-pagination-bg: var(--gh-surface);
+  --bs-pagination-border-color: var(--gh-border);
+  --bs-pagination-hover-bg: var(--gh-surface-2);
+  --bs-pagination-hover-color: var(--gh-text);
+  --bs-pagination-active-bg: var(--gh-accent);
+  --bs-pagination-active-border-color: var(--gh-accent);
+  --bs-pagination-active-color: var(--gh-on-accent);
+  --bs-pagination-focus-box-shadow: 0 0 0 4px var(--gh-accent-soft);
+}
+
+/* modals / dropdowns */
+.modal-content,
+.dropdown-menu {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius);
+  box-shadow: var(--gh-shadow-lg);
+}
+
+/* ---------- app building blocks ---------- */
+
+/* a page's content area fades up on navigation */
+.gh-page {
+  animation: gh-rise 0.35s var(--gh-ease) both;
+}
+.gh-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.gh-page-header h1 {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  margin: 0;
+}
+.gh-page-header p {
+  color: var(--gh-muted);
+  margin: 0.25rem 0 0;
+}
+
+.gh-card {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius);
+  box-shadow: var(--gh-shadow-sm);
+  padding: 1.5rem;
+}
+.gh-card-hover {
+  transition: transform 0.2s var(--gh-ease), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.gh-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--gh-shadow);
+  border-color: color-mix(in srgb, var(--gh-accent) 40%, var(--gh-border));
+}
+
+/* status pills (orders, active flags) */
+.gh-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--gh-surface-2);
+  color: var(--gh-muted);
+}
+.gh-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.gh-pill-amber { background: var(--gh-accent-soft); color: var(--gh-accent-text); }
+.gh-pill-green { background: var(--gh-success-soft); color: var(--gh-success); }
+.gh-pill-blue { background: var(--gh-info-soft); color: var(--gh-info); }
+.gh-pill-red { background: var(--gh-danger-soft); color: var(--gh-danger); }
+
+.gh-muted { color: var(--gh-muted); }
+.gh-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gh-accent-text);
+}
+
+/* icon in a soft rounded square */
+.gh-icon-tile {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--gh-accent-soft);
+  color: var(--gh-accent-text);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* loading skeleton */
+.gh-skeleton {
+  background: linear-gradient(90deg, var(--gh-surface-2) 25%, var(--gh-border) 37%, var(--gh-surface-2) 63%);
+  background-size: 400% 100%;
+  animation: gh-shimmer 1.4s ease infinite;
+  border-radius: var(--gh-radius-sm);
+}
+
+/* ---------- motion ---------- */
+@keyframes gh-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes gh-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes gh-shimmer {
+  from { background-position: 100% 50%; }
+  to { background-position: 0 50%; }
+}
+/* children appear one after another */
+.gh-stagger > * {
+  animation: gh-rise 0.4s var(--gh-ease) both;
+}
+.gh-stagger > *:nth-child(2) { animation-delay: 0.04s; }
+.gh-stagger > *:nth-child(3) { animation-delay: 0.08s; }
+.gh-stagger > *:nth-child(4) { animation-delay: 0.12s; }
+.gh-stagger > *:nth-child(5) { animation-delay: 0.16s; }
+.gh-stagger > *:nth-child(6) { animation-delay: 0.2s; }
+.gh-stagger > *:nth-child(n + 7) { animation-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -9,11 +9,11 @@ export const ORDER_STATUS = Object.freeze({
 });
 
 const META = {
-  [ORDER_STATUS.RECEIVED]: { label: "Received", badge: "bg-warning", listClass: "status received" },
-  [ORDER_STATUS.IN_PROGRESS]: { label: "In Progress", badge: "bg-primary", listClass: "status in-progress" },
-  [ORDER_STATUS.COMPLETED]: { label: "Completed", badge: "bg-success", listClass: "status completed" },
+  [ORDER_STATUS.RECEIVED]: { label: "Received", badge: "bg-warning", listClass: "status received", pill: "gh-pill-amber" },
+  [ORDER_STATUS.IN_PROGRESS]: { label: "In Progress", badge: "bg-primary", listClass: "status in-progress", pill: "gh-pill-blue" },
+  [ORDER_STATUS.COMPLETED]: { label: "Completed", badge: "bg-success", listClass: "status completed", pill: "gh-pill-green" },
 };
-const UNKNOWN = { label: "Unknown", badge: "bg-secondary", listClass: "status received" };
+const UNKNOWN = { label: "Unknown", badge: "bg-secondary", listClass: "status received", pill: "" };
 
 // The API names this field order_completed on /orders and /order/:id (and
 // the tracking link) but order_status on the per-customer endpoints.

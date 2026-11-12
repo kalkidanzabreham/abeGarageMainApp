@@ -1,233 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { orderStatusMeta } from "../../util/orderStatus";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { LuArrowLeft, LuSearchX } from "react-icons/lu";
 import { getOrderByHash } from "../../services/order.service";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
-import { formatPrice } from "../../util/money";
+import OrderDetails from "../components/OrderDetails/OrderDetails";
 
+// The customer's tracking page: /customer_order/:hash, no login.
 function CustomerOrder() {
-  const [singleOrderData, setSingleOrderData] = useState([]);
   const { order_hash } = useParams();
-  console.log(order_hash);
+  const [state, setState] = useState({ loading: true, order: null });
 
-  const fetchSingelOrderList = () => {
-    try {
-      const singleOrder = getOrderByHash(order_hash);
-
-      singleOrder.then((data) => {
-        if (data.status === "error") {
-          console.log(data.message);
-          toast.error(data.message);
-          return;
-        }
-        setSingleOrderData(data[0]);
-        console.log(data[0]);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    fetchSingelOrderList();
-  }, []);
-  console.log(singleOrderData);
+    let cancelled = false;
+    getOrderByHash(order_hash)
+      .then((data) => !cancelled && setState({ loading: false, order: Array.isArray(data) ? data[0] ?? null : null }))
+      .catch(() => !cancelled && setState({ loading: false, order: null }));
+    return () => {
+      cancelled = true;
+    };
+  }, [order_hash]);
 
   return (
-    <>
-      {singleOrderData === undefined || singleOrderData.length == 0 ? (
-        <>
-          <div className="container text-center m-5">
-            <h1 className="mb-2">Order Not Found</h1>
-
-            <Link to="/customer_info">
-              <button className="btn btn-danger">Check It Again</button>
-            </Link>
-          </div>
-        </>
+    <section className="container py-4 py-md-5 gh-page" style={{ maxWidth: 960 }}>
+      <Link to="/customer_info" className="gh-back-link mb-3">
+        <LuArrowLeft aria-hidden="true" /> Track another order
+      </Link>
+      {state.loading ? (
+        <div className="d-grid gap-3 mt-3" aria-busy="true">
+          <div className="gh-skeleton" style={{ height: 180 }} />
+          <div className="gh-skeleton" style={{ height: 140 }} />
+        </div>
+      ) : !state.order ? (
+        <div className="gh-card gh-lookup text-center mx-auto mt-3">
+          <span className="gh-icon-tile gh-icon-tile-lg mx-auto">
+            <LuSearchX aria-hidden="true" />
+          </span>
+          <h1>Order not found</h1>
+          <p className="gh-muted">Check the link from the garage, or enter the order key again.</p>
+          <Link to="/customer_info" className="btn btn-primary">
+            Check again
+          </Link>
+        </div>
       ) : (
-        <>
-          <div className="customer_order">
-            <div className="container sub_order">
-              {/* Customer Info & Status */}
-              <div className="row justify-content-center">
-                <div className="col-md-10">
-                  <div
-                    className=" p-0 contact-section"
-                  >
-                    <div className="d-flex justify-content-between align-items-center auto-container">
-                      <div className="contact-title mb-0
-                      ">
-                        <h2 className="mb-3 ">
-                          {singleOrderData?.customer_first_name}{" "}
-                          {singleOrderData?.customer_last_name}
-                        </h2>
-                        <p className="text-muted">
-                          We will keep you updated on the progress of your
-                          service request. Below, you can find details about
-                          your order, including the status of each requested
-                          service, customer information, and vehicle details.
-                          Check back anytime for real-time updates on your
-                          order.
-                        </p>
-                      </div>
-                      <span className="">
-                        <span className={`${orderStatusMeta(singleOrderData).badge} round text-white px-2 d-inline-block text-center status-badge`}>
-                            {orderStatusMeta(singleOrderData).label}
-                          </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Services Section - Now using col-md-10 */}
-              <div className="row justify-content-center my-4 ">
-                <div className="col-md-10">
-                  <div className="row ">
-                    <div className="col-md-6  ">
-                      <div
-                        className="card shadow-sm py-4 px-5 "
-                        style={{ borderBottom: "2px solid red" }}
-                      >
-                        <small>CUSTOMER</small>
-                        <h2>
-                          {singleOrderData?.customer_first_name}{" "}
-                          {singleOrderData?.customer_last_name}
-                        </h2>
-                        <p>
-                          <strong>Email:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.customer_email}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>Customer-phone:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.customer_phone_number}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>Active customer:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.active_customer_status === 1
-                              ? "Yes"
-                              : "No"}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div
-                        className="card shadow-sm py-4 px-5 "
-                        style={{ borderBottom: "2px solid red" }}
-                      >
-                        <small>CAR IN SERVICE</small>
-                        <h2>
-                          {singleOrderData?.vehicle_model} (
-                          {singleOrderData?.vehicle_color})
-                        </h2>
-                        <p>
-                          <strong>Vehicle-tag:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_tag}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>vehicle_year:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_year}
-                          </span>
-                        </p>
-                        <p>
-                          <strong>vehicle_mileage:</strong>{" "}
-                          <span className="text-muted">
-                            {singleOrderData?.vehicle_mileage}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Request Service Box */}
-              <div className="row justify-content-center mb-4">
-                <div className="col-md-10">
-                  <div
-                    className="card shadow-sm p-4 mb-5"
-                    style={{ borderBottom: "2px solid red" }}
-                  >
-                    <div>
-                      <small className="text-uppercase text-muted">
-                        {singleOrderData?.vehicle_model}
-                      </small>
-                      <h3 className="fw-bold mt-2">Requested Service</h3>
-                    </div>
-                    <div className="border-top pt-3">
-                      <div>
-                        {singleOrderData?.order_services?.length > 0 ? (
-                          <div className="d-flex flex-column gap-3">
-                            {singleOrderData?.order_services.map(
-                              (service, index) => (
-                                <>
-                                  <div
-                                    key={index}
-                                    className="d-flex justify-content-between align-items-center p-3 rounded shadow-sm"
-                                  >
-                                    {/* Left Side - Service Name & Description */}
-                                    <div>
-                                      <h4 className="mb-1">
-                                        {service.service_name}
-                                      </h4>
-                                      <p className="text-muted">
-                                        {service.service_description}
-                                      </p>
-                                      <strong>
-                                        {formatPrice(service.service_price)}
-                                      </strong>
-                                    </div>
-
-                                    {/* Right Side - Status Indicator */}
-                                    <span className="px-3 py-2 rounded text-white text-center status-badge">
-                                      {service.service_completed === 0 ? (
-                                        <span className="bg-primary text-white px-2 d-inline-block text-center status-badge">
-                                          In Progress
-                                        </span>
-                                      ) : (
-                                        <span className="bg-success text-white px-2 d-inline-block text-center status-badge">
-                                          Completed
-                                        </span>
-                                      )}
-                                    </span>
-                                  </div>
-                                </>
-                              )
-                            )}
-                          </div>
-                        ) : (
-                          <p>No services found.</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* order total: computed by the API from catalog prices */}
-                    <div className="d-flex justify-content-between border-top pt-3 mt-3">
-                      <h4 className="mb-0">Total</h4>
-                      <h4 className="mb-0" data-testid="order-total">
-                        {formatPrice(singleOrderData?.order_total_price)}
-                      </h4>
-                    </div>
-
-                    {/* Additional Order Section */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+        <div className="mt-3">
+          <OrderDetails
+            order={state.order}
+            intro="We'll keep this page up to date as your car moves through the workshop. Check back any time."
+          />
+        </div>
       )}
-    </>
+    </section>
   );
 }
 

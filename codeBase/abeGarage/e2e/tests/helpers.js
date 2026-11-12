@@ -28,7 +28,7 @@ const loginUI = async (page, role) => {
   await page.goto("/login");
   await page.fill("input[name=employee_email]", `${role}@garagehub.test`);
   await page.fill("input[name=employee_password]", passwordFor(role));
-  await page.click("button:has-text('Login')");
+  await page.click("button:has-text('Log in')");
   await page.waitForURL(/\/admin/);
 };
 

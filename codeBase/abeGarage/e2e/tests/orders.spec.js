@@ -24,13 +24,15 @@ test("bugs 6 and 3: New Order shows correct customer details and a live total", 
   await loginAs(page, request, "admin");
   await page.goto("/admin/new-order");
   await page.fill("input[name=search_customer]", customer.email);
-  await page.locator(`table tr:has-text("${customer.email}") svg`).click();
+  await page.getByRole("button", { name: `Select customer ${customer.email}` }).click();
 
-  await expect(page.locator("div:has(> strong:text-is('Active Customer:'))")).toContainText("Yes");
-  await expect(page.locator("div:has(> strong:text-is('Edit Customer:')) a")).toHaveAttribute("href", `/admin/customer_edit/${customer.customerId}`);
+  const selected = page.getByTestId("selected-customer");
+  await expect(selected).toContainText(customer.email);
+  await expect(selected.locator("dt:text-is('Active') + dd")).toHaveText("Yes");
+  await expect(selected.getByRole("link", { name: "Edit customer" })).toHaveAttribute("href", `/admin/customer_edit/${customer.customerId}`);
 
-  await page.locator(`table tr:has-text("${customer.tag}") svg`).click();
-  await expect(page.locator("div:has(> strong:text-is('Edit vehicle info:')) a")).toHaveAttribute("href", `/admin/edit_vehicle/${customer.vehicleId}`);
+  await page.getByRole("button", { name: `Select vehicle ${customer.tag}` }).click();
+  await expect(page.getByTestId("selected-vehicle").getByRole("link", { name: "Edit vehicle" })).toHaveAttribute("href", `/admin/edit_vehicle/${customer.vehicleId}`);
 
   await page.locator(".service-item:has-text('Oil change') input[type=checkbox]").check();
   await page.locator(".service-item:has-text('Brake pad replacement') input[type=checkbox]").check();
@@ -57,7 +59,7 @@ test("bug 3: the total is shown on the list, the order view, the edit page and t
 
   await page.goto(`/admin/orders/${orderId}`);
   await expect(page.getByTestId("order-total")).toHaveText(expected);
-  await expect(page.locator(".rounded.shadow-sm:has-text('Oil change')")).toContainText(money(prices["Oil change"].price));
+  await expect(page.getByRole("listitem").filter({ hasText: "Oil change" })).toContainText(money(prices["Oil change"].price));
 
   await page.goto(`/admin/edit-order/${orderId}`);
   await expect(page.getByTestId("estimated-total")).toHaveText(expected);

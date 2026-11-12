@@ -4,30 +4,36 @@
 const { test, expect } = require("@playwright/test");
 const { apiAs, apiLogin, loginAs, loginUI, createCustomerWithVehicle } = require("./helpers");
 
+// sidebar order: Workshop (Dashboard, Orders, New order, Smart intake),
+// People (Customers, Add customer, Employees, Add employee), Catalog
 const MENUS = {
-  admin: ["Dashboard", "Orders", "New order", "Add employee", "Employees", "Add customer", "Customers", "Services"],
-  manager: ["Dashboard", "Orders", "New order", "Employees", "Add customer", "Customers", "Services"],
+  admin: ["Dashboard", "Orders", "New order", "Customers", "Add customer", "Employees", "Add employee", "Services"],
+  manager: ["Dashboard", "Orders", "New order", "Customers", "Add customer", "Employees", "Services"],
   mechanic: ["Dashboard", "Orders", "Customers", "Services"],
-  demo: ["Dashboard", "Orders", "Employees", "Customers", "Services"],
+  demo: ["Dashboard", "Orders", "Customers", "Employees", "Services"],
 };
-const SERVICE_CARD = { admin: "Add Services", manager: "Services", mechanic: "Services", demo: "Services" };
+const PATHS = { Dashboard: "/admin", Orders: "/admin/orders", "New order": "/admin/new-order", "Smart intake (AI)": "/admin/smart-intake",
+  Customers: "/admin/all_customers", "Add customer": "/admin/add_customers", Employees: "/admin/employee",
+  "Add employee": "/admin/add-employee", Services: "/admin/service" };
+const SERVICE_CARD = { admin: "Manage services", manager: "Services", mechanic: "Services", demo: "Services" };
 
 for (const [role, menu] of Object.entries(MENUS)) {
   test(`bug 4: ${role} sees only their menu items and cards`, async ({ page, request }) => {
     // the smart intake item exists only when the API has the feature on for this role
     const aiStatus = await apiAs(request, await apiLogin(request, role)).get("/ai/status");
-    const expected = aiStatus.ok() ? [...menu, "Smart intake (AI)"] : menu;
+    const expected = [...menu];
+    if (aiStatus.ok()) expected.splice(expected.indexOf("Orders") + (menu.includes("New order") ? 2 : 1), 0, "Smart intake (AI)");
     await loginUI(page, role);
     await page.goto("/admin");
-    await expect(page.locator(".list-group a")).toHaveText(expected);
-    const cardLinks = await page.locator(".service-block-one a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
-    for (const href of cardLinks) {
-      const allowed = { "/admin/orderS": "Orders", "/admin/new-order": "New order", "/admin/employee": "Employees",
-        "/admin/add-employee": "Add employee", "/admin/add_customers": "Add customer",
-        "/admin/all_customers": "Customers", "/admin/service": "Services" }[href];
-      expect(menu, `card ${href}`).toContain(allowed);
+    await expect(page.getByRole("navigation", { name: "Admin" }).getByRole("link")).toHaveText(expected);
+    // every dashboard quick action leads to a page this role may open
+    const actions = page.getByRole("region", { name: "Quick actions" }).getByRole("link");
+    await expect(actions.first()).toBeVisible();
+    const allowedPaths = expected.map((label) => PATHS[label]);
+    for (const href of await actions.evaluateAll((as) => as.map((a) => a.getAttribute("href")))) {
+      expect(allowedPaths, `quick action ${href}`).toContain(href);
     }
-    await expect(page.locator(".service-block-one:has(a[href='/admin/service']) h2")).toHaveText(SERVICE_CARD[role]);
+    await expect(page.getByRole("region", { name: "Quick actions" }).locator('a[href="/admin/service"] strong')).toHaveText(SERVICE_CARD[role]);
   });
 }
 
@@ -46,12 +52,26 @@ for (const [role, paths] of Object.entries(FORBIDDEN_PAGES)) {
   });
 }
 
-test("Manager: deleting a service shows the API's 403 as an error dialog", async ({ page, request }) => {
+test("Manager: the service catalog is read-only (no edit or delete controls)", async ({ page, request }) => {
   await loginAs(page, request, "manager");
   await page.goto("/admin/service");
-  const del = page.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/services/"));
-  await page.locator("li:has-text('Suspension inspection') svg").nth(1).click();
-  expect((await del).status()).toBe(403);
+  await expect(page.locator("li:has-text('Suspension inspection')")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Delete Suspension inspection/ })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Add a new service" })).toHaveCount(0);
+});
+
+// Walkthrough bug: API errors on the services page were silently ignored.
+// The API is made to refuse the delete, as it would for a missing permission.
+test("an API error while deleting a service is shown as a dialog, and the service stays", async ({ page, request }) => {
+  await loginAs(page, request, "admin");
+  await page.route("**/api/services/*", (route) =>
+    route.request().method() === "DELETE"
+      ? route.fulfill({ status: 403, json: { status: "error", code: "FORBIDDEN", message: "You do not have permission to perform this action" } })
+      : route.continue()
+  );
+  await page.goto("/admin/service");
+  await page.getByRole("button", { name: "Delete Suspension inspection" }).click();
+  await page.locator(".swal2-confirm").click();
   await expect(page.locator(".swal2-popup")).toContainText("You do not have permission to perform this action");
   await expect(page.locator("li:has-text('Suspension inspection')")).toBeVisible();
 });

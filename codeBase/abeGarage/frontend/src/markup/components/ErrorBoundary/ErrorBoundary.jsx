@@ -2,7 +2,7 @@ import React from "react";
 
 // Catches render errors below it so one broken component shows a message
 // instead of React unmounting the whole app (which left a blank page).
-// App.jsx keys it by route, so navigating elsewhere recovers.
+// The layouts key it by route, so navigating elsewhere recovers.
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -20,12 +20,12 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <section className="contact-section">
-          <div className="auto-container" role="alert">
-            <h2>Something went wrong on this page</h2>
-            <p>Try reloading, or go back and try again.</p>
+        <div className="container py-5">
+          <div className="gh-card text-center mx-auto" role="alert" style={{ maxWidth: 520 }}>
+            <h2 className="h4">Something went wrong on this page</h2>
+            <p className="gh-muted mb-0">Try reloading, or go back and try again.</p>
           </div>
-        </section>
+        </div>
       );
     }
     return this.props.children;

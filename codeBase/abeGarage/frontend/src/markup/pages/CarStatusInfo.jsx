@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PulseLoader } from "react-spinners";
+import { LuArrowRight, LuPackageSearch } from "react-icons/lu";
+import { GearSpinner } from "../components/ui/garage";
 import { getOrderByHash } from "../../services/order.service";
 
-const NOT_FOUND_MESSAGE =
-  "No order found for that key. Check the link from the garage and try again.";
+const NOT_FOUND_MESSAGE = "No order found for that key. Check the link from the garage and try again.";
 
 function CarStatusInfo() {
   const navigate = useNavigate();
@@ -42,56 +42,47 @@ function CarStatusInfo() {
   };
 
   return (
-    <div className="container d-flex flex-column align-items-center justify-content-center vh-100">
-      <div
-        className="card p-5 shadow-lg border-0 rounded order_card"
-        style={{ maxWidth: "500px", width: "100%" }}
-      >
-        <h3 className="text-center mb-4">
-          Welcome! 🚗 <br />
-          Access your car status by entering your secret hash key.
-        </h3>
+    <section className="gh-narrow-page gh-page">
+      <div className="gh-card gh-lookup">
+        <span className="gh-icon-tile gh-icon-tile-lg">
+          <LuPackageSearch aria-hidden="true" />
+        </span>
+        <h1>Track your order</h1>
+        <p className="gh-muted">
+          Enter the order key from the link the garage sent you. You&apos;ll see the order&apos;s status and the
+          services on it; no account needed.
+        </p>
 
-        <form onSubmit={handleCheckOrder}>
-          <div className="form-group mb-3 mt-4">
-            <input
-              type="text"
-              name="customer_info"
-              value={customerInfo}
-              onChange={(event) => setCustomerInfo(event.target.value)}
-              className="form-control p-2"
-              placeholder="Insert your secret hash key here"
-              required
-            />
-          </div>
+        <form onSubmit={handleCheckOrder} noValidate>
+          <label htmlFor="customer_info" className="form-label">
+            Order key
+          </label>
+          <input
+            id="customer_info"
+            type="text"
+            name="customer_info"
+            value={customerInfo}
+            onChange={(event) => setCustomerInfo(event.target.value)}
+            className="form-control"
+            placeholder="e.g. 1e3ee1e9-f61f-467b-bc29-d5f8c34279ed"
+            autoComplete="off"
+            spellCheck={false}
+          />
 
           {errorMessage && (
-            <p className="text-danger text-center" role="alert">
+            <div className="gh-alert gh-alert-danger mt-3 mb-0" role="alert">
               {errorMessage}
-            </p>
+            </div>
           )}
 
-          <div className="form-group text-center mt-1">
-            <button
-              className="theme-btn btn-style-one w-100"
-              type="submit"
-              disabled={loading}
-            >
-              <span>
-                {loading ? (
-                  <div>
-                    <span>Please wait </span>
-                    <PulseLoader size={10} color={"#123abc"} />
-                  </div>
-                ) : (
-                  "Check Status"
-                )}
-              </span>
-            </button>
-          </div>
+          <button className="btn btn-primary w-100 mt-3 d-inline-flex align-items-center justify-content-center gap-2" type="submit" disabled={loading}>
+            {loading ? <GearSpinner /> : null}
+            {loading ? "Checking..." : "Check status"}
+            {!loading && <LuArrowRight aria-hidden="true" />}
+          </button>
         </form>
       </div>
-    </div>
+    </section>
   );
 }
 
