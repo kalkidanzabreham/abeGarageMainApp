@@ -12,7 +12,7 @@ relying on them.
 
 | Part | What it is | Measured (local `docker stats`, idle after the 29 Playwright tests, 2026-10-29) |
 |---|---|---|
-| Frontend | Static Vite build (`codeBase/abeGarage/frontend`) | nginx container: 12 MiB RAM; image 110 MB |
+| Frontend | Static Vite build (`codeBase/abeGarage/frontend`) | nginx container: 12 MiB RAM; image 110 MB (75.1 MB after the UI redesign removed the template's assets, 2026-11-12) |
 | API | Node 20 Express app, Dockerfile included (`codeBase/abeGarage/backend`) | 30 MiB RAM, ~0% CPU; image 249 MB |
 | Database | MySQL 8 or MySQL-compatible, TLS supported (`DB_SSL`, `DB_SSL_CA`) | 383 MiB RAM, ~0.8% of one CPU (MySQL 8) |
 | Demo reset | `npm run demo:reset`, once a day | `.github/workflows/demo-reset.yml` |
