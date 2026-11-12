@@ -4,6 +4,8 @@ const { randomBytes } = require('crypto');
 //  import employee service
 const employeeService = require('./employee.service');
 const { AppError, badRequest } = require('../utils/AppError');
+const query = require('../config/db.config');
+const { ROLES } = require('../config/roles');
 
 // Compared against when the email is unknown, so "no such user" costs the
 // same bcrypt work as "wrong password" and response timing doesn't reveal
@@ -39,7 +41,23 @@ const login = async (body) => {
     }
     return employee;
 }
-// export the login function
+// The read-only Demo account for the one-click demo login: the first active
+// employee with the Demo role. Undefined if there is none.
+const demoAccount = async () => {
+    const rows = await query(
+        `SELECT employee.employee_id, employee_info.employee_first_name, employee_role.company_role_id
+         FROM employee
+         JOIN employee_info ON employee.employee_id = employee_info.employee_id
+         JOIN employee_role ON employee.employee_id = employee_role.employee_id
+         WHERE employee_role.company_role_id = ? AND employee.active_employee = 1
+         ORDER BY employee.employee_id
+         LIMIT 1`,
+        [ROLES.DEMO]
+    );
+    return rows[0];
+};
+
 module.exports = {
-    login
+    login,
+    demoAccount
 }

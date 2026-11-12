@@ -17,6 +17,8 @@ const applyTestEnv = () => {
     // loads its own copy of the app with a low limit
     LOGIN_RATE_LIMIT_MAX: "1000",
     // smart intake on, with the no-model fake provider (no real model in CI)
+    DEMO_LOGIN_ENABLED: "true",
+    DEMO_LOGIN_RATE_LIMIT: "1000",
     AI_ENABLED: "true",
     AI_PROVIDER: "fake",
     AI_TIMEOUT_MS: "2000",
