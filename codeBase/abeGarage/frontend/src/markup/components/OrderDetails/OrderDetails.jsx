@@ -1,6 +1,7 @@
 import { format } from "date-fns";
-import { LuCar, LuCircleCheck, LuClock, LuUserRound } from "react-icons/lu";
+import { LuCarFront, LuCircleCheck, LuClock, LuUserRound } from "react-icons/lu";
 import StatusPill from "../ui/StatusPill";
+import { Plate } from "../ui/garage";
 import { formatPrice } from "../../../util/money";
 import { ORDER_STATUS, orderStatusOf } from "../../../util/orderStatus";
 
@@ -98,11 +99,11 @@ export default function OrderDetails({ order, intro, actions }) {
         </div>
         <div className="col-md-6">
           <InfoCard
-            icon={LuCar}
+            icon={LuCarFront}
             label="Vehicle"
             title={`${order.vehicle_model || ""}${order.vehicle_color ? ` (${order.vehicle_color})` : ""}`}
             rows={[
-              ["Plate", order.vehicle_tag],
+              ["Plate", order.vehicle_tag ? <Plate>{order.vehicle_tag}</Plate> : null],
               ["Year", order.vehicle_year],
               ["Mileage", order.vehicle_mileage != null ? Number(order.vehicle_mileage).toLocaleString() : null],
             ]}

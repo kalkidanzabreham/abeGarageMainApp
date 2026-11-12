@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuArrowRight, LuLoaderCircle, LuPackageSearch } from "react-icons/lu";
+import { LuArrowRight, LuPackageSearch } from "react-icons/lu";
+import { GearSpinner } from "../components/ui/garage";
 import { getOrderByHash } from "../../services/order.service";
 
 const NOT_FOUND_MESSAGE = "No order found for that key. Check the link from the garage and try again.";
@@ -75,7 +76,7 @@ function CarStatusInfo() {
           )}
 
           <button className="btn btn-primary w-100 mt-3 d-inline-flex align-items-center justify-content-center gap-2" type="submit" disabled={loading}>
-            {loading ? <LuLoaderCircle className="gh-spin" aria-hidden="true" /> : null}
+            {loading ? <GearSpinner /> : null}
             {loading ? "Checking..." : "Check status"}
             {!loading && <LuArrowRight aria-hidden="true" />}
           </button>

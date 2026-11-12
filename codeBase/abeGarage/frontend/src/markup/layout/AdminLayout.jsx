@@ -74,7 +74,7 @@ export default function AdminLayout() {
 
   return (
     <div className={`gh-app ${menuOpen ? "gh-menu-open" : ""}`}>
-      <aside className="gh-sidebar" aria-label="Staff menu">
+      <aside className="gh-sidebar gh-tread" aria-label="Staff menu">
         <div className="gh-sidebar-head">
           <Brand to="/admin" light />
           <button type="button" className="gh-icon-btn gh-sidebar-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">

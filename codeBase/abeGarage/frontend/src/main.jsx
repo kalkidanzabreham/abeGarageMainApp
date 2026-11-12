@@ -11,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/theme.css";
 import "./styles/layout.css";
 import "./styles/pages.css";
+import "./styles/garage.css";
 
 import App from "./App.jsx";
 import { Authprovider } from "./Context/AuthContext.jsx";

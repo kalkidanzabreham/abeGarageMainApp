@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { LuArrowRight, LuLoaderCircle } from "react-icons/lu";
+import { LuArrowRight } from "react-icons/lu";
+import { GearSpinner } from "../ui/garage";
 import { login } from "../../../services/login.service";
 import PasswordInput from "../ui/PasswordInput";
 
@@ -125,7 +126,7 @@ function LoginForm() {
       </div>
 
       <button className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2" type="submit" disabled={submitting}>
-        {submitting ? <LuLoaderCircle className="gh-spin" aria-hidden="true" /> : null}
+        {submitting ? <GearSpinner /> : null}
         Log in
         {!submitting && <LuArrowRight aria-hidden="true" />}
       </button>

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   LuArrowRight,
-  LuCar,
+  LuCarFront,
   LuCircleCheck,
   LuClipboardList,
   LuLink,
@@ -12,6 +12,7 @@ import {
   LuUserCheck,
 } from "react-icons/lu";
 import useReveal from "../../util/useReveal";
+import { Gauge, GearCluster, Plate } from "../components/ui/garage";
 
 const FEATURES = [
   {
@@ -25,7 +26,7 @@ const FEATURES = [
     text: "Received, in progress, completed. Mechanics tick off services as they go; totals always come from catalog prices.",
   },
   {
-    icon: LuCar,
+    icon: LuCarFront,
     title: "Customers and their vehicles",
     text: "Search by name, email or phone. Every vehicle and its order history on one profile.",
   },
@@ -69,6 +70,14 @@ const STEPS = [
 function IntakePreview() {
   return (
     <div className="gh-hero-visual" aria-hidden="true">
+      <GearCluster className="gh-hero-gears" size={240} />
+      <div className="gh-mock gh-mock-gauge">
+        <Gauge value={0.68} size={84} />
+        <div>
+          <div className="gh-mock-label mb-1">Bay 2 · in progress</div>
+          <Plate>KIA 4521</Plate>
+        </div>
+      </div>
       <div className="gh-mock gh-mock-complaint">
         <div className="gh-mock-label">Customer&apos;s complaint</div>
         <p>Grinding noise when I brake, and the car shakes above 80.</p>
@@ -177,7 +186,9 @@ function Home() {
       <section className="gh-section">
         <div className="container">
           <div className="gh-cta">
-            <div>
+            <div className="gh-hazard-bar gh-cta-hazard" aria-hidden="true" />
+            <GearCluster className="gh-cta-gears" size={220} />
+            <div className="gh-cta-copy">
               <h2>See it with real screens</h2>
               <p>Log in with the read-only demo account to look around and try Smart intake.</p>
             </div>

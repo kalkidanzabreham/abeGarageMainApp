@@ -81,6 +81,7 @@ export default function PublicLayout() {
         </ErrorBoundary>
       </main>
 
+      <div className="gh-tire-edge" aria-hidden="true" />
       <footer className="gh-footer">
         <div className="container">
           <div className="gh-footer-grid">

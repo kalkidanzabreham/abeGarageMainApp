@@ -3,6 +3,7 @@ import { LuArrowLeft, LuClipboardList, LuShieldCheck, LuSparkles } from "react-i
 import LoginForm from "../components/LoginForm/LoginForm";
 import Brand from "../components/ui/Brand";
 import ThemeToggle from "../components/ui/ThemeToggle";
+import { GearCluster } from "../components/ui/garage";
 
 const POINTS = [
   { icon: LuSparkles, title: "AI-drafted job cards", text: "Turn a customer's words into suggested services you confirm." },
@@ -13,7 +14,7 @@ const POINTS = [
 function Login() {
   return (
     <div className="gh-auth">
-      <aside className="gh-auth-panel" aria-hidden="false">
+      <aside className="gh-auth-panel">
         <div className="gh-auth-panel-inner">
           <Brand light />
           <div className="gh-auth-pitch">
@@ -35,6 +36,8 @@ function Login() {
           <div className="gh-auth-panel-foot">Staff access only. Customers can track an order without logging in.</div>
         </div>
         <div className="gh-auth-glow" />
+        <GearCluster className="gh-auth-gears" size={300} />
+        <div className="gh-hazard-bar gh-auth-hazard" aria-hidden="true" />
       </aside>
 
       <main className="gh-auth-main">

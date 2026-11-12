@@ -12,9 +12,11 @@ import {
   LuUserPlus,
   LuUsers,
   LuWrench,
+  LuCarFront,
 } from "react-icons/lu";
 import PageHeader from "../../components/ui/PageHeader";
 import StatusPill from "../../components/ui/StatusPill";
+import { Gauge, Plate } from "../../components/ui/garage";
 import { useAuth } from "../../../Context/AuthContext";
 import { canVisit } from "../../../util/roles";
 import { getAllOrders } from "../../../services/order.service";
@@ -53,7 +55,8 @@ const QUICK_ACTIONS = [
   { to: "/admin/service", label: "Services", text: "The catalog and its prices.", icon: LuWrench },
 ];
 
-function StatCard({ label, value, icon: Icon, tone, hint }) {
+// gauge = share of a whole (0..1), shown as a speedometer; without it, an icon
+function StatCard({ label, value, icon: Icon, tone, hint, gauge, gaugeTone = "" }) {
   return (
     <div className="gh-card gh-stat">
       <div className="d-flex align-items-start justify-content-between">
@@ -65,9 +68,13 @@ function StatCard({ label, value, icon: Icon, tone, hint }) {
             <div className="gh-stat-value">{value}</div>
           )}
         </div>
-        <span className={`gh-icon-tile ${tone || ""}`}>
-          <Icon aria-hidden="true" />
-        </span>
+        {gauge !== undefined ? (
+          <Gauge value={gauge ?? 0} size={76} className={gaugeTone} />
+        ) : (
+          <span className={`gh-icon-tile ${tone || ""}`}>
+            <Icon aria-hidden="true" />
+          </span>
+        )}
       </div>
       {hint && <div className="gh-stat-hint">{hint}</div>}
     </div>
@@ -94,6 +101,8 @@ function AdminPage() {
     a.to === "/admin/service" && can("services:write") ? { ...a, label: "Manage services", text: "Add services and change prices." } : a
   );
   const open = stats ? stats.received + stats.inProgress : null;
+  const allOrders = stats ? open + stats.completed : 0;
+  const share = (part, whole) => (stats && whole ? part / whole : stats ? 0 : null);
 
   return (
     <>
@@ -117,10 +126,10 @@ function AdminPage() {
       )}
 
       <section className="gh-stats gh-stagger" aria-label="Workshop numbers">
-        <StatCard label="Open orders" value={open} icon={LuClipboardList} hint="Received or in progress" />
-        <StatCard label="Waiting to start" value={stats?.received ?? null} icon={LuTimer} hint="Status: received" />
-        <StatCard label="Completed" value={stats?.completed ?? null} icon={LuCircleCheck} tone="gh-tile-green" hint="All time" />
-        <StatCard label="Customers" value={stats?.customers ?? null} icon={LuUsers} tone="gh-tile-blue" hint="Registered" />
+        <StatCard label="Open orders" value={open} icon={LuClipboardList} hint="Received or in progress, of all orders" gauge={share(open, allOrders)} />
+        <StatCard label="Waiting to start" value={stats?.received ?? null} icon={LuTimer} hint="Received, of open orders" gauge={share(stats?.received, open)} gaugeTone="gh-gauge-blue" />
+        <StatCard label="Completed" value={stats?.completed ?? null} icon={LuCircleCheck} hint="Completed, of all orders" gauge={share(stats?.completed, allOrders)} gaugeTone="gh-gauge-green" />
+        <StatCard label="Customers" value={stats?.customers ?? null} icon={LuCarFront} tone="gh-tile-blue" hint="Registered customers" />
       </section>
 
       <div className="gh-dash-grid">
@@ -152,7 +161,8 @@ function AdminPage() {
                         {o.customer_first_name} {o.customer_last_name}
                       </strong>
                       <span className="gh-muted">
-                        {o.vehicle_year} {o.vehicle_make} {o.vehicle_model} · {format(new Date(o.order_date), "d MMM")}
+                        {o.vehicle_year} {o.vehicle_make} {o.vehicle_model} · {format(new Date(o.order_date), "d MMM")}{" "}
+                        <Plate>{o.vehicle_tag}</Plate>
                       </span>
                     </span>
                     <span className="gh-recent-total">{formatPrice(o.order_total_price)}</span>

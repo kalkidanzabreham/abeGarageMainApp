@@ -9,11 +9,13 @@ function Unauthorized() {
   const { isLoggedIn, roleId } = useAuth();
   return (
     <section className="gh-narrow-page gh-page">
-      <div className="gh-card gh-lookup text-center">
+      <div className="gh-card gh-lookup gh-restricted text-center">
+        <div className="gh-hazard-bar gh-restricted-bar" aria-hidden="true" />
         <span className="gh-icon-tile gh-icon-tile-lg mx-auto">
           <LuLock aria-hidden="true" />
         </span>
-        <h1>You don&apos;t have access to this page</h1>
+        <div className="gh-eyebrow mt-3">Restricted area</div>
+        <h1 className="mt-1">You don&apos;t have access to this page</h1>
         <p className="gh-muted">
           {isLoggedIn && ROLE_LABELS[roleId]
             ? `Your role (${ROLE_LABELS[roleId]}) can't open it. Ask an admin if you need access.`
