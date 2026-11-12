@@ -1142,3 +1142,303 @@
   border-color: color-mix(in srgb, var(--gh-accent) 45%, var(--gh-border));
   box-shadow: 0 0 0 4px var(--gh-accent-soft);
 }
+
+/* ---------- new order / edit order ---------- */
+.gh-order-steps {
+  display: grid;
+  gap: 1rem;
+  max-width: 980px;
+}
+.gh-step-card {
+  position: relative;
+  animation: gh-rise 0.35s var(--gh-ease) both;
+}
+.gh-step-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.gh-step-badge {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gh-sidebar);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  transition: background-color 0.25s ease;
+}
+.gh-step-card.is-done .gh-step-badge {
+  background: var(--gh-accent);
+  color: var(--gh-on-accent);
+}
+.gh-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.85rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  background: var(--gh-accent-soft);
+  color: var(--gh-accent-text);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.gh-hint svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.gh-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: var(--gh-surface-2);
+  animation: gh-rise 0.3s var(--gh-ease) both;
+}
+.gh-summary-main {
+  flex: 1;
+  min-width: 200px;
+}
+.gh-inline-dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.25rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.88rem;
+}
+.gh-inline-dl > div {
+  display: flex;
+  gap: 0.35rem;
+}
+.gh-inline-dl dt {
+  font-weight: 500;
+  color: var(--gh-muted);
+}
+.gh-inline-dl dd {
+  margin: 0;
+  font-weight: 600;
+}
+.gh-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.6rem;
+}
+.gh-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  text-align: left;
+  color: var(--gh-text);
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s var(--gh-ease);
+}
+.gh-pick:hover {
+  border-color: var(--gh-accent);
+  box-shadow: 0 0 0 4px var(--gh-accent-soft);
+  transform: translateY(-1px);
+}
+.gh-pick-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.gh-service-pick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.6rem;
+}
+.gh-service-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--gh-border);
+  border-radius: 12px;
+  background: var(--gh-surface);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.gh-service-option:hover {
+  border-color: color-mix(in srgb, var(--gh-accent) 50%, var(--gh-border));
+}
+.gh-service-option.is-checked {
+  border-color: var(--gh-accent);
+  background: var(--gh-accent-soft);
+}
+.gh-service-option .form-check-input {
+  margin: 0;
+  flex-shrink: 0;
+  width: 1.15em;
+  height: 1.15em;
+}
+.gh-service-option-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.gh-checkout {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--gh-radius);
+  background: var(--gh-sidebar);
+  color: #fff;
+  box-shadow: var(--gh-shadow-lg);
+}
+.gh-checkout .gh-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+.gh-checkout-total {
+  font-family: var(--gh-font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.gh-service-edit {
+  grid-template-columns: minmax(0, 1fr) 160px auto;
+}
+
+/* ---------- smart intake ---------- */
+.gh-intake {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--gh-accent) 35%, var(--gh-border));
+}
+.gh-intake::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gh-accent), #ea580c, var(--gh-accent));
+  background-size: 200% 100%;
+  animation: gh-sheen 4s linear infinite;
+}
+@keyframes gh-sheen {
+  to { background-position: -200% 0; }
+}
+.gh-intake-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.gh-intake-input {
+  position: relative;
+}
+.gh-intake-input svg {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.85rem;
+  color: var(--gh-muted);
+}
+.gh-intake-input textarea {
+  padding-left: 2.4rem;
+  resize: vertical;
+}
+.gh-privacy {
+  margin: 0.6rem 0 0.9rem;
+  font-size: 0.82rem;
+  color: var(--gh-muted);
+}
+.gh-draft {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--gh-border);
+}
+.gh-draft-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+  color: var(--gh-muted);
+}
+.gh-draft-banner svg {
+  color: var(--gh-accent);
+  flex-shrink: 0;
+}
+.gh-draft-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 2rem;
+  font-weight: 500;
+}
+.gh-confidence {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.gh-confidence-bar {
+  width: 110px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--gh-surface-2);
+  overflow: hidden;
+}
+.gh-confidence-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gh-accent), #ea580c);
+  animation: gh-grow 0.8s var(--gh-ease) both;
+  transform-origin: left;
+}
+@keyframes gh-grow {
+  from { transform: scaleX(0); }
+}
+.gh-draft-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-muted);
+  margin-bottom: 0.45rem;
+}
+.gh-chip {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--gh-border);
+  background: var(--gh-surface-2);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.gh-questions {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.gh-questions li + li {
+  margin-top: 0.25rem;
+}
+.gh-intake-help svg {
+  color: var(--gh-accent-text);
+}
+.gh-help-steps {
+  padding-left: 1.2rem;
+  margin: 0 0 1rem;
+  color: var(--gh-muted);
+  font-size: 0.92rem;
+}
+.gh-help-steps li + li {
+  margin-top: 0.4rem;
+}

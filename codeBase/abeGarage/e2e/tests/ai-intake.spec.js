@@ -15,8 +15,10 @@ test("Manager: the draft only fills the form after confirmation, and nothing is 
   await loginAs(page, request, "manager");
   await page.goto("/admin/new-order");
   await page.fill("input[name=search_customer]", customer.email);
-  await page.locator(`table tr:has-text("${customer.email}") svg`).click();
-  await page.locator(`table tr:has-text("${customer.tag}") svg`).click();
+  // before a vehicle is chosen, the page explains where smart intake appears
+  await expect(page.getByTestId("intake-hint")).toContainText("Pick a customer and their vehicle to use Smart intake");
+  await page.getByRole("button", { name: `Select customer ${customer.email}` }).click();
+  await page.getByRole("button", { name: `Select vehicle ${customer.tag}` }).click();
 
   const intake = page.getByTestId("smart-intake");
   await intake.locator("textarea[name=complaint]").fill("Grinding noise when I brake, and the battery died this morning");
@@ -54,6 +56,8 @@ test("Demo can try smart intake on its own page, with no way to save", async ({ 
   await page.getByRole("button", { name: "Draft job card" }).click();
   await expect(page.getByTestId("ai-draft")).toBeVisible();
   await expect(page.getByRole("button", { name: "Add checked services to this order" })).toHaveCount(0);
+  // the page explains how drafts become orders (Demo can't create orders)
+  await expect(page.getByRole("complementary", { name: "How drafts become orders" })).toContainText("Managers and admins create orders");
 });
 
 test("Mechanic has no smart intake menu item or page", async ({ page, request }) => {
