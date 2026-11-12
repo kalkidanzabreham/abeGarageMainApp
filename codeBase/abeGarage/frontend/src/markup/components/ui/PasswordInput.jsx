@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 
 // A password field with a show/hide button. The button is type="button" so
 // it never submits the form, and it says what it will do for screen readers.
-export default function PasswordInput({ id, className = "", invalid = false, ...inputProps }) {
+const PasswordInput = forwardRef(function PasswordInput({ id, className = "", invalid = false, ...inputProps }, ref) {
   const [visible, setVisible] = useState(false);
   return (
     <div className="gh-password">
       <input
+        ref={ref}
         id={id}
         type={visible ? "text" : "password"}
         className={`form-control ${invalid ? "is-invalid" : ""} ${className}`}
@@ -25,4 +26,6 @@ export default function PasswordInput({ id, className = "", invalid = false, ...
       </button>
     </div>
   );
-}
+});
+
+export default PasswordInput;
